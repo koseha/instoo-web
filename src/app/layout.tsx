@@ -1,5 +1,6 @@
 // app/layout.tsx
 
+import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
 
 export const metadata = {
@@ -13,9 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning>
+    <html lang="ko" suppressHydrationWarning>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
