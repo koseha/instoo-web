@@ -75,7 +75,7 @@ const MyProfilePopover: React.FC<MyProfilePopoverProps> = ({ user }) => {
         </PopoverTrigger>
         <Portal>
           <PopoverPositioner>
-            <PopoverContent p={4} css={{ "--popover-bg": "whitesmoke" }}>
+            <PopoverContent p={4} w={280}>
               <PopoverArrow />
               <Flex direction="column" gap={4}>
                 <Flex justify="flex-end">
