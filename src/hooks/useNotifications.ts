@@ -4,7 +4,7 @@ import { toaster } from "@/components/ui/toaster";
 interface NotificationOptions {
   message: string;
   title?: string;
-  duration?: number;
+  duration?: number; // 1000 = 1s
   closable?: boolean;
   placement?:
     | "top"

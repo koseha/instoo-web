@@ -2,6 +2,8 @@
 
 import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
+import Header from "@/components/layouts/Header";
+import "@/theme/globals.css";
 
 export const metadata = {
   title: "Instoo",
@@ -17,6 +19,7 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body>
         <Providers>
+          <Header />
           {children}
           <Toaster />
         </Providers>

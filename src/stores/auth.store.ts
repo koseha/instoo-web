@@ -1,10 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface User {
+export interface User {
   uuid: string;
   nickname: string;
+  profileImageUrl: string;
   role: string;
+  isActive: string;
+  createdAt: Date;
 }
 
 interface AuthState {
@@ -38,6 +41,7 @@ export const useAuthStore = create<AuthState>()(
           user: null,
           isAuthenticated: false,
         });
+        localStorage.removeItem("refreshToken");
       },
 
       setToken: (token: string) => {
@@ -45,7 +49,7 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "auth-storage",
+      name: "instoo-auth",
     },
   ),
 );
