@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DialogRoot,
   DialogContent,
@@ -22,23 +22,30 @@ import { User } from "@/stores/auth.store";
 import { useAuthStore } from "@/stores/auth.store";
 import { useNotification } from "@/hooks/useNotifications";
 import { FiX } from "react-icons/fi";
+import { UserService } from "@/services/user.service";
 
 interface MyProfileModalProps {
-  user: User;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const MyProfileModal: React.FC<MyProfileModalProps> = ({
-  user,
-  isOpen,
-  onClose,
-}) => {
-  const { updateUser } = useAuthStore();
+const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
+  const { user, updateUser } = useAuthStore();
   const { showSuccess, showError } = useNotification();
 
-  const [nickname, setNickname] = useState(user.nickname);
+  const [nickname, setNickname] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setNickname(user.nickname);
+    }
+  }, [user]);
+
+  if (!user) {
+    onClose();
+    return null;
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,11 +63,12 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({
     setIsLoading(true);
 
     try {
-      // TODO: API 호출로 프로필 업데이트
-      // await UserService.updateProfile({ nickname: nickname.trim() });
+      const updatedUser: User = await UserService.updateProfile({
+        nickname: nickname.trim(),
+      });
 
       // 임시로 store 업데이트
-      updateUser({ ...user, nickname: nickname.trim() });
+      updateUser({ ...updatedUser });
 
       showSuccess({ title: "프로필이 성공적으로 수정되었습니다." });
       onClose();
@@ -84,7 +92,11 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({
 
   return (
     <Portal>
-      <DialogRoot open={isOpen} onOpenChange={({ open }) => !open && onClose()}>
+      <DialogRoot
+        open={isOpen}
+        role="alertdialog"
+        onOpenChange={({ open }) => !open && onClose()}
+      >
         <DialogBackdrop />
         <DialogContent maxW="md">
           <DialogHeader>

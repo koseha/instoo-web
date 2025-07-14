@@ -13,7 +13,6 @@ import {
   Text,
   HStack,
 } from "@chakra-ui/react";
-import { format } from "date-fns";
 import { BsPersonCircle } from "react-icons/bs";
 import { FiUser, FiShield, FiCalendar } from "react-icons/fi";
 import MyProfileModal from "./MyProfileModal";
@@ -40,7 +39,7 @@ const MyProfilePopover: React.FC<MyProfilePopoverProps> = ({ user }) => {
     },
     {
       label: "가입일",
-      value: format(new Date(user.createdAt), "yyyy-MM-dd"),
+      value: new Date(user.createdAt).toLocaleDateString(),
       icon: <FiCalendar />,
     },
   ];
@@ -109,6 +108,7 @@ const MyProfilePopover: React.FC<MyProfilePopoverProps> = ({ user }) => {
                       <DataList.ItemValue
                         fontWeight="300"
                         color="primary.black"
+                        justifyContent="flex-end"
                       >
                         {item.value}
                       </DataList.ItemValue>
@@ -120,11 +120,7 @@ const MyProfilePopover: React.FC<MyProfilePopoverProps> = ({ user }) => {
           </PopoverPositioner>
         </Portal>
       </PopoverRoot>
-      <MyProfileModal
-        user={user}
-        isOpen={isModalOpen}
-        onClose={handleModalClose}
-      />
+      <MyProfileModal isOpen={isModalOpen} onClose={handleModalClose} />
     </>
   );
 };
