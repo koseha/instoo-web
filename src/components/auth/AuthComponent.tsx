@@ -19,9 +19,10 @@ import { useNotification } from "@/hooks/useNotifications";
 import { AuthService } from "@/services/auth.service";
 import { openOAuthPopup, waitForOAuthMessage } from "@/utils/oauth.utils";
 import { OAuthProvider } from "@/types/enums/oauth-provider.enum";
+import MyProfilePopover from "../user/MyProfilePopover";
 
 const AuthComponent: React.FC = () => {
-  const { user, login, logout } = useAuthStore();
+  const { user, login, logout, isAuthenticated } = useAuthStore();
   const { showSuccess, showError } = useNotification();
 
   const handleGoogleLogin = async () => {
@@ -55,16 +56,16 @@ const AuthComponent: React.FC = () => {
           localStorage.setItem("refreshToken", refreshToken);
         }
 
-        showSuccess({ message: `${userData.nickname}님 환영합니다!` });
+        showSuccess({ title: `${userData.nickname}님 환영합니다!` });
       } else if (result.type === "GOOGLE_AUTH_ERROR") {
         // 5. 로그인 실패 처리
         const errorMessage = result.error || "로그인에 실패했습니다.";
-        showError({ message: errorMessage });
+        showError({ title: errorMessage });
       }
     } catch (error) {
       console.error("Google 로그인 오류:", error);
       showError({
-        message:
+        title:
           error instanceof Error
             ? error.message
             : "로그인 중 오류가 발생했습니다.",
@@ -74,21 +75,14 @@ const AuthComponent: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    showSuccess({ message: `로그아웃을 완료했습니다!` });
+    showSuccess({ title: `로그아웃을 완료했습니다!` });
   };
 
   // 로그인된 상태: 사용자 정보와 로그아웃 버튼 표시
-  if (user) {
+  if (isAuthenticated) {
     return (
       <Flex align="center" gap={2}>
-        <Text
-          fontSize="sm"
-          fontWeight="500"
-          color="neutral.700"
-          fontFamily="body"
-        >
-          {user.nickname}
-        </Text>
+        <MyProfilePopover user={user!} />
         <Button
           variant="ghost"
           fontWeight="500"

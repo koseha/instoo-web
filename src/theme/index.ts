@@ -78,7 +78,7 @@ const system = createSystem(defaultConfig, {
       color: "neutral.700",
       backgroundColor: "primary.white",
       fontFamily:
-        "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans KR', sans-serif",
+        "'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans KR', sans-serif",
     },
 
     a: {
