@@ -1,4 +1,4 @@
-// services/auth.service.ts
+// services/user.service.ts
 import apiClient from "@/lib/axios-api";
 import { User } from "@/stores/auth.store";
 import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
