@@ -1,4 +1,4 @@
-import { User } from "@/stores/auth.store";
+import { useAuthStore } from "@/stores/auth.store";
 import {
   Button,
   DataList,
@@ -15,16 +15,15 @@ import {
 } from "@chakra-ui/react";
 import { BsPersonCircle } from "react-icons/bs";
 import { FiUser, FiShield, FiCalendar } from "react-icons/fi";
-import MyProfileModal from "./MyProfileModal";
 import { useState } from "react";
+import { useModalStore, MODAL_IDS } from "@/stores/modal.store";
 
-interface MyProfilePopoverProps {
-  user: User;
-}
-
-const MyProfilePopover: React.FC<MyProfilePopoverProps> = ({ user }) => {
+const MyProfilePopover: React.FC = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { openModal } = useModalStore();
+  const { user } = useAuthStore();
+
+  if (!user) return null;
 
   const profile = [
     {
@@ -46,82 +45,75 @@ const MyProfilePopover: React.FC<MyProfilePopoverProps> = ({ user }) => {
 
   const handleEditClick = () => {
     setIsPopoverOpen(false); // 팝오버 닫기
-    setIsModalOpen(true); // 모달 열기
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+    openModal(MODAL_IDS.MY_PROFILE); // 전역 모달 열기
   };
 
   return (
-    <>
-      <PopoverRoot
-        open={isPopoverOpen}
-        onOpenChange={({ open }) => setIsPopoverOpen(open)}
-      >
-        <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            fontWeight="500"
-            size="sm"
-            color="neutral.600"
-            _hover={{ color: "primary.black", bg: "neutral.100" }}
-            fontFamily="body"
-            gap={2}
-          >
-            <BsPersonCircle size={16} />
-            {user.nickname}
-          </Button>
-        </PopoverTrigger>
-        <Portal>
-          <PopoverPositioner>
-            <PopoverContent p={4} w={280}>
-              <PopoverArrow />
-              <Flex direction="column" gap={4}>
-                <Flex justify="flex-end">
-                  <Button
-                    fontWeight="300"
-                    color="neutral.100"
-                    fontFamily="body"
-                    size="xs"
-                    onClick={handleEditClick}
-                  >
-                    수정하기
-                  </Button>
-                </Flex>
-                <Separator />
-                <DataList.Root orientation="horizontal" gap={3}>
-                  {profile.map((item) => (
-                    <DataList.Item key={item.label}>
-                      <DataList.ItemLabel
-                        fontWeight="300"
-                        fontSize="xs"
-                        color={"neutral.500"}
-                        minW="80px"
-                      >
-                        <HStack gap={2} justify="flex-start">
-                          {item.icon}
-                          <Text>{item.label}</Text>
-                        </HStack>
-                      </DataList.ItemLabel>
-                      <Separator orientation="vertical" height="4" />
-                      <DataList.ItemValue
-                        fontWeight="300"
-                        color="primary.black"
-                        justifyContent="flex-end"
-                      >
-                        {item.value}
-                      </DataList.ItemValue>
-                    </DataList.Item>
-                  ))}
-                </DataList.Root>
+    <PopoverRoot
+      open={isPopoverOpen}
+      onOpenChange={({ open }) => setIsPopoverOpen(open)}
+    >
+      <PopoverTrigger asChild>
+        <Button
+          variant="ghost"
+          fontWeight="500"
+          size="sm"
+          color="neutral.600"
+          _hover={{ color: "primary.black", bg: "neutral.100" }}
+          fontFamily="body"
+          gap={2}
+        >
+          <BsPersonCircle size={16} />
+          {user.nickname}
+        </Button>
+      </PopoverTrigger>
+      <Portal>
+        <PopoverPositioner>
+          <PopoverContent p={4} w={280}>
+            <PopoverArrow />
+            <Flex direction="column" gap={4}>
+              <Flex justify="flex-end">
+                <Button
+                  fontWeight="300"
+                  color="neutral.100"
+                  fontFamily="body"
+                  size="xs"
+                  onClick={handleEditClick}
+                >
+                  수정하기
+                </Button>
               </Flex>
-            </PopoverContent>
-          </PopoverPositioner>
-        </Portal>
-      </PopoverRoot>
-      <MyProfileModal isOpen={isModalOpen} onClose={handleModalClose} />
-    </>
+              <Separator />
+              <DataList.Root orientation="horizontal" gap={3}>
+                {profile.map((item) => (
+                  <DataList.Item key={item.label}>
+                    <DataList.ItemLabel
+                      fontWeight="300"
+                      fontSize="xs"
+                      color={"neutral.500"}
+                      minW="80px"
+                    >
+                      <HStack gap={2} justify="flex-start">
+                        {item.icon}
+                        <Text>{item.label}</Text>
+                      </HStack>
+                    </DataList.ItemLabel>
+                    <Separator orientation="vertical" height="4" />
+                    <DataList.ItemValue
+                      fontWeight="300"
+                      color="primary.black"
+                      justifyContent="flex-end"
+                    >
+                      {item.value}
+                    </DataList.ItemValue>
+                  </DataList.Item>
+                ))}
+              </DataList.Root>
+            </Flex>
+          </PopoverContent>
+        </PopoverPositioner>
+      </Portal>
+    </PopoverRoot>
   );
 };
 

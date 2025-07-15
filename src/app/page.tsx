@@ -6,7 +6,7 @@ import { Box, Button, For, Heading } from "@chakra-ui/react";
 
 export default function Home() {
   return (
-    <Box className="main-content">
+    <Box>
       <Heading mb={4}>Hello Chakra UI!</Heading>
 
       <For each={["success", "error", "warning", "info"]}>

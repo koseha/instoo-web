@@ -22,7 +22,7 @@ import { OAuthProvider } from "@/types/enums/oauth-provider.enum";
 import MyProfilePopover from "../user/MyProfilePopover";
 
 const AuthComponent: React.FC = () => {
-  const { user, login, logout, isAuthenticated } = useAuthStore();
+  const { login, logout, isAuthenticated } = useAuthStore();
   const { showSuccess, showError } = useNotification();
 
   const handleGoogleLogin = async () => {
@@ -82,7 +82,7 @@ const AuthComponent: React.FC = () => {
   if (isAuthenticated) {
     return (
       <Flex align="center" gap={1}>
-        <MyProfilePopover user={user!} />
+        <MyProfilePopover />
         <Button
           variant="ghost"
           fontWeight="500"

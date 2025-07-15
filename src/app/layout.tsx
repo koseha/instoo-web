@@ -4,6 +4,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
 import Header from "@/components/layouts/Header";
 import "@/theme/globals.css";
+import { Box, Flex } from "@chakra-ui/react";
+import Sidebar from "@/components/sidebar/Sidebar";
+import ModalProvider from "@/components/providers/modal.provider";
 
 export const metadata = {
   title: "Instoo",
@@ -27,9 +30,17 @@ export default function RootLayout({
           {/* Sub-header - 전체 너비 */}
           <div></div>
           {/* Main Content - 너비 제한 */}
-          <main>{children}</main>
+          {/* <Flex className="main-content" minH="100vh"> */}
+          <Flex className="main-content" minH={1000}>
+            <Sidebar />
+            <Box as="main" flex="1" bg="neutral.200">
+              {children}
+            </Box>
+          </Flex>
           {/* Footer - 전체 너비 */}
           <footer></footer>
+          {/* 전역 모달들 */}
+          <ModalProvider />
         </Providers>
       </body>
     </html>

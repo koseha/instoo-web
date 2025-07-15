@@ -2,14 +2,6 @@
 
 import React, { useEffect } from "react";
 import {
-  DialogRoot,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogFooter,
-  DialogCloseTrigger,
-  DialogBackdrop,
   Button,
   Input,
   VStack,
@@ -18,8 +10,8 @@ import {
   Box,
   Portal,
 } from "@chakra-ui/react";
-import { User } from "@/stores/auth.store";
 import { useAuthStore } from "@/stores/auth.store";
+import { useModalStore, MODAL_IDS } from "@/stores/modal.store";
 import { useNotification } from "@/hooks/useNotifications";
 import { FiX } from "react-icons/fi";
 import { UserService } from "@/services/user.service";
@@ -32,14 +24,12 @@ import {
 } from "@/utils/validations/nickname.validation";
 import { useNicknameValidation } from "@/hooks/useNicknameValidation";
 
-interface MyProfileModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
+const MyProfileModal: React.FC = () => {
   const { user, updateUser } = useAuthStore();
+  const { isModalOpen, closeModal } = useModalStore();
   const { showSuccess, showError } = useNotification();
+
+  const isOpen = isModalOpen(MODAL_IDS.MY_PROFILE);
 
   const form = useForm<NicknameFormData>({
     resolver: zodResolver(nicknameValidationSchema),
@@ -69,12 +59,20 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
     }
   }, [user, isOpen, reset]);
 
-  if (!user) {
-    onClose();
-    return null;
-  }
+  // 사용자가 없으면 모달 닫기
+  useEffect(() => {
+    if (!user && isOpen) {
+      handleClose();
+    }
+  }, [user, isOpen]);
+
+  const handleClose = () => {
+    closeModal(MODAL_IDS.MY_PROFILE);
+  };
 
   const onSubmit = async (data: NicknameFormData) => {
+    if (!user) return;
+
     // 변경사항 확인
     if (data.nickname === user.nickname) {
       showError({ title: "변경사항이 없습니다." });
@@ -82,7 +80,7 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
     }
 
     try {
-      const updatedUser: User = await UserService.updateProfile({
+      const updatedUser = await UserService.updateProfile({
         nickname: data.nickname,
       });
 
@@ -90,7 +88,7 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
       updateUser({ ...updatedUser });
 
       showSuccess({ title: "프로필이 성공적으로 수정되었습니다." });
-      onClose();
+      handleClose();
     } catch (error) {
       console.error("프로필 수정 오류:", error);
       showError({
@@ -103,45 +101,71 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
   };
 
   const handleCancel = () => {
-    reset({
-      nickname: user.nickname,
-    });
-    onClose();
+    if (user) {
+      reset({
+        nickname: user.nickname,
+      });
+    }
+    handleClose();
   };
 
   // 제출 버튼 비활성화 조건
   const isSubmitDisabled =
-    isSubmitting || !isValid || !isDirty || nickname === user.nickname;
+    !user ||
+    isSubmitting ||
+    !isValid ||
+    !isDirty ||
+    nickname === user?.nickname;
+
+  if (!isOpen || !user) {
+    return null;
+  }
 
   return (
     <Portal>
-      <DialogRoot
-        open={isOpen}
-        role="alertdialog"
-        onOpenChange={({ open }) => !open && onClose()}
+      <Box
+        position="fixed"
+        top="0"
+        left="0"
+        width="100vw"
+        height="100vh"
+        bg="rgba(0, 0, 0, 0.5)"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        zIndex="1400"
       >
-        <DialogBackdrop />
-        <DialogContent maxW="md">
-          <DialogHeader>
-            <DialogTitle fontFamily="heading" fontSize="xl" fontWeight="600">
+        <Box
+          bg="primary.white"
+          borderRadius="8px"
+          boxShadow="0 10px 25px rgba(0, 0, 0, 0.15)"
+          maxW="md"
+          w="90%"
+          maxH="90vh"
+          overflowY="auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <Box p={6} pb={4} position="relative">
+            <Text fontFamily="heading" fontSize="xl" fontWeight="600">
               프로필 수정
-            </DialogTitle>
-            <DialogCloseTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                position="absolute"
-                top="12px"
-                right="12px"
-                _hover={{ bg: "neutral.100" }}
-              >
-                <FiX size={16} />
-              </Button>
-            </DialogCloseTrigger>
-          </DialogHeader>
+            </Text>
+            <Button
+              variant="ghost"
+              size="sm"
+              position="absolute"
+              top="12px"
+              right="12px"
+              _hover={{ bg: "neutral.100" }}
+              onClick={handleClose}
+            >
+              <FiX size={16} />
+            </Button>
+          </Box>
 
+          {/* Body */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            <DialogBody>
+            <Box px={6} py={4}>
               <VStack gap={4} align="stretch">
                 <Box>
                   <Text
@@ -159,12 +183,10 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
                       <Input
                         {...field}
                         onChange={(e) => {
-                          // 10자 제한만 적용하고, 다른 포맷팅은 onBlur에서 처리
                           const value = e.target.value.slice(0, 10);
                           field.onChange(value);
                         }}
                         onBlur={(e) => {
-                          // blur 시에만 포맷팅 적용
                           const formattedValue = nicknameUtils.formatNickname(
                             e.target.value,
                           );
@@ -250,10 +272,11 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
                   </VStack>
                 </Box>
               </VStack>
-            </DialogBody>
+            </Box>
 
-            <DialogFooter>
-              <HStack gap={2}>
+            {/* Footer */}
+            <Box p={6} pt={4}>
+              <HStack gap={2} justify="flex-end">
                 <Button
                   variant="outline"
                   onClick={handleCancel}
@@ -281,10 +304,10 @@ const MyProfileModal: React.FC<MyProfileModalProps> = ({ isOpen, onClose }) => {
                   저장
                 </Button>
               </HStack>
-            </DialogFooter>
+            </Box>
           </form>
-        </DialogContent>
-      </DialogRoot>
+        </Box>
+      </Box>
     </Portal>
   );
 };
