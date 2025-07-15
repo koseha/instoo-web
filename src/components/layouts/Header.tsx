@@ -1,3 +1,4 @@
+// components/layouts/Header
 import React from "react";
 import { Box, Flex, Link } from "@chakra-ui/react";
 import AuthComponent from "../auth/AuthComponent";
@@ -17,8 +18,7 @@ export default function Header() {
         h="full"
         align="center"
         justify="space-between"
-        px={4}
-        maxW="100%"
+        className="main-content"
       >
         {/* 로고 */}
         <Link

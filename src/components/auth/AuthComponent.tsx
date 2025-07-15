@@ -81,7 +81,7 @@ const AuthComponent: React.FC = () => {
   // 로그인된 상태: 사용자 정보와 로그아웃 버튼 표시
   if (isAuthenticated) {
     return (
-      <Flex align="center" gap={2}>
+      <Flex align="center" gap={1}>
         <MyProfilePopover user={user!} />
         <Button
           variant="ghost"

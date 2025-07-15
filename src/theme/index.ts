@@ -66,7 +66,7 @@ const system = createSystem(defaultConfig, {
         sm: { value: "640px" },
         md: { value: "768px" },
         lg: { value: "1024px" },
-        xl: { value: "1280px" },
+        xl: { value: "1200px" }, // 새로 추가
       },
     },
   },
@@ -127,6 +127,23 @@ const system = createSystem(defaultConfig, {
       fontWeight: "400",
       color: "neutral.500",
       fontSize: "sm",
+    },
+
+    // 메인 콘텐츠 영역 (Header/sub-header 아래)
+    ".main-content": {
+      maxWidth: {
+        base: "100%",
+        sm: "768px",
+        md: "1024px",
+        lg: "1200px",
+        xl: "1400px",
+      },
+      margin: "0 auto",
+      padding: {
+        base: "0 1rem",
+        md: "0 1.5rem",
+        lg: "0 2rem",
+      },
     },
   },
 });

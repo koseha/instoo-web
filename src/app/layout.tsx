@@ -19,9 +19,17 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body>
         <Providers>
-          <Header />
-          {children}
-          <Toaster />
+          {/* Header - 전체 너비 */}
+          <header>
+            <Header />
+            <Toaster />
+          </header>
+          {/* Sub-header - 전체 너비 */}
+          <div></div>
+          {/* Main Content - 너비 제한 */}
+          <main>{children}</main>
+          {/* Footer - 전체 너비 */}
+          <footer></footer>
         </Providers>
       </body>
     </html>
