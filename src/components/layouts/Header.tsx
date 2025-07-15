@@ -10,7 +10,8 @@ export default function Header() {
       bg="primary.white"
       borderBottom="1px solid"
       borderColor="neutral.200"
-      h={{ base: "56px", md: "64px" }}
+      // h={{ base: "56px", md: "64px" }}
+      h={{ base: "64px" }}
       position="static"
     >
       <Flex
@@ -18,7 +19,7 @@ export default function Header() {
         h="full"
         align="center"
         justify="space-between"
-        className="main-content"
+        className="main-header"
       >
         {/* 로고 */}
         <Link
