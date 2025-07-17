@@ -113,7 +113,7 @@ export default function SearchStreamer() {
                 </ComboboxItem>
               ))
             ) : (
-              <ComboboxEmpty>검색 결과 없음</ComboboxEmpty>
+              <ComboboxEmpty>검색 결과 없음(2자 이상)</ComboboxEmpty>
             )}
           </ComboboxContent>
         </ComboboxPositioner>

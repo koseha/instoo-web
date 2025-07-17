@@ -12,7 +12,7 @@ import {
   SwitchHiddenInput,
   SwitchLabel,
   SwitchRoot,
-  Button,
+  Box,
 } from "@chakra-ui/react";
 
 interface MyStreamersCardProps {
@@ -43,21 +43,22 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
           </Text>
           <Flex gap="3px">
             {streamer.platforms.map((platform) => (
-              <Button
+              <Box
+                as="button"
                 key={platform.platformName}
-                variant="ghost"
-                size="xs"
-                p={0}
                 w={3}
                 h={3}
                 minW={3}
                 minH={3}
-                borderRadius="sm"
                 _hover={{
                   transform: "scale(1.1)",
                 }}
                 transition="all 0.2s ease"
                 onClick={(e) => handlePlatformClick(platform.channelUrl, e)}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                cursor="pointer"
               >
                 <Image
                   w={3}
@@ -65,7 +66,7 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
                   src={PLATFORM_ICON_MAP[platform.platformName]}
                   alt={`${platform.platformName} icon`}
                 />
-              </Button>
+              </Box>
             ))}
           </Flex>
         </Stack>
