@@ -54,10 +54,6 @@ export default function SearchStreamer() {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(async () => {
-      if (!query) {
-        setItems([]);
-        return;
-      }
       setLoading(true);
       try {
         const data = await StreamerService.searchSimpleStreamerByName(query);
@@ -72,15 +68,17 @@ export default function SearchStreamer() {
     }, 300); // ✅ 300ms 디바운스
   };
 
-  const handleClick = (item: StreamerSimpleResponse) => {
-    console.log("click click", item);
-    add(item);
-  };
-
   return (
     <ComboboxRoot
       collection={collection}
       onInputValueChange={handleInputChange}
+      onSelect={(item) => {
+        if (!item) return;
+        const selected = items.find((i) => i.uuid === item.itemValue);
+        if (selected) {
+          add(selected); // Zustand 추가
+        }
+      }}
     >
       <ComboboxControl>
         <InputGroup startElement={<IoSearchOutline />}>
@@ -104,7 +102,7 @@ export default function SearchStreamer() {
                 <ComboboxItem
                   key={item.uuid}
                   item={item}
-                  onClick={() => handleClick(item)}
+                  // onClick={() => handleClick(item)}
                 >
                   <HStack>
                     <AvatarRoot>

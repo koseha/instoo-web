@@ -3,7 +3,7 @@
 import { Box } from "@chakra-ui/react";
 import SidebarMenu from "./SidebarMenu";
 import SearchStreamer from "./SearchStreamer";
-import MyStreamers from "./MyStreamer";
+import MyStreamers from "./MyStreamers";
 
 const Sidebar: React.FC = () => {
   return (
