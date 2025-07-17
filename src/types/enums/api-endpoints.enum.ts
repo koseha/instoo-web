@@ -17,7 +17,7 @@ export const API_ENDPOINTS = {
   STREAMERS: {
     CREATE: "/v1/streamers",
     LIST: "/v1/streamers/list",
-    SEARCH: "/v1/streamers/search",
+    SEARCH: `/v1/streamers/search`,
     DETAIL: (uuid: string) => `/v1/streamers/${uuid}`,
     UPDATE: (uuid: string) => `/v1/streamers/${uuid}`,
     VERIFY: (uuid: string) => `/v1/streamers/${uuid}/verify`,

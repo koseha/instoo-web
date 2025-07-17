@@ -3,16 +3,11 @@ import apiClient from "@/lib/axios-api";
 import { User } from "@/stores/auth.store";
 import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 import { OAuthProvider } from "@/types/enums/oauth-provider.enum";
+import { ApiResponse } from "@/types/interfaces/api-response.interface";
 
 // API 응답 타입 정의
 interface OAuthUrlResponse {
-  content: {
-    oauthUrl: string;
-  };
-}
-
-interface UserResponse {
-  content: User;
+  oauthUrl: string;
 }
 
 export class AuthService {
@@ -21,7 +16,7 @@ export class AuthService {
    */
   static async getOAuthUrl(provider: OAuthProvider): Promise<string> {
     try {
-      const response = await apiClient.get<OAuthUrlResponse>(
+      const response = await apiClient.get<ApiResponse<OAuthUrlResponse>>(
         API_ENDPOINTS.AUTH.OAUTH_URL(provider),
       );
       return response.data.content.oauthUrl;
@@ -37,7 +32,7 @@ export class AuthService {
   static async getCurrentUser(token: string): Promise<User> {
     try {
       // 임시로 토큰을 헤더에 설정 (콜백 페이지에서 사용)
-      const response = await apiClient.get<UserResponse>(
+      const response = await apiClient.get<ApiResponse<User>>(
         API_ENDPOINTS.USERS.ME,
         {
           headers: {
