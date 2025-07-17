@@ -44,7 +44,7 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
           <Flex gap="3px">
             {streamer.platforms.map((platform) => (
               <Box
-                as="button"
+                as="div"
                 key={platform.platformName}
                 w={3}
                 h={3}
