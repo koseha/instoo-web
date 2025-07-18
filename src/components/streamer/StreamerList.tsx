@@ -1,10 +1,14 @@
 import {
   Box,
+  Button,
   ButtonGroup,
+  CloseButton,
+  Dialog,
   Flex,
   IconButton,
   Image,
   Pagination,
+  Portal,
   Stack,
   Table,
   Text,
@@ -154,160 +158,200 @@ const StreamerList: React.FC<StreamerListProps> = ({
           오류: {error}
         </Text>
       )}
-
-      <Stack width="full" alignItems="center">
-        <Table.Root
-          key="outline"
-          size="sm"
-          variant="line"
-          opacity={isLoading ? 0.5 : 1}
-        >
-          <Table.ColumnGroup>
-            <Table.Column htmlWidth="50px" />
-            <Table.Column />
-            <Table.Column htmlWidth="84px" />
-            {isVerified && <Table.Column htmlWidth="44px" />}
-            <Table.Column htmlWidth="84px" />
-            {isVerified && <Table.Column htmlWidth="84px" />}
-            <Table.Column htmlWidth="40px" />
-          </Table.ColumnGroup>
-          <Table.Header>
-            <Table.Row bg="neutral.100" borderTopWidth={1}>
-              <Table.ColumnHeader py={1} textAlign="center">
-                번호
-              </Table.ColumnHeader>
-              <Table.ColumnHeader py={1} textAlign="center">
-                {/* 사진, 이름 */}
-                스트리머
-              </Table.ColumnHeader>
-              <Table.ColumnHeader px={0} py={1} textAlign="center">
-                플랫폼
-              </Table.ColumnHeader>
-              {isVerified && (
-                <Table.ColumnHeader px={0} py={1} textAlign="center">
-                  팔로우
+      <Dialog.Root placement="center">
+        <Stack width="full" alignItems="center">
+          <Table.Root
+            key="outline"
+            size="sm"
+            variant="line"
+            opacity={isLoading ? 0.5 : 1}
+          >
+            <Table.ColumnGroup>
+              <Table.Column htmlWidth="50px" />
+              <Table.Column />
+              <Table.Column htmlWidth="84px" />
+              {isVerified && <Table.Column htmlWidth="50px" />}
+              <Table.Column htmlWidth="84px" />
+              {isVerified && <Table.Column htmlWidth="84px" />}
+              <Table.Column htmlWidth="40px" />
+            </Table.ColumnGroup>
+            <Table.Header>
+              <Table.Row bg="neutral.100" borderTopWidth={1}>
+                <Table.ColumnHeader py={1} textAlign="center">
+                  번호
                 </Table.ColumnHeader>
-              )}
-              <Table.ColumnHeader px={0} py={1} textAlign="center">
-                등록일
-              </Table.ColumnHeader>
-              {isVerified && (
+                <Table.ColumnHeader py={1} textAlign="center">
+                  {/* 사진, 이름 */}
+                  스트리머
+                </Table.ColumnHeader>
+                <Table.ColumnHeader px={0} py={1} textAlign="center">
+                  플랫폼
+                </Table.ColumnHeader>
+                {isVerified && (
+                  <Table.ColumnHeader px={0} py={1} textAlign="center">
+                    팔로우
+                  </Table.ColumnHeader>
+                )}
+                <Table.ColumnHeader px={0} py={1} textAlign="center">
+                  등록일
+                </Table.ColumnHeader>
+                {isVerified && (
+                  <Table.ColumnHeader
+                    px={0}
+                    py={1}
+                    textAlign="center"
+                    width="fit-content"
+                  >
+                    인증일
+                  </Table.ColumnHeader>
+                )}
                 <Table.ColumnHeader
-                  px={0}
+                  paddingLeft={0}
+                  paddingRight={2}
                   py={1}
                   textAlign="center"
-                  width="fit-content"
                 >
-                  인증일
+                  상세
                 </Table.ColumnHeader>
-              )}
-              <Table.ColumnHeader
-                paddingLeft={0}
-                paddingRight={2}
-                py={1}
-                textAlign="center"
-              >
-                상세
-              </Table.ColumnHeader>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {data.data.length === 0 ? (
-              // 빈 상태
-              <EmptyState searchName={searchName} platforms={platforms} />
-            ) : (
-              // 실제 데이터
-              data.data.map((item, idx) => (
-                <Table.Row key={item.uuid} fontSize="sm">
-                  <Table.Cell textAlign="center" py={1} fontSize="xs">
-                    {(currentPage - 1) * pageSize + idx + 1}
-                  </Table.Cell>
-                  <Table.Cell py={1}>{item.name}</Table.Cell>
-                  <Table.Cell px={0} py={1}>
-                    <Flex gap={1} justify="center">
-                      {item.platforms?.map((p) => (
-                        <Link
-                          key={p.channelUrl}
-                          href={p.channelUrl}
-                          target="_blank"
-                        >
-                          <Image
-                            w={4}
-                            h={4}
-                            src={PLATFORM_ICON_MAP[p.platformName]}
-                            alt={`${p.platformName} icon`}
-                            cursor="pointer"
-                            _hover={{ opacity: 0.7 }}
-                          />
-                        </Link>
-                      ))}
-                    </Flex>
-                  </Table.Cell>
-                  {isVerified && (
-                    <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
-                      {item.followCount || 0}
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {data.data.length === 0 ? (
+                // 빈 상태
+                <EmptyState searchName={searchName} platforms={platforms} />
+              ) : (
+                // 실제 데이터
+                data.data.map((item, idx) => (
+                  <Table.Row key={item.uuid} fontSize="sm">
+                    <Table.Cell textAlign="center" py={1} fontSize="xs">
+                      {(currentPage - 1) * pageSize + idx + 1}
                     </Table.Cell>
-                  )}
-                  <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
-                    {new Date(item.createdAt).toLocaleDateString()}
-                  </Table.Cell>
-                  {isVerified && (
-                    <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
-                      {new Date(item.verifiedAt).toLocaleDateString()}
+                    <Table.Cell py={1}>{item.name}</Table.Cell>
+                    <Table.Cell px={0} py={1}>
+                      <Flex gap={1} justify="center">
+                        {item.platforms?.map((p) => (
+                          <Link
+                            key={p.channelUrl}
+                            href={p.channelUrl}
+                            target="_blank"
+                          >
+                            <Image
+                              w={4}
+                              h={4}
+                              src={PLATFORM_ICON_MAP[p.platformName]}
+                              alt={`${p.platformName} icon`}
+                              cursor="pointer"
+                              _hover={{ opacity: 0.7 }}
+                            />
+                          </Link>
+                        ))}
+                      </Flex>
                     </Table.Cell>
-                  )}
-                  <Table.Cell paddingLeft={0} paddingRight={2} py={1}>
-                    <Flex justify="center" align="center">
-                      <IconButton
-                        variant="ghost"
-                        size="xs"
-                        p={0}
-                        aria-label="스트리머 상세 정보 보기"
+                    {isVerified && (
+                      <Table.Cell
+                        textAlign="center"
+                        px={0}
+                        py={1}
+                        fontSize="xs"
                       >
-                        <BiDetail />
-                      </IconButton>
-                    </Flex>
-                  </Table.Cell>
-                </Table.Row>
-              ))
-            )}
-          </Table.Body>
-        </Table.Root>
+                        {item.followCount.toLocaleString() || 0}
+                      </Table.Cell>
+                    )}
+                    <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
+                      {new Date(item.createdAt).toLocaleDateString()}
+                    </Table.Cell>
+                    {isVerified && (
+                      <Table.Cell
+                        textAlign="center"
+                        px={0}
+                        py={1}
+                        fontSize="xs"
+                      >
+                        {new Date(item.verifiedAt).toLocaleDateString()}
+                      </Table.Cell>
+                    )}
+                    <Table.Cell paddingLeft={0} paddingRight={2} py={1}>
+                      <Flex justify="center" align="center">
+                        <Dialog.Trigger asChild>
+                          <IconButton
+                            variant="ghost"
+                            size="xs"
+                            p={0}
+                            aria-label="스트리머 상세 정보 보기"
+                          >
+                            <BiDetail />
+                          </IconButton>
+                        </Dialog.Trigger>
+                      </Flex>
+                    </Table.Cell>
+                  </Table.Row>
+                ))
+              )}
+            </Table.Body>
+          </Table.Root>
 
-        {data.totalCount > pageSize && (
-          <Pagination.Root
-            count={data.totalCount}
-            pageSize={pageSize}
-            page={currentPage}
-            onPageChange={(details) => handlePageChange(details.page)}
-          >
-            <ButtonGroup variant="ghost" size="sm" wrap="wrap">
-              <Pagination.PrevTrigger asChild>
-                <IconButton disabled={isLoading}>
-                  <LuChevronLeft />
-                </IconButton>
-              </Pagination.PrevTrigger>
+          <Portal>
+            <Dialog.Backdrop />
+            <Dialog.Positioner>
+              <Dialog.Content>
+                <Dialog.Header>
+                  <Dialog.Title>Dialog Title</Dialog.Title>
+                </Dialog.Header>
+                <Dialog.Body>
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua.
+                  </p>
+                </Dialog.Body>
+                <Dialog.Footer>
+                  <Dialog.ActionTrigger asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </Dialog.ActionTrigger>
+                  <Button>Save</Button>
+                </Dialog.Footer>
+                <Dialog.CloseTrigger asChild>
+                  <CloseButton size="sm" />
+                </Dialog.CloseTrigger>
+              </Dialog.Content>
+            </Dialog.Positioner>
+          </Portal>
 
-              <Pagination.Items
-                render={(page) => (
-                  <IconButton
-                    variant={{ base: "ghost", _selected: "outline" }}
-                    disabled={isLoading}
-                  >
-                    {page.value}
+          {data.totalCount > pageSize && (
+            <Pagination.Root
+              count={data.totalCount}
+              pageSize={pageSize}
+              page={currentPage}
+              onPageChange={(details) => handlePageChange(details.page)}
+            >
+              <ButtonGroup variant="outline" size="sm" wrap="wrap">
+                <Pagination.PrevTrigger asChild>
+                  <IconButton disabled={isLoading}>
+                    <LuChevronLeft />
                   </IconButton>
-                )}
-              />
+                </Pagination.PrevTrigger>
 
-              <Pagination.NextTrigger asChild>
-                <IconButton disabled={isLoading}>
-                  <LuChevronRight />
-                </IconButton>
-              </Pagination.NextTrigger>
-            </ButtonGroup>
-          </Pagination.Root>
-        )}
-      </Stack>
+                <Pagination.Items
+                  render={(page) => (
+                    <IconButton
+                      variant={{ base: "outline", _selected: "solid" }}
+                      disabled={isLoading}
+                    >
+                      {page.value}
+                    </IconButton>
+                  )}
+                />
+
+                <Pagination.NextTrigger asChild>
+                  <IconButton disabled={isLoading}>
+                    <LuChevronRight />
+                  </IconButton>
+                </Pagination.NextTrigger>
+              </ButtonGroup>
+            </Pagination.Root>
+          )}
+        </Stack>
+      </Dialog.Root>
     </>
   );
 };
