@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import {
   Button,
@@ -28,16 +28,29 @@ const PLATFORM_OPTIONS = [
 const RegisterStreamerDialog = () => {
   const { isAuthenticated } = useAuthStore();
 
-  const frameworks = createListCollection({
-    items: PLATFORM_OPTIONS,
-  });
-
   const [platforms, setPlatforms] = useState([
     { platformName: "", channelUrl: "" },
   ]);
 
+  // 각 플랫폼 인덱스별로 사용 가능한 옵션 계산
+  const getAvailableOptions = useMemo(() => {
+    return (currentIndex: number) => {
+      const selectedPlatforms = platforms
+        .map((p, idx) => (idx !== currentIndex ? p.platformName : null))
+        .filter(Boolean);
+
+      const availableOptions = PLATFORM_OPTIONS.filter(
+        (option) => !selectedPlatforms.includes(option.value),
+      );
+
+      return createListCollection({
+        items: availableOptions,
+      });
+    };
+  }, [platforms]);
+
   const handleAddPlatform = () => {
-    if (platforms.length >= 10) return;
+    if (platforms.length >= PLATFORM_OPTIONS.length) return;
     setPlatforms([...platforms, { platformName: "", channelUrl: "" }]);
   };
 
@@ -106,68 +119,82 @@ const RegisterStreamerDialog = () => {
                   <Field.Label>플랫폼</Field.Label>
 
                   <Stack gap="2" width="100%">
-                    {platforms.map((platform, index) => (
-                      <Stack
-                        key={index}
-                        direction="row"
-                        gap="2"
-                        alignItems="center"
-                      >
-                        <Select.Root
-                          collection={frameworks}
-                          size="sm"
-                          width="200px"
-                        >
-                          <Select.HiddenSelect />
-                          <Select.Control>
-                            <Select.Trigger>
-                              <Select.ValueText placeholder="플랫폼" />
-                            </Select.Trigger>
-                            <Select.IndicatorGroup>
-                              <Select.Indicator />
-                            </Select.IndicatorGroup>
-                          </Select.Control>
-                          <Portal>
-                            <Select.Positioner>
-                              <Select.Content style={{ zIndex: 1500 }}>
-                                {frameworks.items.map((framework) => (
-                                  <Select.Item
-                                    item={framework}
-                                    key={framework.value}
-                                  >
-                                    {framework.label}
-                                    <Select.ItemIndicator />
-                                  </Select.Item>
-                                ))}
-                              </Select.Content>
-                            </Select.Positioner>
-                          </Portal>
-                        </Select.Root>
+                    {platforms.map((platform, index) => {
+                      const availableFrameworks = getAvailableOptions(index);
 
-                        <Input
-                          placeholder="채널 URL"
-                          value={platform.channelUrl}
-                          onChange={(e) =>
-                            handleChangePlatform(
-                              index,
-                              "channelUrl",
-                              e.target.value,
-                            )
-                          }
-                          // flex={1}
-                        />
-                        {platforms.length > 1 && (
-                          <Button
-                            size="2xs"
-                            variant="ghost"
-                            colorPalette="red"
-                            onClick={() => handleRemovePlatform(index)}
+                      return (
+                        <Stack
+                          key={index}
+                          direction="row"
+                          gap="2"
+                          alignItems="center"
+                        >
+                          <Select.Root
+                            collection={availableFrameworks}
+                            size="sm"
+                            width="120px"
+                            value={[platform.platformName]}
+                            onValueChange={(details) =>
+                              handleChangePlatform(
+                                index,
+                                "platformName",
+                                details.value[0] || "",
+                              )
+                            }
                           >
-                            <LuTrash2 />
-                          </Button>
-                        )}
-                      </Stack>
-                    ))}
+                            <Select.HiddenSelect />
+                            <Select.Control>
+                              <Select.Trigger>
+                                <Select.ValueText placeholder="플랫폼" />
+                              </Select.Trigger>
+                              <Select.IndicatorGroup>
+                                <Select.Indicator />
+                              </Select.IndicatorGroup>
+                            </Select.Control>
+                            <Portal>
+                              <Select.Positioner>
+                                <Select.Content style={{ zIndex: 1500 }}>
+                                  {availableFrameworks.items.map(
+                                    (framework) => (
+                                      <Select.Item
+                                        item={framework}
+                                        key={framework.value}
+                                      >
+                                        {framework.label}
+                                        <Select.ItemIndicator />
+                                      </Select.Item>
+                                    ),
+                                  )}
+                                </Select.Content>
+                              </Select.Positioner>
+                            </Portal>
+                          </Select.Root>
+
+                          <Input
+                            placeholder="채널 URL"
+                            value={platform.channelUrl}
+                            onChange={(e) =>
+                              handleChangePlatform(
+                                index,
+                                "channelUrl",
+                                e.target.value,
+                              )
+                            }
+                            flex={1}
+                          />
+                          {platforms.length > 1 && (
+                            <Button
+                              size="2xs"
+                              variant="ghost"
+                              colorPalette="red"
+                              onClick={() => handleRemovePlatform(index)}
+                            >
+                              <LuTrash2 />
+                            </Button>
+                          )}
+                        </Stack>
+                      );
+                    })}
 
                     {/* 플랫폼 추가 버튼 */}
                     {platforms.length < PLATFORM_OPTIONS.length && (
