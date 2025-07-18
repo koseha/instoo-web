@@ -166,28 +166,23 @@ const StreamerList: React.FC<StreamerListProps> = ({
             <Table.Column htmlWidth="50px" />
             <Table.Column />
             <Table.Column htmlWidth="100px" />
-            <Table.Column htmlWidth="80px" />
+            {isVerified && <Table.Column htmlWidth="80px" />}
             <Table.Column htmlWidth="110px" />
             {isVerified && <Table.Column htmlWidth="110px" />}
             <Table.Column htmlWidth="50px" />
           </Table.ColumnGroup>
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader>번호</Table.ColumnHeader>
-              <Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">번호</Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">
                 {/* 사진, 이름 */}
                 스트리머
               </Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="end">플랫폼</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="end">팔로우 수</Table.ColumnHeader>
-              <Table.ColumnHeader
-                textAlign="end"
-                css={{ width: "min-content" }}
-              >
-                등록일
-              </Table.ColumnHeader>
+              <Table.ColumnHeader textAlign="center">플랫폼</Table.ColumnHeader>
+              {isVerified && <Table.ColumnHeader>팔로우 수</Table.ColumnHeader>}
+              <Table.ColumnHeader textAlign="center">등록일</Table.ColumnHeader>
               {isVerified && (
-                <Table.ColumnHeader textAlign="end" width="fit-content">
+                <Table.ColumnHeader textAlign="center" width="fit-content">
                   인증일
                 </Table.ColumnHeader>
               )}
@@ -202,10 +197,12 @@ const StreamerList: React.FC<StreamerListProps> = ({
               // 실제 데이터
               data.data.map((item, idx) => (
                 <Table.Row key={item.uuid} fontSize="sm">
-                  <Table.Cell py={1}>{idx + 1}</Table.Cell>
+                  <Table.Cell textAlign="center" py={1}>
+                    {(currentPage - 1) * pageSize + idx + 1}
+                  </Table.Cell>
                   <Table.Cell py={1}>{item.name}</Table.Cell>
                   <Table.Cell py={1}>
-                    <Flex gap={1} justify="end">
+                    <Flex gap={1} justify="center">
                       {item.platforms?.map((p) => (
                         <Link
                           key={p.channelUrl}
@@ -224,14 +221,16 @@ const StreamerList: React.FC<StreamerListProps> = ({
                       ))}
                     </Flex>
                   </Table.Cell>
-                  <Table.Cell textAlign="end" py={1}>
-                    {item.followCount || 0}
-                  </Table.Cell>
-                  <Table.Cell textAlign="end" py={1}>
+                  {isVerified && (
+                    <Table.Cell textAlign="center" py={1} fontSize="xs">
+                      {item.followCount || 0}
+                    </Table.Cell>
+                  )}
+                  <Table.Cell textAlign="center" py={1} fontSize="xs">
                     {new Date(item.createdAt).toLocaleDateString()}
                   </Table.Cell>
                   {isVerified && (
-                    <Table.Cell textAlign="end" py={1}>
+                    <Table.Cell textAlign="center" py={1} fontSize="xs">
                       {new Date(item.verifiedAt).toLocaleDateString()}
                     </Table.Cell>
                   )}
