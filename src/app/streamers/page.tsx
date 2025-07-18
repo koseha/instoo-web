@@ -20,6 +20,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import StreamerList from "@/components/streamer/StreamerList";
 import { PLATFORM_ICON_MAP } from "@/constants/platform";
 import { useState } from "react";
+import RegisterStreamerDialog from "@/components/streamer/RegisterStreamerDialog";
 
 type Platform = "chzzk" | "soop" | "youtube";
 
@@ -97,45 +98,48 @@ export default function Streamers() {
           setActiveTab(details.value as "verified" | "loading")
         }
       >
-        <Tabs.List bg="bg.muted" rounded="l3" p="1">
-          <Tabs.Trigger
-            value="verified"
-            _selected={{
-              "& .selected_streamer-verified": {
-                color: "blue.500",
-                transform: "scale(1.1)",
-                transition: "all 0.2s ease-in-out",
-              },
-            }}
-          >
-            <Box
-              as={MdVerified}
-              className="selected_streamer-verified"
-              transition="all 0.2s ease-in-out"
-              _hover={{ transform: "scale(1.05)" }}
-            />
-            인증됨
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value="loading"
-            _selected={{
-              "& .selected_streamer-loading": {
-                color: "orange.500",
-                transform: "rotate(180deg)",
-                transition: "transform 0.3s ease",
-              },
-            }}
-          >
-            <Box
-              as={MdOutlineHourglassBottom}
-              className="selected_streamer-loading"
-              transform="rotate(0deg)"
-              transition="transform 0.5s ease"
-            />
-            요청 중
-          </Tabs.Trigger>
-          <Tabs.Indicator rounded="l2" />
-        </Tabs.List>
+        <Flex justify="space-between" align="end">
+          <Tabs.List bg="bg.muted" rounded="l3" p="1">
+            <Tabs.Trigger
+              value="verified"
+              _selected={{
+                "& .selected_streamer-verified": {
+                  color: "blue.500",
+                  transform: "scale(1.1)",
+                  transition: "all 0.2s ease-in-out",
+                },
+              }}
+            >
+              <Box
+                as={MdVerified}
+                className="selected_streamer-verified"
+                transition="all 0.2s ease-in-out"
+                _hover={{ transform: "scale(1.05)" }}
+              />
+              인증됨
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="loading"
+              _selected={{
+                "& .selected_streamer-loading": {
+                  color: "orange.500",
+                  transform: "rotate(180deg)",
+                  transition: "transform 0.3s ease",
+                },
+              }}
+            >
+              <Box
+                as={MdOutlineHourglassBottom}
+                className="selected_streamer-loading"
+                transform="rotate(0deg)"
+                transition="transform 0.5s ease"
+              />
+              요청 중
+            </Tabs.Trigger>
+            <Tabs.Indicator rounded="l2" />
+          </Tabs.List>
+          <RegisterStreamerDialog />
+        </Flex>
 
         <Flex justify="space-between" alignItems="end" mt={2}>
           <CheckboxGroup>
