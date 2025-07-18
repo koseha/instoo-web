@@ -1,7 +1,10 @@
 import apiClient from "@/lib/axios-api";
 import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 import { ApiResponse } from "@/types/interfaces/api-response.interface";
-import { StreamerData } from "@/types/interfaces/streamer.interface";
+import {
+  newStreamerDto,
+  StreamerData,
+} from "@/types/interfaces/streamer.interface";
 
 export interface PlatformSimpleInfo {
   platformName: string;
@@ -58,6 +61,18 @@ export class StreamerService {
     } catch (error) {
       console.error("방송인 목록 조회 요청 실패:", error);
       throw new Error("방송인 목록을 가져오는데 실패했습니다.");
+    }
+  }
+
+  /**
+   * 신규 방송인 등록하기
+   */
+  static async registerNewStreamer(body: newStreamerDto): Promise<void> {
+    try {
+      await apiClient.post("/v1/streamers", body);
+    } catch (error) {
+      console.error("신규 방송인 등록 요청 실패:", error);
+      throw new Error("신규 방송인 등록에에 실패했습니다.");
     }
   }
 }

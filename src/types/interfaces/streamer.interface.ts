@@ -43,3 +43,10 @@ export interface StreamerData {
   page: number;
   size: number;
 }
+
+export interface newStreamerDto {
+  name: string;
+  platforms: Pick<StreamerPlatform, "channelUrl" | "platformName">[];
+  profileImageUrl?: string;
+  description: string;
+}

@@ -18,14 +18,47 @@ import {
 import { FaRegEdit } from "react-icons/fa";
 import { Tooltip } from "../ui/tooltip";
 import { LuTrash2 } from "react-icons/lu";
-import apiClient from "@/lib/axios-api";
 import { useNotification } from "@/hooks/useNotifications";
+import { StreamerService } from "@/services/streamer.service";
 
 const PLATFORM_OPTIONS = [
   { label: "치지직", value: "chzzk" },
   { label: "youtube", value: "youtube" },
   { label: "숲", value: "soop" },
 ];
+
+// 플랫폼별 URL 유효성 검증 함수
+const validatePlatformUrl = (platform: string, url: string): boolean => {
+  if (!url.trim()) return false;
+
+  switch (platform) {
+    case "chzzk":
+      return url.startsWith("https://chzzk.naver.com/");
+    case "youtube":
+      return url.startsWith("https://www.youtube.com/");
+    case "soop":
+      return (
+        url.startsWith("https://play.sooplive.co.kr/") ||
+        url.startsWith("https://ch.sooplive.co.kr/")
+      );
+    default:
+      return false;
+  }
+};
+
+// 플랫폼별 URL 예시 반환 함수
+const getPlatformUrlExample = (platform: string): string => {
+  switch (platform) {
+    case "chzzk":
+      return "https://chzzk.naver.com/";
+    case "youtube":
+      return "https://www.youtube.com/";
+    case "soop":
+      return "https://play.sooplive.co.kr/";
+    default:
+      return "";
+  }
+};
 
 const RegisterStreamerDialog = () => {
   const { isAuthenticated } = useAuthStore();
@@ -58,7 +91,12 @@ const RegisterStreamerDialog = () => {
   const handleSubmit = async () => {
     // 유효성 검사
     if (!streamerName.trim()) {
-      alert("스트리머명을 입력해주세요.");
+      showError({ title: "스트리머명을 입력해주세요" });
+      return;
+    }
+
+    if (!description.trim()) {
+      showError({ title: "간단한 소개를 입력해주세요" });
       return;
     }
 
@@ -67,21 +105,30 @@ const RegisterStreamerDialog = () => {
     );
 
     if (validPlatforms.length === 0) {
-      alert("최소 하나의 플랫폼 정보를 입력해주세요.");
+      showError({ title: "최소 하나의 플랫폼 정보를 입력해주세요" });
+      return;
+    }
+
+    // URL 유효성 검증
+    const invalidPlatforms = validPlatforms.filter(
+      (p) => !validatePlatformUrl(p.platformName, p.channelUrl),
+    );
+
+    if (invalidPlatforms.length > 0) {
+      showError({
+        title: `올바르지 않은 플랫폼 URL이 있습니다. 다시 확인해주세요`,
+      });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await apiClient.post("/v1/streamers", {
-        name: streamerName.trim(),
-        description: description.trim(),
+      await StreamerService.registerNewStreamer({
+        name: streamerName,
+        description,
         platforms: validPlatforms,
       });
-
-      const result = response.content;
-      console.log("스트리머 등록 성공:", result);
 
       // 성공 시 다이얼로그 닫기
       setIsOpen(false);
@@ -127,7 +174,19 @@ const RegisterStreamerDialog = () => {
   ) => {
     const updated = [...platforms];
     updated[index][field] = value;
+
+    // 플랫폼이 변경되면 URL을 초기화
+    if (field === "platformName") {
+      updated[index].channelUrl = "";
+    }
+
     setPlatforms(updated);
+  };
+
+  // URL 유효성 검사 결과 확인
+  const isUrlValid = (platform: string, url: string): boolean => {
+    if (!platform || !url.trim()) return true; // 빈 값은 유효한 것으로 처리
+    return validatePlatformUrl(platform, url);
   };
 
   return (
@@ -176,7 +235,9 @@ const RegisterStreamerDialog = () => {
 
                 {/* 설명 */}
                 <Field.Root>
-                  <Field.Label>설명 (최대 100자)</Field.Label>
+                  <Field.Label>
+                    간단 소개 (최대 100자) <Text color="red">*</Text>
+                  </Field.Label>
                   <Input
                     placeholder="예: 게임 방송을 주로 하는 스트리머입니다."
                     value={description}
@@ -187,81 +248,111 @@ const RegisterStreamerDialog = () => {
 
                 {/* 플랫폼 입력 필드 */}
                 <Field.Root>
-                  <Field.Label>플랫폼</Field.Label>
+                  <Field.Label>
+                    플랫폼<Text color="red">*</Text>
+                  </Field.Label>
 
                   <Stack gap="2" width="100%">
                     {platforms.map((platform, index) => {
                       const availableFrameworks = getAvailableOptions(index);
+                      const urlValid = isUrlValid(
+                        platform.platformName,
+                        platform.channelUrl,
+                      );
 
                       return (
-                        <Stack
-                          key={index}
-                          direction="row"
-                          gap="2"
-                          alignItems="center"
-                        >
-                          <Select.Root
-                            collection={availableFrameworks}
-                            size="sm"
-                            width="120px"
-                            value={[platform.platformName]}
-                            onValueChange={(details) =>
-                              handleChangePlatform(
-                                index,
-                                "platformName",
-                                details.value[0] || "",
-                              )
-                            }
-                          >
-                            <Select.HiddenSelect />
-                            <Select.Control>
-                              <Select.Trigger>
-                                <Select.ValueText placeholder="플랫폼" />
-                              </Select.Trigger>
-                              <Select.IndicatorGroup>
-                                <Select.Indicator />
-                              </Select.IndicatorGroup>
-                            </Select.Control>
-                            <Portal>
-                              <Select.Positioner>
-                                <Select.Content style={{ zIndex: 1500 }}>
-                                  {availableFrameworks.items.map(
-                                    (framework) => (
-                                      <Select.Item
-                                        item={framework}
-                                        key={framework.value}
-                                      >
-                                        {framework.label}
-                                        <Select.ItemIndicator />
-                                      </Select.Item>
-                                    ),
-                                  )}
-                                </Select.Content>
-                              </Select.Positioner>
-                            </Portal>
-                          </Select.Root>
-
-                          <Input
-                            placeholder="채널 URL"
-                            value={platform.channelUrl}
-                            onChange={(e) =>
-                              handleChangePlatform(
-                                index,
-                                "channelUrl",
-                                e.target.value,
-                              )
-                            }
-                            flex={1}
-                          />
-                          {platforms.length > 1 && (
-                            <Button
-                              size="2xs"
-                              variant="ghost"
-                              colorPalette="red"
-                              onClick={() => handleRemovePlatform(index)}
+                        <Stack key={index} gap="2">
+                          <Stack direction="row" gap="2" alignItems="center">
+                            <Select.Root
+                              collection={availableFrameworks}
+                              size="sm"
+                              width="120px"
+                              value={[platform.platformName]}
+                              onValueChange={(details) =>
+                                handleChangePlatform(
+                                  index,
+                                  "platformName",
+                                  details.value[0] || "",
+                                )
+                              }
                             >
-                              <LuTrash2 />
-                            </Button>
+                              <Select.HiddenSelect />
+                              <Select.Control>
+                                <Select.Trigger>
+                                  <Select.ValueText placeholder="플랫폼" />
+                                </Select.Trigger>
+                                <Select.IndicatorGroup>
+                                  <Select.Indicator />
+                                </Select.IndicatorGroup>
+                              </Select.Control>
+                              <Portal>
+                                <Select.Positioner>
+                                  <Select.Content style={{ zIndex: 1500 }}>
+                                    {availableFrameworks.items.map(
+                                      (framework) => (
+                                        <Select.Item
+                                          item={framework}
+                                          key={framework.value}
+                                        >
+                                          {framework.label}
+                                          <Select.ItemIndicator />
+                                        </Select.Item>
+                                      ),
+                                    )}
+                                  </Select.Content>
+                                </Select.Positioner>
+                              </Portal>
+                            </Select.Root>
+
+                            <Input
+                              placeholder={
+                                platform.platformName
+                                  ? getPlatformUrlExample(platform.platformName)
+                                  : "채널 URL"
+                              }
+                              value={platform.channelUrl}
+                              onChange={(e) =>
+                                handleChangePlatform(
+                                  index,
+                                  "channelUrl",
+                                  e.target.value,
+                                )
+                              }
+                              flex={1}
+                              borderColor={
+                                platform.channelUrl.trim() && !urlValid
+                                  ? "red.500"
+                                  : undefined
+                              }
+                              _focus={{
+                                borderColor:
+                                  platform.channelUrl.trim() && !urlValid
+                                    ? "red.500"
+                                    : "blue.500",
+                              }}
+                            />
+                            {platforms.length > 1 && (
+                              <Button
+                                size="2xs"
+                                variant="ghost"
+                                colorPalette="red"
+                                onClick={() => handleRemovePlatform(index)}
+                              >
+                                <LuTrash2 />
+                              </Button>
+                            )}
+                          </Stack>
+
+                          {/* URL 유효성 검증 오류 메시지 */}
+                          {platform.channelUrl.trim() && !urlValid && (
+                            <Text color="red.500" fontSize="sm">
+                              올바른{" "}
+                              {PLATFORM_OPTIONS.find(
+                                (p) => p.value === platform.platformName,
+                              )?.label || "플랫폼"}{" "}
+                              URL을 입력해주세요. 예:{" "}
+                              {getPlatformUrlExample(platform.platformName)}
+                            </Text>
                           )}
                         </Stack>
                       );
