@@ -1,31 +1,43 @@
 // app/page.tsx
 "use client";
 
-import { toaster } from "@/components/ui/toaster";
-import { Box, Button, For, Heading } from "@chakra-ui/react";
+import { Box, IconButton, Text } from "@chakra-ui/react";
+import { FaRedo } from "react-icons/fa";
 
 export default function Home() {
   return (
     <Box>
-      <Heading mb={4}>Hello Chakra UI!</Heading>
-
-      <For each={["success", "error", "warning", "info"]}>
-        {(type) => (
-          <Button
-            size="sm"
-            variant="outline"
-            key={type}
-            onClick={() =>
-              toaster.create({
-                title: `Toast status is ${type}`,
-                type: type,
-              })
-            }
+      <Box mb={4}>
+        <Text
+          color="neutral.900"
+          fontFamily="heading"
+          fontSize="xl"
+          fontWeight={700}
+          mb={1}
+          display="flex"
+          alignItems="center"
+          gap={2}
+        >
+          스트리머 일정 모아보기
+          <IconButton
+            size="xs"
+            variant="ghost"
+            _hover={{
+              bg: "neutral.100",
+              transform: "rotate(180deg)",
+              color: "neutral.700",
+            }}
+            transition="all 0.3s ease"
+            borderRadius="full"
+            color="neutral.400"
           >
-            {type}
-          </Button>
-        )}
-      </For>
+            <FaRedo />
+          </IconButton>
+        </Text>
+        <Text color="neutral.500" fontFamily="body" fontSize="md">
+          팬들이 함께 관리하는 방송인 일정 정보
+        </Text>
+      </Box>
     </Box>
   );
 }

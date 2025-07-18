@@ -18,7 +18,7 @@ const SidebarMenu = () => {
     },
     {
       icon: GoPeople,
-      label: "방송인 목록",
+      label: "방송인",
       path: "/streamers",
     },
     {

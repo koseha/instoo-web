@@ -26,12 +26,7 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
   };
 
   return (
-    <HStack
-      key={streamer.uuid}
-      alignItems="center"
-      // position="relative"
-      w="100%"
-    >
+    <HStack key={streamer.uuid} alignItems="center" w="100%">
       <>
         <AvatarRoot>
           <AvatarImage src={streamer.profileImageUrl || "/default-image.png"} />

@@ -1,6 +1,7 @@
 import apiClient from "@/lib/axios-api";
 import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 import { ApiResponse } from "@/types/interfaces/api-response.interface";
+import { StreamerData } from "@/types/interfaces/streamer.interface";
 
 export interface PlatformSimpleInfo {
   platformName: string;
@@ -34,6 +35,29 @@ export class StreamerService {
     } catch (error) {
       console.error("방송인 간편 검색 요청 실패:", error);
       throw new Error("방송인 간편 검색 목록을 가져오는데 실패했습니다.");
+    }
+  }
+
+  /**
+   * 방송인 목록 조회
+   */
+  static async getStreamerList(body: {
+    isVerified: boolean;
+    page: number;
+    size: number;
+    platforms?: string[];
+    qName?: string;
+  }): Promise<StreamerData> {
+    try {
+      const response = await apiClient.post<ApiResponse<StreamerData>>(
+        API_ENDPOINTS.STREAMERS.LIST,
+        body,
+      );
+
+      return response.data.content;
+    } catch (error) {
+      console.error("방송인 목록 조회 요청 실패:", error);
+      throw new Error("방송인 목록을 가져오는데 실패했습니다.");
     }
   }
 }

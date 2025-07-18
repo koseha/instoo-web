@@ -33,7 +33,7 @@ export default function RootLayout({
           {/* <Flex className="main-content" minH="100vh"> */}
           <Flex className="main-content" minH={1000}>
             <Sidebar />
-            <Box as="main" flex="1" bg="neutral.200">
+            <Box as="main" flex="1" p={10}>
               {children}
             </Box>
           </Flex>

@@ -68,6 +68,22 @@ const system = createSystem(defaultConfig, {
         lg: { value: "1024px" },
         xl: { value: "1200px" }, // 새로 추가
       },
+      animations: {
+        pop: { value: "pop 1s ease" },
+      },
+    },
+    keyframes: {
+      pop: {
+        "0%": {
+          transform: "scale(1)",
+        },
+        "40%": {
+          transform: "scale(1.5)",
+        },
+        "100%": {
+          transform: "scale(1)",
+        },
+      },
     },
   },
 
