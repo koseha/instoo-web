@@ -18,6 +18,8 @@ import {
 import { FaRegEdit } from "react-icons/fa";
 import { Tooltip } from "../ui/tooltip";
 import { LuTrash2 } from "react-icons/lu";
+import apiClient from "@/lib/axios-api";
+import { useNotification } from "@/hooks/useNotifications";
 
 const PLATFORM_OPTIONS = [
   { label: "치지직", value: "chzzk" },
@@ -28,9 +30,69 @@ const PLATFORM_OPTIONS = [
 const RegisterStreamerDialog = () => {
   const { isAuthenticated } = useAuthStore();
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [streamerName, setStreamerName] = useState("");
+  const [description, setDescription] = useState("");
   const [platforms, setPlatforms] = useState([
     { platformName: "", channelUrl: "" },
   ]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { showSuccess, showError } = useNotification();
+
+  // 다이얼로그 상태 초기화 함수
+  const resetForm = () => {
+    setStreamerName("");
+    setDescription("");
+    setPlatforms([{ platformName: "", channelUrl: "" }]);
+  };
+
+  // 다이얼로그 열림/닫힘 상태 변경 처리
+  const handleOpenChange = (details: { open: boolean }) => {
+    setIsOpen(details.open);
+    if (!details.open) {
+      resetForm();
+    }
+  };
+
+  // 스트리머 등록 API 호출
+  const handleSubmit = async () => {
+    // 유효성 검사
+    if (!streamerName.trim()) {
+      alert("스트리머명을 입력해주세요.");
+      return;
+    }
+
+    const validPlatforms = platforms.filter(
+      (p) => p.platformName && p.channelUrl.trim(),
+    );
+
+    if (validPlatforms.length === 0) {
+      alert("최소 하나의 플랫폼 정보를 입력해주세요.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const response = await apiClient.post("/v1/streamers", {
+        name: streamerName.trim(),
+        description: description.trim(),
+        platforms: validPlatforms,
+      });
+
+      const result = response.content;
+      console.log("스트리머 등록 성공:", result);
+
+      // 성공 시 다이얼로그 닫기
+      setIsOpen(false);
+      showSuccess({ title: "스트리머가 성공적으로 등록되었습니다!" });
+    } catch (error) {
+      console.error("스트리머 등록 실패:", error);
+      showError({ title: "스트리머 등록에 실패하였습니다." });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // 각 플랫폼 인덱스별로 사용 가능한 옵션 계산
   const getAvailableOptions = useMemo(() => {
@@ -69,7 +131,12 @@ const RegisterStreamerDialog = () => {
   };
 
   return (
-    <Dialog.Root role="alertdialog" placement="center">
+    <Dialog.Root
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      role="alertdialog"
+      placement="center"
+    >
       <Tooltip
         disabled={isAuthenticated}
         content="스트리머 등록은 로그인 후 이용할 수 있어요"
@@ -100,6 +167,8 @@ const RegisterStreamerDialog = () => {
                   </Field.Label>
                   <Input
                     placeholder="스트리머 이름을 입력하세요"
+                    value={streamerName}
+                    onChange={(e) => setStreamerName(e.target.value)}
                     required
                     maxLength={20}
                   />
@@ -110,6 +179,8 @@ const RegisterStreamerDialog = () => {
                   <Field.Label>설명 (최대 100자)</Field.Label>
                   <Input
                     placeholder="예: 게임 방송을 주로 하는 스트리머입니다."
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     maxLength={100}
                   />
                 </Field.Root>
@@ -213,11 +284,18 @@ const RegisterStreamerDialog = () => {
 
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" disabled={isLoading}>
                   취소
                 </Button>
               </Dialog.ActionTrigger>
-              <Button size="sm">등록</Button>
+              <Button
+                size="sm"
+                onClick={handleSubmit}
+                loading={isLoading}
+                loadingText="등록 중..."
+              >
+                등록
+              </Button>
             </Dialog.Footer>
 
             <Dialog.CloseTrigger asChild>
