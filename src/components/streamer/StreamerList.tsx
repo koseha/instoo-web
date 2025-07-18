@@ -159,34 +159,56 @@ const StreamerList: React.FC<StreamerListProps> = ({
         <Table.Root
           key="outline"
           size="sm"
-          variant="outline"
+          variant="line"
           opacity={isLoading ? 0.5 : 1}
         >
           <Table.ColumnGroup>
             <Table.Column htmlWidth="50px" />
             <Table.Column />
             <Table.Column htmlWidth="100px" />
-            {isVerified && <Table.Column htmlWidth="80px" />}
-            <Table.Column htmlWidth="110px" />
-            {isVerified && <Table.Column htmlWidth="110px" />}
-            <Table.Column htmlWidth="50px" />
+            {isVerified && <Table.Column htmlWidth="40px" />}
+            <Table.Column htmlWidth="84px" />
+            {isVerified && <Table.Column htmlWidth="84px" />}
+            <Table.Column htmlWidth="40px" />
           </Table.ColumnGroup>
           <Table.Header>
-            <Table.Row>
-              <Table.ColumnHeader textAlign="center">번호</Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">
+            <Table.Row bg="neutral.100" borderTopWidth={1}>
+              <Table.ColumnHeader py={1} textAlign="center">
+                번호
+              </Table.ColumnHeader>
+              <Table.ColumnHeader py={1} textAlign="center">
                 {/* 사진, 이름 */}
                 스트리머
               </Table.ColumnHeader>
-              <Table.ColumnHeader textAlign="center">플랫폼</Table.ColumnHeader>
-              {isVerified && <Table.ColumnHeader>팔로우 수</Table.ColumnHeader>}
-              <Table.ColumnHeader textAlign="center">등록일</Table.ColumnHeader>
+              <Table.ColumnHeader py={1} textAlign="center">
+                플랫폼
+              </Table.ColumnHeader>
               {isVerified && (
-                <Table.ColumnHeader textAlign="center" width="fit-content">
+                <Table.ColumnHeader py={1} textAlign="center">
+                  팔로우
+                </Table.ColumnHeader>
+              )}
+              <Table.ColumnHeader px={0} py={1} textAlign="center">
+                등록일
+              </Table.ColumnHeader>
+              {isVerified && (
+                <Table.ColumnHeader
+                  px={0}
+                  py={1}
+                  textAlign="center"
+                  width="fit-content"
+                >
                   인증일
                 </Table.ColumnHeader>
               )}
-              <Table.ColumnHeader textAlign="center">상세</Table.ColumnHeader>
+              <Table.ColumnHeader
+                paddingLeft={0}
+                paddingRight={2}
+                py={1}
+                textAlign="center"
+              >
+                상세
+              </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -226,15 +248,15 @@ const StreamerList: React.FC<StreamerListProps> = ({
                       {item.followCount || 0}
                     </Table.Cell>
                   )}
-                  <Table.Cell textAlign="center" py={1} fontSize="xs">
+                  <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
                     {new Date(item.createdAt).toLocaleDateString()}
                   </Table.Cell>
                   {isVerified && (
-                    <Table.Cell textAlign="center" py={1} fontSize="xs">
+                    <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
                       {new Date(item.verifiedAt).toLocaleDateString()}
                     </Table.Cell>
                   )}
-                  <Table.Cell py={1}>
+                  <Table.Cell paddingLeft={0} paddingRight={2} py={1}>
                     <Flex justify="center" align="center">
                       <IconButton
                         variant="ghost"
