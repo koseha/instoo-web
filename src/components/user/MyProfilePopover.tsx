@@ -12,11 +12,13 @@ import {
   Separator,
   Text,
   HStack,
+  Icon,
 } from "@chakra-ui/react";
 import { BsPersonCircle } from "react-icons/bs";
 import { FiUser, FiShield, FiCalendar } from "react-icons/fi";
 import { useState } from "react";
 import { useModalStore, MODAL_IDS } from "@/stores/modal.store";
+import { FaRegEdit } from "react-icons/fa";
 
 const MyProfilePopover: React.FC = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -80,7 +82,10 @@ const MyProfilePopover: React.FC = () => {
                   size="xs"
                   onClick={handleEditClick}
                 >
-                  수정하기
+                  <Flex alignItems="center" gap={1}>
+                    <Icon as={FaRegEdit} boxSize={3} color="gray.100" />
+                    수정하기
+                  </Flex>
                 </Button>
               </Flex>
               <Separator />

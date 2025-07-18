@@ -165,8 +165,8 @@ const StreamerList: React.FC<StreamerListProps> = ({
           <Table.ColumnGroup>
             <Table.Column htmlWidth="50px" />
             <Table.Column />
-            <Table.Column htmlWidth="100px" />
-            {isVerified && <Table.Column htmlWidth="40px" />}
+            <Table.Column htmlWidth="84px" />
+            {isVerified && <Table.Column htmlWidth="44px" />}
             <Table.Column htmlWidth="84px" />
             {isVerified && <Table.Column htmlWidth="84px" />}
             <Table.Column htmlWidth="40px" />
@@ -180,11 +180,11 @@ const StreamerList: React.FC<StreamerListProps> = ({
                 {/* 사진, 이름 */}
                 스트리머
               </Table.ColumnHeader>
-              <Table.ColumnHeader py={1} textAlign="center">
+              <Table.ColumnHeader px={0} py={1} textAlign="center">
                 플랫폼
               </Table.ColumnHeader>
               {isVerified && (
-                <Table.ColumnHeader py={1} textAlign="center">
+                <Table.ColumnHeader px={0} py={1} textAlign="center">
                   팔로우
                 </Table.ColumnHeader>
               )}
@@ -219,11 +219,11 @@ const StreamerList: React.FC<StreamerListProps> = ({
               // 실제 데이터
               data.data.map((item, idx) => (
                 <Table.Row key={item.uuid} fontSize="sm">
-                  <Table.Cell textAlign="center" py={1}>
+                  <Table.Cell textAlign="center" py={1} fontSize="xs">
                     {(currentPage - 1) * pageSize + idx + 1}
                   </Table.Cell>
                   <Table.Cell py={1}>{item.name}</Table.Cell>
-                  <Table.Cell py={1}>
+                  <Table.Cell px={0} py={1}>
                     <Flex gap={1} justify="center">
                       {item.platforms?.map((p) => (
                         <Link
@@ -244,7 +244,7 @@ const StreamerList: React.FC<StreamerListProps> = ({
                     </Flex>
                   </Table.Cell>
                   {isVerified && (
-                    <Table.Cell textAlign="center" py={1} fontSize="xs">
+                    <Table.Cell textAlign="center" px={0} py={1} fontSize="xs">
                       {item.followCount || 0}
                     </Table.Cell>
                   )}
