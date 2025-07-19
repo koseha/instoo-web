@@ -1,10 +1,9 @@
-// app/streamers/page.tsx (간소화된 버전)
 "use client";
 
 import { Box, Flex, IconButton, Tabs, Text } from "@chakra-ui/react";
 import { MdVerified, MdOutlineHourglassBottom } from "react-icons/md";
 import { FaRedo } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import StreamerTable from "@/components/streamer/StreamerTable";
 import StreamerDetailDialog from "@/components/streamer/StreamerDetailDialog";
 import RegisterStreamerDialog from "@/components/streamer/RegisterStreamerDialog";
@@ -39,13 +38,12 @@ export default function Streamers() {
     searchTrigger,
   });
 
-  // 검색 실행
-  const handleSearch = () => {
+  // 모든 핸들러를 useCallback으로 메모이제이션
+  const handleSearch = useCallback(() => {
     setSearchTrigger((prev) => prev + 1);
-  };
+  }, []);
 
-  // 플랫폼 변경 (즉시 검색)
-  const handlePlatformChange = (platform: Platform) => {
+  const handlePlatformChange = useCallback((platform: Platform) => {
     setSelectedPlatforms((prev) => {
       const newPlatforms = prev.includes(platform)
         ? prev.filter((p) => p !== platform)
@@ -53,14 +51,21 @@ export default function Streamers() {
       return newPlatforms;
     });
     setSearchTrigger((prev) => prev + 1);
-  };
+  }, []);
 
-  // 새로고침
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setSearchName("");
     setSelectedPlatforms([]);
     setSearchTrigger((prev) => prev + 1);
-  };
+  }, []);
+
+  const handleTabChange = useCallback((details: { value: string }) => {
+    setActiveTab(details.value as "verified" | "loading");
+  }, []);
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchName(value);
+  }, []);
 
   return (
     <>
@@ -102,49 +107,69 @@ export default function Streamers() {
       <Tabs.Root
         defaultValue="verified"
         variant="plain"
-        onValueChange={(details) =>
-          setActiveTab(details.value as "verified" | "loading")
-        }
+        onValueChange={handleTabChange}
       >
         <Flex justify="space-between" align="end">
           <Tabs.List bg="bg.muted" rounded="l3" p="1">
+            {/* 인증됨 탭 - 애니메이션 최적화 */}
             <Tabs.Trigger
               value="verified"
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               _selected={{
+                bg: "blue.100",
                 "& .selected_streamer-verified": {
-                  color: "blue.500",
+                  color: "blue.600",
                   transform: "scale(1.1)",
-                  transition: "all 0.2s ease-in-out",
                 },
+              }}
+              style={{
+                willChange: "background-color",
               }}
             >
               <Box
                 as={MdVerified}
                 className="selected_streamer-verified"
-                transition="all 0.2s ease-in-out"
-                _hover={{ transform: "scale(1.05)" }}
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                style={{
+                  willChange: "transform, color",
+                  backfaceVisibility: "hidden",
+                }}
               />
               인증됨
             </Tabs.Trigger>
+
+            {/* 요청 중 탭 - 애니메이션 최적화 */}
             <Tabs.Trigger
               value="loading"
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               _selected={{
+                bg: "orange.100",
                 "& .selected_streamer-loading": {
-                  color: "orange.500",
+                  color: "orange.600",
                   transform: "rotate(180deg)",
-                  transition: "transform 1s ease",
                 },
+              }}
+              style={{
+                willChange: "background-color",
               }}
             >
               <Box
                 as={MdOutlineHourglassBottom}
                 className="selected_streamer-loading"
                 transform="rotate(0deg)"
-                transition="transform 1s ease"
+                transition="transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)"
+                style={{
+                  willChange: "transform, color",
+                  backfaceVisibility: "hidden",
+                }}
               />
               요청 중
             </Tabs.Trigger>
-            <Tabs.Indicator rounded="l2" />
+
+            <Tabs.Indicator
+              rounded="l2"
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+            />
           </Tabs.List>
           <RegisterStreamerDialog />
         </Flex>
@@ -153,7 +178,7 @@ export default function Streamers() {
         <StreamerFilters
           searchName={searchName}
           selectedPlatforms={selectedPlatforms}
-          onSearchChange={setSearchName}
+          onSearchChange={handleSearchChange}
           onSearchSubmit={handleSearch}
           onPlatformChange={handlePlatformChange}
           activeTab={activeTab}

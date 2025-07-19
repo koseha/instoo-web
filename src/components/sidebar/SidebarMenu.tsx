@@ -91,7 +91,7 @@ const SidebarMenu = () => {
                 {item.label}
               </Flex>
               {item.modal && (
-                <Icon as={FaRegEdit} boxSize={3} color="gray.400" />
+                <Icon as={FaRegEdit} boxSize={3} color="gray.500" />
               )}
             </Button>
           );

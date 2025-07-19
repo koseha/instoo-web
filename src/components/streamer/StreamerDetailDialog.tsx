@@ -13,7 +13,7 @@ import {
   Text,
   Timeline,
 } from "@chakra-ui/react";
-import { MdVerified, MdOutlineHourglassTop } from "react-icons/md";
+import { MdVerified } from "react-icons/md";
 import { GoPeople } from "react-icons/go";
 import { TbCalendarPlus } from "react-icons/tb";
 import { format } from "date-fns";
@@ -76,8 +76,8 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                     {streamer.isVerified ? (
                       <HStack gapX={3}>
                         <HStack gapX={1}>
-                          <Box as={MdVerified} boxSize={4} color="blue.500" />
-                          <Text fontSize="xs">VERIFIED</Text>
+                          <Box as={MdVerified} boxSize={4} color="blue.600" />
+                          <Text fontSize="xs">인증됨</Text>
                         </HStack>
                         <HStack gapX={1} color="neutral.500">
                           <Box as={GoPeople} boxSize={4} />
@@ -88,12 +88,8 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                       </HStack>
                     ) : (
                       <HStack gapX={1}>
-                        <Box
-                          as={MdOutlineHourglassTop}
-                          boxSize={4}
-                          color="orange.500"
-                        />
-                        <Text fontSize="xs">PENDING</Text>
+                        <Box as={MdVerified} boxSize={4} />
+                        <Text fontSize="xs">인증 요청 중</Text>
                       </HStack>
                     )}
                   </Stack>
