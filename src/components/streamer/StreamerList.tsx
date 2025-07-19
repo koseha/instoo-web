@@ -4,23 +4,32 @@ import {
   ButtonGroup,
   CloseButton,
   Dialog,
+  Field,
   Flex,
+  HStack,
   IconButton,
   Image,
   Pagination,
   Portal,
+  Separator,
   Stack,
   Table,
   Text,
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useState, useEffect, useCallback } from "react";
-import { StreamerData } from "@/types/interfaces/streamer.interface";
+import { Streamer, StreamerData } from "@/types/interfaces/streamer.interface";
 import { StreamerService } from "@/services/streamer.service";
 import { BiDetail } from "react-icons/bi";
-import { PLATFORM_ICON_MAP } from "@/constants/platform";
+import { PLATFORM_ICON_MAP, PLATFORM_NAME_MAP } from "@/constants/platform";
 import Link from "next/link";
 import { FcSearch } from "react-icons/fc";
+import { MdVerified } from "react-icons/md";
+import { GoPeople } from "react-icons/go";
+import { MdOutlineHourglassTop } from "react-icons/md";
+import { TbCalendarPlus } from "react-icons/tb";
+import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface StreamerListProps {
   isVerified: boolean; // 인증 여부
@@ -28,6 +37,15 @@ interface StreamerListProps {
   searchName: string; // 검색어
   searchTrigger: number; // 검색 트리거 (변경될 때마다 API 재호출)
   description: string;
+}
+
+function formatUTCToKoreanDate(utc: string | null): string {
+  if (!utc) return "";
+  const timeZone = "Asia/Seoul"; // 한국 시간대
+  const date = new Date(utc);
+  const zonedDate = toZonedTime(date, timeZone);
+
+  return format(zonedDate, "yyyy년 MM월 dd일");
 }
 
 // 빈 상태 컴포넌트
@@ -72,10 +90,13 @@ const StreamerList: React.FC<StreamerListProps> = ({
     page: 1,
     size: 15,
   });
+  const [streamerDetail, setStreamerDetail] = useState<Streamer | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 15; // DTO에 맞춰 15로 변경
+
+  console.log(streamerDetail);
 
   // API 호출 함수
   const fetchStreamers = useCallback(
@@ -158,7 +179,7 @@ const StreamerList: React.FC<StreamerListProps> = ({
           오류: {error}
         </Text>
       )}
-      <Dialog.Root placement="center">
+      <Dialog.Root placement="center" size="sm">
         <Stack width="full" alignItems="center">
           <Table.Root
             key="outline"
@@ -278,6 +299,7 @@ const StreamerList: React.FC<StreamerListProps> = ({
                             size="xs"
                             p={0}
                             aria-label="스트리머 상세 정보 보기"
+                            onClick={() => setStreamerDetail(item)}
                           >
                             <BiDetail />
                           </IconButton>
@@ -293,16 +315,148 @@ const StreamerList: React.FC<StreamerListProps> = ({
           <Portal>
             <Dialog.Backdrop />
             <Dialog.Positioner>
-              <Dialog.Content>
-                <Dialog.Header>
-                  <Dialog.Title>Dialog Title</Dialog.Title>
-                </Dialog.Header>
+              <Dialog.Content px={2} py={5}>
                 <Dialog.Body>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
-                  </p>
+                  {streamerDetail && (
+                    <Stack>
+                      {/* 상단 */}
+                      <HStack spaceX={3} marginBottom={6}>
+                        <Image
+                          src="https://bit.ly/naruto-sage"
+                          boxSize="120px"
+                          borderRadius="full"
+                          fit="cover"
+                          alt="Naruto Uzumaki"
+                        />
+                        <Stack>
+                          <Text
+                            fontFamily="heading"
+                            fontSize="xl"
+                            fontWeight={500}
+                            color="neutral.900"
+                          >
+                            {streamerDetail.name}
+                          </Text>
+                          {streamerDetail.isVerified ? (
+                            <HStack gapX={3}>
+                              <HStack gapX={1}>
+                                <Box
+                                  as={MdVerified}
+                                  boxSize={4}
+                                  color="blue.500"
+                                />
+                                <Text fontSize="xs">VERIFIED</Text>
+                              </HStack>
+                              <HStack gapX={1} color="neutral.500">
+                                <Box as={GoPeople} boxSize={4} />
+                                <Text fontSize="xs">
+                                  {streamerDetail.followCount.toLocaleString()}
+                                </Text>
+                              </HStack>
+                            </HStack>
+                          ) : (
+                            <HStack gapX={1}>
+                              <Box
+                                as={MdOutlineHourglassTop}
+                                boxSize={4}
+                                color="orange.500"
+                              />
+                              <Text fontSize="xs">PENDING</Text>
+                            </HStack>
+                          )}
+                        </Stack>
+                      </HStack>
+
+                      {/* ABOUT - description */}
+                      <Field.Root marginBottom={4}>
+                        <Field.Label
+                          fontFamily="heading"
+                          fontSize="sm"
+                          fontWeight={600}
+                        >
+                          ABOUT
+                        </Field.Label>
+                        <Text fontFamily="body" fontSize="sm" fontWeight={300}>
+                          {streamerDetail.description}
+                        </Text>
+                      </Field.Root>
+
+                      {/* PLATFORMS */}
+                      <Field.Root marginBottom={4}>
+                        <Field.Label
+                          fontFamily="heading"
+                          fontSize="sm"
+                          fontWeight={600}
+                        >
+                          PLATFORMS
+                        </Field.Label>
+                        <HStack>
+                          {streamerDetail.platforms?.map((p) => (
+                            <Button
+                              variant="outline"
+                              key={p.channelUrl}
+                              size="sm"
+                              asChild
+                              fontFamily="body"
+                              fontSize="xs"
+                            >
+                              <a href={p.channelUrl}>
+                                <Image
+                                  w={4}
+                                  h={4}
+                                  src={PLATFORM_ICON_MAP[p.platformName]}
+                                  alt={`${p.platformName} icon`}
+                                  cursor="pointer"
+                                  _hover={{ opacity: 0.7 }}
+                                />
+                                {PLATFORM_NAME_MAP[p.platformName]} 방문하기
+                              </a>
+                            </Button>
+                          ))}
+                        </HStack>
+                      </Field.Root>
+
+                      <Separator marginBottom={1} />
+
+                      {/* DATE */}
+                      <Stack gap={1}>
+                        {streamerDetail.createdAt && (
+                          <HStack>
+                            <Box
+                              as={TbCalendarPlus}
+                              boxSize={4}
+                              color="neutral.500"
+                            />
+                            <Text
+                              fontFamily="body"
+                              fontSize="xs"
+                              fontWeight={300}
+                            >
+                              Registered{" "}
+                              {formatUTCToKoreanDate(streamerDetail.createdAt)}
+                            </Text>
+                          </HStack>
+                        )}
+                        {streamerDetail.isVerified && (
+                          <HStack>
+                            <Box
+                              as={MdVerified}
+                              boxSize={4}
+                              color="neutral.500"
+                            />
+                            <Text
+                              fontFamily="body"
+                              fontSize="xs"
+                              fontWeight={300}
+                            >
+                              Verified{" "}
+                              {formatUTCToKoreanDate(streamerDetail.verifiedAt)}
+                            </Text>
+                          </HStack>
+                        )}
+                      </Stack>
+                    </Stack>
+                  )}
                 </Dialog.Body>
                 <Dialog.Footer>
                   <Dialog.ActionTrigger asChild>
