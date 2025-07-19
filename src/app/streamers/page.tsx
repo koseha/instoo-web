@@ -1,26 +1,15 @@
-// app/streamers/page.tsx
+// app/streamers/page.tsx (간소화된 버전)
 "use client";
 
-import {
-  Box,
-  CheckboxCard,
-  CheckboxGroup,
-  Flex,
-  IconButton,
-  Image,
-  Input,
-  InputGroup,
-  Tabs,
-  Text,
-} from "@chakra-ui/react";
-import { MdVerified } from "react-icons/md";
-import { MdOutlineHourglassBottom } from "react-icons/md";
+import { Box, Flex, IconButton, Tabs, Text } from "@chakra-ui/react";
+import { MdVerified, MdOutlineHourglassBottom } from "react-icons/md";
 import { FaRedo } from "react-icons/fa";
-import { IoSearchOutline } from "react-icons/io5";
-import StreamerList from "@/components/streamer/StreamerList";
-import { PLATFORM_ICON_MAP } from "@/constants/platform";
 import { useState } from "react";
+import StreamerTable from "@/components/streamer/StreamerTable";
+import StreamerDetailDialog from "@/components/streamer/StreamerDetailDialog";
 import RegisterStreamerDialog from "@/components/streamer/RegisterStreamerDialog";
+import { useStreamerList } from "@/hooks/useStreamerList";
+import StreamerFilters from "@/components/streamer/StreamerFilter";
 
 type Platform = "chzzk" | "soop" | "youtube";
 
@@ -28,18 +17,34 @@ export default function Streamers() {
   const [activeTab, setActiveTab] = useState<"verified" | "loading">(
     "verified",
   );
-  const [qName, setQName] = useState("");
+  const [searchName, setSearchName] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
-  const [searchTrigger, setSearchTrigger] = useState(0); // 검색 트리거용
+  const [searchTrigger, setSearchTrigger] = useState(0);
 
-  // 검색 입력 핸들러 (Enter 키로 검색)
-  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      setSearchTrigger((prev) => prev + 1); // 트리거 증가로 검색 실행
-    }
+  // 스트리머 목록 데이터 관리
+  const {
+    data,
+    isLoading,
+    error,
+    currentPage,
+    handlePageChange,
+    selectedStreamer,
+    isDetailOpen,
+    openDetail,
+    closeDetail,
+  } = useStreamerList({
+    isVerified: activeTab === "verified",
+    platforms: selectedPlatforms,
+    searchName,
+    searchTrigger,
+  });
+
+  // 검색 실행
+  const handleSearch = () => {
+    setSearchTrigger((prev) => prev + 1);
   };
 
-  // 플랫폼 체크박스 변경 핸들러 (즉시 검색)
+  // 플랫폼 변경 (즉시 검색)
   const handlePlatformChange = (platform: Platform) => {
     setSelectedPlatforms((prev) => {
       const newPlatforms = prev.includes(platform)
@@ -47,17 +52,19 @@ export default function Streamers() {
         : [...prev, platform];
       return newPlatforms;
     });
+    setSearchTrigger((prev) => prev + 1);
   };
 
-  // 새로고침 핸들러
+  // 새로고침
   const handleRefresh = () => {
-    setQName("");
+    setSearchName("");
     setSelectedPlatforms([]);
     setSearchTrigger((prev) => prev + 1);
   };
 
   return (
     <>
+      {/* 헤더 */}
       <Box mb={4}>
         <Text
           color="neutral.900"
@@ -91,6 +98,7 @@ export default function Streamers() {
         </Text>
       </Box>
 
+      {/* 탭과 등록 버튼 */}
       <Tabs.Root
         defaultValue="verified"
         variant="plain"
@@ -124,7 +132,7 @@ export default function Streamers() {
                 "& .selected_streamer-loading": {
                   color: "orange.500",
                   transform: "rotate(180deg)",
-                  transition: "transform 0.3s ease",
+                  transition: "transform 1s ease",
                 },
               }}
             >
@@ -132,7 +140,7 @@ export default function Streamers() {
                 as={MdOutlineHourglassBottom}
                 className="selected_streamer-loading"
                 transform="rotate(0deg)"
-                transition="transform 0.5s ease"
+                transition="transform 1s ease"
               />
               요청 중
             </Tabs.Trigger>
@@ -141,113 +149,84 @@ export default function Streamers() {
           <RegisterStreamerDialog />
         </Flex>
 
-        <Flex justify="space-between" alignItems="end" mt={2}>
-          <CheckboxGroup>
-            <Flex gap={2}>
-              <CheckboxCard.Root
-                w="100px"
-                size="sm"
-                alignItems="center"
-                variant="surface"
-                cursor="pointer"
-                colorPalette={activeTab === "verified" ? "blue" : "orange"}
-                checked={selectedPlatforms.includes("chzzk")}
-                onCheckedChange={() => handlePlatformChange("chzzk")}
-              >
-                <CheckboxCard.HiddenInput />
-                <CheckboxCard.Control px={2} py={1}>
-                  <CheckboxCard.Label fontFamily="body" fontSize="xs">
-                    <Image
-                      w={3}
-                      h={3}
-                      src={PLATFORM_ICON_MAP["chzzk"]}
-                      alt={`chzzk icon`}
-                    />
-                    치지직
-                  </CheckboxCard.Label>
-                </CheckboxCard.Control>
-              </CheckboxCard.Root>
+        {/* 필터 */}
+        <StreamerFilters
+          searchName={searchName}
+          selectedPlatforms={selectedPlatforms}
+          onSearchChange={setSearchName}
+          onSearchSubmit={handleSearch}
+          onPlatformChange={handlePlatformChange}
+          activeTab={activeTab}
+        />
 
-              <CheckboxCard.Root
-                w="100px"
-                size="sm"
-                alignItems="center"
-                variant="surface"
-                cursor="pointer"
-                colorPalette={activeTab === "verified" ? "blue" : "orange"}
-                checked={selectedPlatforms.includes("soop")}
-                onCheckedChange={() => handlePlatformChange("soop")}
-              >
-                <CheckboxCard.HiddenInput />
-                <CheckboxCard.Control px={2} py={1}>
-                  <CheckboxCard.Label fontFamily="body" fontSize="xs">
-                    <Image
-                      w={3}
-                      h={3}
-                      src={PLATFORM_ICON_MAP["soop"]}
-                      alt={`soop icon`}
-                    />
-                    숲
-                  </CheckboxCard.Label>
-                </CheckboxCard.Control>
-              </CheckboxCard.Root>
-
-              <CheckboxCard.Root
-                w="100px"
-                size="sm"
-                alignItems="center"
-                variant="surface"
-                cursor="pointer"
-                colorPalette={activeTab === "verified" ? "blue" : "orange"}
-                checked={selectedPlatforms.includes("youtube")}
-                onCheckedChange={() => handlePlatformChange("youtube")}
-              >
-                <CheckboxCard.HiddenInput />
-                <CheckboxCard.Control px={2} py={1}>
-                  <CheckboxCard.Label fontFamily="body" fontSize="xs">
-                    <Image
-                      w={3}
-                      h={3}
-                      src={PLATFORM_ICON_MAP["youtube"]}
-                      alt={`youtube icon`}
-                    />
-                    Youtube
-                  </CheckboxCard.Label>
-                </CheckboxCard.Control>
-              </CheckboxCard.Root>
-            </Flex>
-          </CheckboxGroup>
-
-          <InputGroup startElement={<IoSearchOutline />} w={300}>
-            <Input
-              placeholder="스트리머 이름으로 검색 (Enter로 검색)"
-              size="xs"
-              value={qName}
-              onChange={(e) => setQName(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-            />
-          </InputGroup>
-        </Flex>
-
+        {/* 탭 컨텐츠 */}
         <Tabs.Content value="verified">
-          <StreamerList
+          <Flex justify="space-between" align="center" mb={1}>
+            <Text fontFamily="body" fontSize="sm" color="neutral.400">
+              인증된 스트리머의 방송 일정을 자유롭게 등록하고 수정할 수 있어요
+            </Text>
+            <Text fontSize="sm" color="neutral.400">
+              {isLoading ? "로딩 중..." : `총 ${data.totalCount}명`}
+            </Text>
+          </Flex>
+
+          {error && (
+            <Text color="red.500" fontSize="sm" mb={2}>
+              오류: {error}
+            </Text>
+          )}
+
+          <StreamerTable
+            streamers={data.data}
             isVerified={true}
+            isLoading={isLoading}
+            currentPage={currentPage}
+            pageSize={data.size}
+            totalCount={data.totalCount}
+            searchName={searchName}
             platforms={selectedPlatforms}
-            searchName={qName}
-            searchTrigger={searchTrigger}
-            description="인증된 스트리머의 방송 일정을 자유롭게 등록하고 수정할 수 있어요"
+            onDetailClick={openDetail}
+            onPageChange={handlePageChange}
           />
         </Tabs.Content>
+
         <Tabs.Content value="loading">
-          <StreamerList
+          <Flex justify="space-between" align="center" mb={1}>
+            <Text fontFamily="body" fontSize="sm" color="neutral.400">
+              관리자 검토 중인 스트리머들입니다. 곧 인증될 예정이에요
+            </Text>
+            <Text fontSize="sm" color="neutral.400">
+              {isLoading ? "로딩 중..." : `총 ${data.totalCount}명`}
+            </Text>
+          </Flex>
+
+          {error && (
+            <Text color="red.500" fontSize="sm" mb={2}>
+              오류: {error}
+            </Text>
+          )}
+
+          <StreamerTable
+            streamers={data.data}
             isVerified={false}
+            isLoading={isLoading}
+            currentPage={currentPage}
+            pageSize={data.size}
+            totalCount={data.totalCount}
+            searchName={searchName}
             platforms={selectedPlatforms}
-            searchName={qName}
-            searchTrigger={searchTrigger}
-            description="관리자 검토 중인 스트리머들입니다. 곧 인증될 예정이에요"
+            onDetailClick={openDetail}
+            onPageChange={handlePageChange}
           />
         </Tabs.Content>
       </Tabs.Root>
+
+      {/* 상세 다이얼로그 */}
+      <StreamerDetailDialog
+        isOpen={isDetailOpen}
+        onClose={closeDetail}
+        streamer={selectedStreamer}
+      />
     </>
   );
 }
