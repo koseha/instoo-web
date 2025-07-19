@@ -15,6 +15,7 @@ import {
   Stack,
   Table,
   Text,
+  Timeline,
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useState, useEffect, useCallback } from "react";
@@ -320,7 +321,7 @@ const StreamerList: React.FC<StreamerListProps> = ({
                   {streamerDetail && (
                     <Stack>
                       {/* 상단 */}
-                      <HStack spaceX={3} marginBottom={6}>
+                      <HStack spaceX={3} marginBottom={4}>
                         <Image
                           src="https://bit.ly/naruto-sage"
                           boxSize="120px"
@@ -416,45 +417,58 @@ const StreamerList: React.FC<StreamerListProps> = ({
                         </HStack>
                       </Field.Root>
 
-                      <Separator marginBottom={1} />
+                      <Separator marginBottom={2} />
 
                       {/* DATE */}
-                      <Stack gap={1}>
-                        {streamerDetail.createdAt && (
-                          <HStack>
-                            <Box
-                              as={TbCalendarPlus}
-                              boxSize={4}
-                              color="neutral.500"
-                            />
-                            <Text
-                              fontFamily="body"
-                              fontSize="xs"
-                              fontWeight={300}
-                            >
-                              Registered{" "}
-                              {formatUTCToKoreanDate(streamerDetail.createdAt)}
-                            </Text>
-                          </HStack>
-                        )}
-                        {streamerDetail.isVerified && (
-                          <HStack>
-                            <Box
-                              as={MdVerified}
-                              boxSize={4}
-                              color="neutral.500"
-                            />
-                            <Text
-                              fontFamily="body"
-                              fontSize="xs"
-                              fontWeight={300}
-                            >
-                              Verified{" "}
-                              {formatUTCToKoreanDate(streamerDetail.verifiedAt)}
-                            </Text>
-                          </HStack>
-                        )}
-                      </Stack>
+                      <Field.Root>
+                        <Field.Label
+                          fontFamily="heading"
+                          fontSize="sm"
+                          fontWeight={600}
+                          marginBottom={2}
+                        >
+                          HISTORY
+                        </Field.Label>
+                        <Timeline.Root size="sm">
+                          {streamerDetail.isVerified && (
+                            <Timeline.Item>
+                              <Timeline.Connector>
+                                <Timeline.Separator />
+                                <Timeline.Indicator>
+                                  <MdVerified />
+                                </Timeline.Indicator>
+                              </Timeline.Connector>
+                              <Timeline.Content paddingBottom={3}>
+                                <Timeline.Title>
+                                  관리자 인증 완료
+                                </Timeline.Title>
+                                <Timeline.Description>
+                                  {formatUTCToKoreanDate(
+                                    streamerDetail.verifiedAt,
+                                  )}
+                                </Timeline.Description>
+                              </Timeline.Content>
+                            </Timeline.Item>
+                          )}
+
+                          <Timeline.Item>
+                            <Timeline.Connector>
+                              <Timeline.Separator />
+                              <Timeline.Indicator>
+                                <TbCalendarPlus />
+                              </Timeline.Indicator>
+                            </Timeline.Connector>
+                            <Timeline.Content paddingBottom={3}>
+                              <Timeline.Title>팬 등록 완료</Timeline.Title>
+                              <Timeline.Description>
+                                {formatUTCToKoreanDate(
+                                  streamerDetail.createdAt,
+                                )}
+                              </Timeline.Description>
+                            </Timeline.Content>
+                          </Timeline.Item>
+                        </Timeline.Root>
+                      </Field.Root>
                     </Stack>
                   )}
                 </Dialog.Body>
