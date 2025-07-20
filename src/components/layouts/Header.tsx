@@ -31,7 +31,7 @@ export default function Header() {
           textDecoration="none"
           _hover={{ textDecoration: "none", color: "neutral.800" }}
         >
-          Instoo
+          인스투
         </Link>
 
         {/* 로그인/로그아웃 */}

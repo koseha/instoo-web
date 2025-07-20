@@ -9,7 +9,7 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/components/providers/modal.provider";
 
 export const metadata = {
-  title: "Instoo",
+  title: "인스투",
   description: "Next.js with Chakra UI",
 };
 

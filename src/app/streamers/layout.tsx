@@ -1,7 +1,7 @@
 // app/streamers/layout.tsx
 
 export const metadata = {
-  title: "Instoo",
+  title: "스트리머 목록 | 인스투",
   description: "Next.js with Chakra UI",
 };
 

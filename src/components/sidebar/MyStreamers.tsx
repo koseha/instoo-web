@@ -11,42 +11,109 @@ import {
   Dialog,
   Portal,
   CloseButton,
+  HStack,
 } from "@chakra-ui/react";
 import { LuTrash2 } from "react-icons/lu";
+import { BiDetail } from "react-icons/bi";
 import MyStreamersCard from "./MyStreamers.card";
+import StreamerDetailDialog from "../streamer/StreamerDetailDialog";
 import { StreamerSimpleResponse } from "@/services/streamer.service";
+import { Streamer } from "@/types/interfaces/streamer.interface";
+import { InfoTip } from "../ui/toggle-tip";
+import apiClient from "@/lib/axios-api";
 
 const MyStreamers = () => {
   const { streamers, remove } = useMyStreamersStore();
-  const [selectedStreamer, setSelectedStreamer] =
+
+  // 제거 다이얼로그 관련 상태
+  const [selectedStreamerForRemove, setSelectedStreamerForRemove] =
     useState<StreamerSimpleResponse | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isRemoveDialogOpen, setIsRemoveDialogOpen] = useState(false);
 
-  const handleRemoveClick = (streamer: StreamerSimpleResponse) => {
-    setSelectedStreamer(streamer);
-    setIsDialogOpen(true);
-  };
+  // 상세보기 다이얼로그 관련 상태
+  const [selectedStreamerForDetail, setSelectedStreamerForDetail] =
+    useState<Streamer | null>(null);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
 
-  const handleConfirmRemove = () => {
-    if (selectedStreamer) {
-      remove(selectedStreamer.uuid);
-      setIsDialogOpen(false);
-      setSelectedStreamer(null);
+  // API에서 스트리머 상세 정보를 가져오는 함수
+  const fetchStreamerDetail = async (
+    uuid: string,
+  ): Promise<Streamer | null> => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/v1/streamers/${uuid}`,
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch streamer detail");
+      }
+      const data = await response.json();
+      return data.content;
+    } catch (error) {
+      console.error("Error fetching streamer detail:", error);
+      return null;
     }
   };
 
+  // 상세보기 버튼 클릭 핸들러
+  const handleDetailClick = async (streamer: StreamerSimpleResponse) => {
+    setIsLoadingDetail(true);
+    const detailData = await fetchStreamerDetail(streamer.uuid);
+    setIsLoadingDetail(false);
+
+    if (detailData) {
+      setSelectedStreamerForDetail(detailData);
+      setIsDetailDialogOpen(true);
+    }
+  };
+
+  // 제거 버튼 클릭 핸들러
+  const handleRemoveClick = (streamer: StreamerSimpleResponse) => {
+    setSelectedStreamerForRemove(streamer);
+    setIsRemoveDialogOpen(true);
+  };
+
+  // 제거 확인 핸들러
+  const handleConfirmRemove = () => {
+    if (selectedStreamerForRemove) {
+      remove(selectedStreamerForRemove.uuid);
+      setIsRemoveDialogOpen(false);
+      setSelectedStreamerForRemove(null);
+    }
+  };
+
+  // 제거 취소 핸들러
   const handleCancelRemove = () => {
-    setIsDialogOpen(false);
-    setSelectedStreamer(null);
+    setIsRemoveDialogOpen(false);
+    setSelectedStreamerForRemove(null);
+  };
+
+  // 상세보기 다이얼로그 닫기 핸들러
+  const handleDetailDialogClose = () => {
+    setIsDetailDialogOpen(false);
+    setSelectedStreamerForDetail(null);
   };
 
   return (
     <>
-      <Flex justifyContent="space-between" alignItems="center" mb={1}>
+      <HStack justify="start">
         <Text fontSize="sm" color="neutral.500" fontFamily="heading">
           My Streamers
         </Text>
-      </Flex>
+        <InfoTip
+          content={
+            <>
+              스트리머 일정을 확인할 수 있어요.
+              <br />
+              팔로우는 별도의 페이지에서 관리돼요.
+              <br />
+              일반 회원은 자신의 팔로우 목록도 함께 보여집니다.
+            </>
+          }
+          positioning={{ placement: "right" }}
+          size="xs"
+        />
+      </HStack>
 
       <AccordionRoot variant="subtle" collapsible>
         {streamers.map((streamer) => (
@@ -61,20 +128,25 @@ const MyStreamers = () => {
               <MyStreamersCard key={streamer.uuid} streamer={streamer} />
             </AccordionItemTrigger>
             <AccordionItemContent px={2}>
-              <Flex
-                gap={2}
-                py={1}
-                bg="neutral.50"
-                borderRadius="md"
-                justify="flex-end"
-              >
+              <Flex py={1} bg="neutral.50" borderRadius="md" justify="flex-end">
+                <Button
+                  size="2xs"
+                  variant="ghost"
+                  colorPalette="blue"
+                  onClick={() => handleDetailClick(streamer)}
+                  loading={isLoadingDetail}
+                >
+                  <BiDetail />
+                  상세보기
+                </Button>
                 <Button
                   size="2xs"
                   variant="ghost"
                   colorPalette="red"
                   onClick={() => handleRemoveClick(streamer)}
                 >
-                  <LuTrash2 /> 제거하기
+                  <LuTrash2 />
+                  제거하기
                 </Button>
               </Flex>
             </AccordionItemContent>
@@ -82,10 +154,17 @@ const MyStreamers = () => {
         ))}
       </AccordionRoot>
 
+      {/* 스트리머 상세보기 다이얼로그 */}
+      <StreamerDetailDialog
+        isOpen={isDetailDialogOpen}
+        onClose={handleDetailDialogClose}
+        streamer={selectedStreamerForDetail}
+      />
+
       {/* 제거 확인 다이얼로그 */}
       <Dialog.Root
-        open={isDialogOpen}
-        onOpenChange={(details) => setIsDialogOpen(details.open)}
+        open={isRemoveDialogOpen}
+        onOpenChange={(details) => setIsRemoveDialogOpen(details.open)}
         size="sm"
         modal={false}
         placement="center"
@@ -99,8 +178,8 @@ const MyStreamers = () => {
               </Dialog.Header>
               <Dialog.Body>
                 <p>
-                  <strong>{selectedStreamer?.name}</strong>을(를) 목록에서
-                  제거하시겠습니까?
+                  <strong>{selectedStreamerForRemove?.name}</strong>을(를)
+                  목록에서 제거하시겠습니까?
                 </p>
                 <p className="meta" style={{ marginTop: "8px" }}>
                   이 작업은 되돌릴 수 없습니다.

@@ -77,7 +77,7 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                       <HStack gapX={3}>
                         <HStack gapX={1}>
                           <Box as={MdVerified} boxSize={4} color="blue.600" />
-                          <Text fontSize="xs">인증됨</Text>
+                          <Text fontSize="xs">관리자 인증</Text>
                         </HStack>
                         <HStack gapX={1} color="neutral.500">
                           <Box as={GoPeople} boxSize={4} />
@@ -89,7 +89,7 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                     ) : (
                       <HStack gapX={1}>
                         <Box as={MdVerified} boxSize={4} />
-                        <Text fontSize="xs">인증 요청 중</Text>
+                        <Text fontSize="xs">관리자 인증 요청 중</Text>
                       </HStack>
                     )}
                   </Stack>

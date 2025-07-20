@@ -70,7 +70,7 @@ const RegisterStreamerDialog = () => {
     { platformName: "", channelUrl: "" },
   ]);
   const [isLoading, setIsLoading] = useState(false);
-  const { showSuccess, showError } = useNotification();
+  const { showSuccess, showError, showWarning } = useNotification();
 
   // 다이얼로그 상태 초기화 함수
   const resetForm = () => {
@@ -91,12 +91,12 @@ const RegisterStreamerDialog = () => {
   const handleSubmit = async () => {
     // 유효성 검사
     if (!streamerName.trim()) {
-      showError({ title: "스트리머명을 입력해주세요" });
+      showWarning({ title: "스트리머명을 입력해주세요" });
       return;
     }
 
     if (!description.trim()) {
-      showError({ title: "간단한 소개를 입력해주세요" });
+      showWarning({ title: "간단한 소개를 입력해주세요" });
       return;
     }
 
@@ -105,7 +105,7 @@ const RegisterStreamerDialog = () => {
     );
 
     if (validPlatforms.length === 0) {
-      showError({ title: "최소 하나의 플랫폼 정보를 입력해주세요" });
+      showWarning({ title: "최소 하나의 플랫폼 정보를 입력해주세요" });
       return;
     }
 
@@ -115,7 +115,7 @@ const RegisterStreamerDialog = () => {
     );
 
     if (invalidPlatforms.length > 0) {
-      showError({
+      showWarning({
         title: `올바르지 않은 플랫폼 URL이 있습니다. 다시 확인해주세요`,
       });
       return;

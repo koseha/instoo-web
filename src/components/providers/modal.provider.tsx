@@ -3,6 +3,7 @@
 
 import React from "react";
 import MyProfileModal from "../user/MyProfileModal";
+import ScheduleEditorDialog from "../schedule/ScheduleEditorDialog";
 
 /**
  * 앱에서 사용되는 모든 전역 모달들을 렌더링하는 Provider
@@ -12,6 +13,7 @@ const ModalProvider: React.FC = () => {
   return (
     <>
       <MyProfileModal />
+      <ScheduleEditorDialog />
       {/* 다른 전역 모달들도 여기에 추가 */}
     </>
   );

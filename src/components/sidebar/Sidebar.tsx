@@ -2,8 +2,8 @@
 
 import { Box } from "@chakra-ui/react";
 import SidebarMenu from "./SidebarMenu";
-import SearchStreamer from "./SearchStreamer";
 import MyStreamers from "./MyStreamers";
+import AddStreamer from "./AddStreamer";
 
 const Sidebar: React.FC = () => {
   return (
@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
       borderColor="neutral.200"
     >
       <Box py={4} borderBottomWidth="1px">
-        <SearchStreamer />
+        <AddStreamer />
       </Box>
       <Box py={4} borderBottomWidth="1px">
         <SidebarMenu />
