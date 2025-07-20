@@ -17,6 +17,7 @@ export interface StreamerSimpleResponse {
   name: string;
   profileImageUrl: string;
   platforms: PlatformSimpleInfo[];
+  followCount: number;
 }
 
 export class StreamerService {

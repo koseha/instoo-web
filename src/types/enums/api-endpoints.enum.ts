@@ -30,5 +30,6 @@ export const API_ENDPOINTS = {
     DETAIL: (uuid: string) => `/v1/schedules/${uuid}`,
     UPDATE: (uuid: string) => `/v1/schedules/${uuid}`,
     DELETE: (uuid: string) => `/v1/schedules/${uuid}`,
+    LIKE: (uuid: string) => `/v1/schedules/${uuid}/like`,
   },
 };

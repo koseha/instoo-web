@@ -21,8 +21,8 @@ import {
   ScheduleService,
   SchedulesResponseDto,
 } from "@/services/schedule.service";
-import { FaRegHeart } from "react-icons/fa6";
 import { GoPerson } from "react-icons/go";
+import LikeBadge from "../common/LikeBadge";
 
 // API 타입 정의
 
@@ -336,9 +336,11 @@ const StreamerSchedule = () => {
                               ? formatTime(schedule.startTime)
                               : statusConfig.label}
                           </Badge>
-                          <Badge colorPalette="purple" fontSize="10px">
-                            <FaRegHeart /> 9
-                          </Badge>
+                          <LikeBadge
+                            scheduleUuid={schedule.uuid}
+                            initialLikeCount={schedule.likeCount ?? 0}
+                            initialIsLiked={schedule.isLiked ?? false}
+                          />
                         </HStack>
 
                         {/* 스트리머 */}

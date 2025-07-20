@@ -93,7 +93,7 @@ const MyStreamers = () => {
 
   return (
     <>
-      <HStack justify="start">
+      <HStack justify="start" mb={1}>
         <Text fontSize="sm" color="neutral.500" fontFamily="heading">
           My Streamers
         </Text>
@@ -120,12 +120,21 @@ const MyStreamers = () => {
             _hover={{
               bg: "neutral.100",
             }}
+            mb={1}
+            bg="gray.50"
+            borderWidth={1}
           >
             <AccordionItemTrigger p={2}>
               <MyStreamersCard key={streamer.uuid} streamer={streamer} />
             </AccordionItemTrigger>
             <AccordionItemContent px={2}>
-              <Flex py={1} bg="neutral.50" borderRadius="md" justify="flex-end">
+              <Flex
+                py={1}
+                bg="neutral.50"
+                borderRadius="md"
+                justify="flex-end"
+                borderTopWidth={1}
+              >
                 <Button
                   size="2xs"
                   variant="ghost"

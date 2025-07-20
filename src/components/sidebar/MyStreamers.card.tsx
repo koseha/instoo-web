@@ -14,8 +14,12 @@ import {
   SwitchLabel,
   SwitchRoot,
   Box,
+  Icon,
+  Badge,
+  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { GoPerson, GoPeople } from "react-icons/go";
 
 interface MyStreamersCardProps {
   streamer: StreamerSimpleResponse;
@@ -56,10 +60,15 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
           <AvatarImage src={streamer.profileImageUrl || "/default-image.png"} />
         </AvatarRoot>
 
-        <Stack gap={0} flex={1}>
-          <Text fontSize="sm" color="neutral.600" fontFamily="body">
-            {streamer.name}
-          </Text>
+        <Stack gap={1} flex={1}>
+          <HStack gap={1}>
+            <Icon boxSize={4}>
+              <GoPerson />
+            </Icon>
+            <Text fontSize="sm" color="neutral.600" fontFamily="body">
+              {streamer.name}
+            </Text>
+          </HStack>
           <Flex gap="3px">
             {streamer.platforms.map((platform) => (
               <Box
@@ -91,17 +100,23 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
         </Stack>
       </>
 
-      <SwitchRoot
-        size="xs"
-        alignSelf="flex-end"
-        onClick={handleSwitchClick}
-        checked={checked}
-        onCheckedChange={(e) => handleCheckedChange(e.checked)}
-      >
-        <SwitchHiddenInput />
-        <SwitchControl />
-        <SwitchLabel />
-      </SwitchRoot>
+      <Stack alignItems="flex-end">
+        <Badge colorPalette="blue" fontSize="10px">
+          <GoPeople />
+          {streamer.followCount ?? 0}
+        </Badge>
+        <SwitchRoot
+          size="xs"
+          // alignSelf="flex-end"
+          onClick={handleSwitchClick}
+          checked={checked}
+          onCheckedChange={(e) => handleCheckedChange(e.checked)}
+        >
+          <SwitchHiddenInput />
+          <SwitchControl />
+          <SwitchLabel />
+        </SwitchRoot>
+      </Stack>
     </HStack>
   );
 };

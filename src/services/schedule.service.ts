@@ -54,6 +54,8 @@ export interface ScheduleBaseInfoDto {
   startTime: string | null;
   title: string;
   streamerName: string;
+  likeCount: number;
+  isLiked: boolean;
 }
 
 export interface SchedulesResponseDto {
@@ -129,6 +131,30 @@ export class ScheduleService {
     } catch (error) {
       console.error("스케줄(일정) 목록 요청 실패:", error);
       throw new Error("스케줄(일정) 목록에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 스케줄 좋아요 추가
+   */
+  static async addLike(scheduleUuid: string): Promise<void> {
+    try {
+      await apiClient.post(API_ENDPOINTS.SCHEDULES.LIKE(scheduleUuid));
+    } catch (error) {
+      console.error("좋아요 추가 실패:", error);
+      throw new Error("좋아요 추가에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 스케줄 좋아요 취소
+   */
+  static async removeLike(scheduleUuid: string): Promise<void> {
+    try {
+      await apiClient.delete(API_ENDPOINTS.SCHEDULES.LIKE(scheduleUuid));
+    } catch (error) {
+      console.error("좋아요 취소 실패:", error);
+      throw new Error("좋아요 취소에 실패했습니다.");
     }
   }
 }
