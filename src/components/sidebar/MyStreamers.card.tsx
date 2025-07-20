@@ -1,5 +1,6 @@
 import { PLATFORM_ICON_MAP } from "@/constants/platform";
 import { StreamerSimpleResponse } from "@/services/streamer.service";
+import { useMyStreamersStore } from "@/stores/my-streamers.store";
 import {
   Text,
   HStack,
@@ -14,15 +15,38 @@ import {
   SwitchRoot,
   Box,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 interface MyStreamersCardProps {
   streamer: StreamerSimpleResponse;
 }
 
 const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
+  const { fetchTargetUuids, addFetchTarget, removeFetchTarget } =
+    useMyStreamersStore();
+  const [checked, setChecked] = useState(false);
+
+  // 상태 동기화
+  useEffect(() => {
+    setChecked(fetchTargetUuids.includes(streamer.uuid));
+  }, [fetchTargetUuids, streamer.uuid]);
+
   const handlePlatformClick = (platformUrl: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // 이벤트 버블링 방지
+    e.stopPropagation();
     window.open(platformUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleSwitchClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const handleCheckedChange = (value: boolean) => {
+    setChecked(value);
+    if (value) {
+      addFetchTarget(streamer.uuid);
+    } else {
+      removeFetchTarget(streamer.uuid);
+    }
   };
 
   return (
@@ -70,7 +94,9 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
       <SwitchRoot
         size="xs"
         alignSelf="flex-end"
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleSwitchClick}
+        checked={checked}
+        onCheckedChange={(e) => handleCheckedChange(e.checked)}
       >
         <SwitchHiddenInput />
         <SwitchControl />

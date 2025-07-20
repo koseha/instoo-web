@@ -9,19 +9,21 @@ const Sidebar: React.FC = () => {
   return (
     <Box
       as="aside"
+      minW="250px"
       px={3}
-      w="250px"
       borderXWidth="1px"
       borderColor="neutral.200"
     >
-      <Box py={4} borderBottomWidth="1px">
-        <AddStreamer />
-      </Box>
-      <Box py={4} borderBottomWidth="1px">
-        <SidebarMenu />
-      </Box>
-      <Box py={3}>
-        <MyStreamers />
+      <Box position="sticky" top={0}>
+        <Box py={4} borderBottomWidth="1px">
+          <AddStreamer />
+        </Box>
+        <Box py={4} borderBottomWidth="1px">
+          <SidebarMenu />
+        </Box>
+        <Box py={3}>
+          <MyStreamers />
+        </Box>
       </Box>
     </Box>
   );

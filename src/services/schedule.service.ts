@@ -49,6 +49,26 @@ export interface ModifyScheduleRequest {
   lastUpdatedAt: string;
 }
 
+export interface ScheduleBaseInfoDto {
+  uuid: string;
+  startTime: string | null;
+  title: string;
+  streamerName: string;
+}
+
+export interface SchedulesResponseDto {
+  scheduleDate: string;
+  breaks: ScheduleBaseInfoDto[];
+  tbd: ScheduleBaseInfoDto[];
+  scheduled: ScheduleBaseInfoDto[];
+}
+
+export interface GetSchedulesDto {
+  streamerUuids?: string[];
+  startDate?: string;
+  endDate?: string;
+}
+
 export class ScheduleService {
   /**
    * 스케줄(일정) 등록하기
@@ -91,6 +111,24 @@ export class ScheduleService {
     } catch (error) {
       console.error("스케줄(일정) 수정 요청 실패:", error);
       throw new Error("스케줄(일정) 수정에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 스케줄(일정) 목록 조회
+   */
+  static async getStreamerSchedules(
+    body: GetSchedulesDto,
+  ): Promise<SchedulesResponseDto[]> {
+    try {
+      const response = await apiClient.post<
+        ApiResponse<SchedulesResponseDto[]>
+      >(API_ENDPOINTS.SCHEDULES.LIST_BY_STREAMER, body);
+
+      return response.data.content;
+    } catch (error) {
+      console.error("스케줄(일정) 목록 요청 실패:", error);
+      throw new Error("스케줄(일정) 목록에 실패했습니다.");
     }
   }
 }

@@ -26,7 +26,7 @@ export const API_ENDPOINTS = {
   // 일정
   SCHEDULES: {
     CREATE: "/v1/schedules",
-    LIST_BY_STREAMER: "/v1/schedules/search/streamers",
+    LIST_BY_STREAMER: "/v1/schedules/list/streamers",
     DETAIL: (uuid: string) => `/v1/schedules/${uuid}`,
     UPDATE: (uuid: string) => `/v1/schedules/${uuid}`,
     DELETE: (uuid: string) => `/v1/schedules/${uuid}`,

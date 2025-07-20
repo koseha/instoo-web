@@ -8,6 +8,9 @@ interface MyStreamersState {
 
   add: (streamer: StreamerSimpleResponse) => boolean;
   remove: (uuid: string) => boolean;
+
+  addFetchTarget: (uuid: string) => boolean;
+  removeFetchTarget: (uuid: string) => boolean;
 }
 
 export const useMyStreamersStore = create<MyStreamersState>()(
@@ -48,6 +51,26 @@ export const useMyStreamersStore = create<MyStreamersState>()(
         });
 
         return true; // 성공적으로 제거된 경우 true 반환
+      },
+
+      addFetchTarget: (uuid) => {
+        const state = get();
+        if (state.fetchTargetUuids.includes(uuid)) return false;
+
+        set({
+          fetchTargetUuids: [uuid, ...state.fetchTargetUuids],
+        });
+        return true;
+      },
+
+      removeFetchTarget: (uuid) => {
+        const state = get();
+        if (!state.fetchTargetUuids.includes(uuid)) return false;
+
+        set({
+          fetchTargetUuids: state.fetchTargetUuids.filter((id) => id !== uuid),
+        });
+        return true;
       },
     }),
     {

@@ -23,7 +23,7 @@ const SidebarMenu = () => {
       path: "/schedules",
       modal: false,
       disabled: false,
-      action: () => router.push("/"),
+      action: () => router.push("/schedules"),
     },
     {
       icon: AiOutlineHome,
