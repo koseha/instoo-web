@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 import { ApiResponse } from "@/types/interfaces/api-response.interface";
 import {
   newStreamerDto,
+  Streamer,
   StreamerData,
 } from "@/types/interfaces/streamer.interface";
 
@@ -70,6 +71,22 @@ export class StreamerService {
   static async registerNewStreamer(body: newStreamerDto): Promise<void> {
     try {
       await apiClient.post("/v1/streamers", body);
+    } catch (error) {
+      console.error("신규 방송인 등록 요청 실패:", error);
+      throw new Error("신규 방송인 등록에에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 방송인 상세 조회
+   */
+  static async getStreamerDetail(uuid: string): Promise<Streamer> {
+    try {
+      const response = await apiClient.get<ApiResponse<Streamer>>(
+        API_ENDPOINTS.STREAMERS.DETAIL(uuid),
+      );
+
+      return response.data.content;
     } catch (error) {
       console.error("신규 방송인 등록 요청 실패:", error);
       throw new Error("신규 방송인 등록에에 실패했습니다.");

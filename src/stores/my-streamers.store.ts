@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 
 interface MyStreamersState {
   streamers: StreamerSimpleResponse[];
+  fetchTargetUuids: string[];
 
   add: (streamer: StreamerSimpleResponse) => boolean;
   remove: (uuid: string) => boolean;
@@ -13,6 +14,7 @@ export const useMyStreamersStore = create<MyStreamersState>()(
   persist(
     (set, get) => ({
       streamers: [],
+      fetchTargetUuids: [],
 
       add: (streamer) => {
         const state = get();
@@ -26,6 +28,7 @@ export const useMyStreamersStore = create<MyStreamersState>()(
 
         set({
           streamers: [streamer, ...state.streamers],
+          fetchTargetUuids: [streamer.uuid, ...state.fetchTargetUuids],
         });
 
         return true; // 성공적으로 추가된 경우 true 반환
@@ -41,6 +44,7 @@ export const useMyStreamersStore = create<MyStreamersState>()(
 
         set({
           streamers: state.streamers.filter((s) => s.uuid !== uuid),
+          fetchTargetUuids: state.fetchTargetUuids.filter((id) => id !== uuid),
         });
 
         return true; // 성공적으로 제거된 경우 true 반환

@@ -17,10 +17,12 @@ import { LuTrash2 } from "react-icons/lu";
 import { BiDetail } from "react-icons/bi";
 import MyStreamersCard from "./MyStreamers.card";
 import StreamerDetailDialog from "../streamer/StreamerDetailDialog";
-import { StreamerSimpleResponse } from "@/services/streamer.service";
+import {
+  StreamerService,
+  StreamerSimpleResponse,
+} from "@/services/streamer.service";
 import { Streamer } from "@/types/interfaces/streamer.interface";
 import { InfoTip } from "../ui/toggle-tip";
-import apiClient from "@/lib/axios-api";
 
 const MyStreamers = () => {
   const { streamers, remove } = useMyStreamersStore();
@@ -41,14 +43,9 @@ const MyStreamers = () => {
     uuid: string,
   ): Promise<Streamer | null> => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/api/v1/streamers/${uuid}`,
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch streamer detail");
-      }
-      const data = await response.json();
-      return data.content;
+      const data = StreamerService.getStreamerDetail(uuid);
+
+      return data;
     } catch (error) {
       console.error("Error fetching streamer detail:", error);
       return null;
