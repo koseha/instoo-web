@@ -26,6 +26,8 @@ import { GoPerson } from "react-icons/go";
 import LikeBadge from "../common/LikeBadge";
 import ScheduleDetailDialog from "./ScheduleDetailDialog";
 import { useLikeStore } from "@/stores/schedule-like.store";
+import { MdOutlineTitle } from "react-icons/md";
+import { PiSubtitles } from "react-icons/pi";
 
 // API 타입 정의
 
@@ -371,32 +373,51 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                           />
                         </HStack>
 
-                        {/* 스트리머 */}
-
                         <ScheduleDetailDialog scheduleUuid={schedule.uuid}>
                           <Box
-                            flex="1"
-                            cursor="pointer"
-                            borderRadius={2}
-                            _hover={{
-                              // bg: "neutral.100",
-                              textDecoration: "underline",
-                            }}
-                            display="flex"
-                            gap={1}
-                            alignItems="center"
                             w="full"
+                            cursor="pointer"
+                            _hover={{
+                              "& .schedule_streamer": {
+                                textDecoration: "underline",
+                              },
+                            }}
                           >
-                            <Icon size="xs">
-                              <GoPerson />
-                            </Icon>
-                            <Text
-                              fontSize="xs"
-                              color="neutral.800"
-                              fontWeight="inherit"
+                            {/* 일정 제목 */}
+                            <HStack gap={1}>
+                              <Icon size="xs">
+                                <MdOutlineTitle />
+                              </Icon>
+                              <Text
+                                fontSize="xs"
+                                color="neutral.500"
+                                lineClamp="2"
+                              >
+                                {schedule.title}
+                              </Text>
+                            </HStack>
+
+                            {/* 스트리머 */}
+                            <Box
+                              flex="1"
+                              borderRadius={2}
+                              className="schedule_streamer"
+                              display="flex"
+                              gap={1}
+                              alignItems="center"
+                              w="full"
                             >
-                              {schedule.streamerName}
-                            </Text>
+                              <Icon size="xs">
+                                <GoPerson />
+                              </Icon>
+                              <Text
+                                fontSize="xs"
+                                color="neutral.900"
+                                fontWeight="inherit"
+                              >
+                                {schedule.streamerName}
+                              </Text>
+                            </Box>
                           </Box>
                         </ScheduleDetailDialog>
                       </VStack>

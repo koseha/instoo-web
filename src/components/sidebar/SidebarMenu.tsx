@@ -10,11 +10,13 @@ import { FaRegListAlt } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 import { useScheduleDialogStore } from "@/stores/schedule-editor.store";
 import { LuCalendarDays } from "react-icons/lu";
+import { useAuthStore } from "@/stores/auth.store";
 
 const SidebarMenu = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { openScheduleCreate } = useScheduleDialogStore();
+  const { isAuthenticated } = useAuthStore();
 
   const menuItems = [
     {
@@ -58,6 +60,8 @@ const SidebarMenu = () => {
       modal: true,
       disabled: false,
       action: openScheduleCreate,
+      needAuth: true,
+      tooltipMessage: "로그인 후 이용할 수 있어요",
     },
   ];
 
@@ -87,7 +91,7 @@ const SidebarMenu = () => {
           return (
             <Tooltip
               key={item.path}
-              disabled={!item.disabled}
+              disabled={!(item.disabled || (item.needAuth && !isAuthenticated))}
               content={item.tooltipMessage}
               positioning={{ placement: "right" }}
             >
@@ -107,7 +111,7 @@ const SidebarMenu = () => {
                 justifyContent="space-between"
                 px={3}
                 onClick={item.action}
-                disabled={item.disabled}
+                disabled={item.disabled || (item.needAuth && !isAuthenticated)}
               >
                 <Flex justifyContent="flex-start" alignItems="center" gap={3}>
                   <Icon size="md">
