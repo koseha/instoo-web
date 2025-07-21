@@ -34,6 +34,12 @@ import { FaRegEdit } from "react-icons/fa";
 
 const MotionBox = motion(Box);
 
+const StatusMap = {
+  SCHEDULED: { label: "예정", color: "white", bg: "black" },
+  TIME_TBD: { label: "시간미정", color: "gray.600", bg: "gray.100" },
+  BREAK: { label: "휴방", color: "red.600", bg: "red.100" },
+};
+
 interface ScheduleDetailDialogProps {
   scheduleUuid: string;
   children: React.ReactNode;
@@ -122,7 +128,7 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
         animate={{
           y: -40,
           opacity: [0.6, 0],
-          scale: [0.6, 1],
+          scale: [1, 1.8],
           transition: {
             duration: 0.6,
             delay,
@@ -223,7 +229,12 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                         </HStack>
                       )}
 
-                      <Badge>뱃지</Badge>
+                      <Badge
+                        color={StatusMap[schedule.status].color}
+                        bg={StatusMap[schedule.status].bg}
+                      >
+                        {StatusMap[schedule.status].label}
+                      </Badge>
                     </HStack>
                   </VStack>
                 </Dialog.Header>
@@ -278,7 +289,7 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                               <FaRegHeart />
                             )}
                           </MotionBox>
-                          좋아요 {likeCount}
+                          고마워 {likeCount}
                         </Button>
                       </Box>
                       <Button
