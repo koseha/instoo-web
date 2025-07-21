@@ -100,6 +100,7 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
 
     // ScheduleEditorDialog에서 필요한 형태로 데이터 변환
     const editData = {
+      uuid: schedule.uuid,
       title: schedule.title,
       scheduleDate: schedule.scheduleDate || "",
       startTime: schedule.startTime || "",

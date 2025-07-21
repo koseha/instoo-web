@@ -3,13 +3,14 @@ import { StreamerSummary } from "@/services/schedule.service";
 import { create } from "zustand";
 
 interface ScheduleData {
+  uuid: string; // edit
   title: string; // create | edit
   scheduleDate: string; // create | edit
   startTime?: string; // create | edit
   status: "BREAK" | "TIME_TBD" | "SCHEDULED"; // create | edit
   description?: string; // create | edit
   streamer?: StreamerSummary; // create
-  lastUpdatedAt?: string; // edit, 충돌 감지용
+  lastUpdatedAt: string; // edit, 충돌 감지용
 }
 
 interface ModalStore {

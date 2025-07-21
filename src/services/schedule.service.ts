@@ -7,7 +7,11 @@ export interface StreamerSummary {
   name: string;
   profileImageUrl?: string;
   isVerified: boolean;
-  // platforms 필요 없음: 'My Streamers'에서 확인 가능
+  // platforms 필요 없음: 'My Streamers'에서 확인 가능 -> "수정하기" 동작에 필요해짐
+  platforms: {
+    platformName: string;
+    channelUrl: string;
+  }[];
 }
 
 export interface UserSummary {
@@ -100,13 +104,8 @@ export class ScheduleService {
   ): Promise<ScheduleResponse> {
     try {
       const response = await apiClient.patch<ApiResponse<ScheduleResponse>>(
-        API_ENDPOINTS.SCHEDULES.CREATE,
+        API_ENDPOINTS.SCHEDULES.UPDATE(scheduleUuid),
         body,
-        {
-          params: {
-            uuid: scheduleUuid,
-          },
-        },
       );
 
       return response.data.content;

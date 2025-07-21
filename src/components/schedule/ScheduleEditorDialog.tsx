@@ -61,7 +61,7 @@ const ScheduleEditorDialog = () => {
   // 모달이 열릴 때 데이터 초기화 또는 로드
   useEffect(() => {
     if (isScheduleModalOpen) {
-      if (modalMode === "edit" && editingSchedule) {
+      if (modalMode === "edit" && editingSchedule && editingSchedule.streamer) {
         setFormData({
           title: editingSchedule.title,
           scheduleDate: editingSchedule.scheduleDate || "",
@@ -69,6 +69,15 @@ const ScheduleEditorDialog = () => {
           status: editingSchedule.status,
           description: editingSchedule.description || "",
           streamerUuid: editingSchedule.streamer?.uuid || "",
+        });
+
+        setSelectedStreamer({
+          uuid: editingSchedule.streamer?.uuid,
+          name: editingSchedule.streamer?.name,
+          profileImageUrl:
+            editingSchedule.streamer?.profileImageUrl || "/default-image.png",
+          platforms: editingSchedule.streamer?.platforms,
+          followCount: 0, // 이후 필요하면 값 넣기
         });
       } else {
         resetForm();
@@ -163,7 +172,8 @@ const ScheduleEditorDialog = () => {
         const {
           streamerUuid,
           scheduleDate: _sd,
-          startTime: _st,
+          startAtUtc: _st,
+          startTime: _none,
           ...restPayload
         } = {
           ...payload,
@@ -171,8 +181,8 @@ const ScheduleEditorDialog = () => {
         };
 
         const response = await ScheduleService.modifySchedule(
-          streamerUuid,
-          restPayload,
+          editingSchedule!.uuid,
+          { startTime: _st, ...restPayload },
         );
 
         console.log(response);
@@ -239,21 +249,10 @@ const ScheduleEditorDialog = () => {
             {/* Header */}
             <Dialog.Header p={6} pb={0}>
               <Dialog.Title>
-                <Flex justify="space-between" align="center">
+                <Flex justify="space-between" align="center" gap={1}>
                   <Text>{getModalTitle()}</Text>
                   {modalMode === "edit" && (
-                    <Badge
-                      bg="primary.black"
-                      color="primary.white"
-                      px={2}
-                      py={1}
-                      borderRadius="sm"
-                      fontSize="xs"
-                      fontWeight="500"
-                      letterSpacing="0.5px"
-                    >
-                      편집 모드
-                    </Badge>
+                    <Badge variant="solid">편집 모드</Badge>
                   )}
                 </Flex>
               </Dialog.Title>
