@@ -23,6 +23,8 @@ import {
 } from "@/services/schedule.service";
 import { GoPerson } from "react-icons/go";
 import LikeBadge from "../common/LikeBadge";
+import ScheduleDetailDialog from "./ScheduleDetailDialog";
+import { useLikeStore } from "@/stores/schedule-like.store";
 
 // API 타입 정의
 
@@ -33,6 +35,7 @@ const StreamerSchedule = () => {
   );
   const [loading, setLoading] = useState(false);
   const { fetchTargetUuids } = useMyStreamersStore();
+  const { likedMap, likeCountMap } = useLikeStore();
 
   // API 호출 함수
   const fetchSchedules = async (params: GetSchedulesDto) => {
@@ -113,7 +116,7 @@ const StreamerSchedule = () => {
     setCurrentDate(newDate);
   };
 
-  // API 데이터에서 특정 날짜의 일정 가져오기
+  // API 데이터에서 특정 날짜의 일정 가져오기 (store 값으로 업데이트)
   const getSchedulesForDate = (dateKey: string) => {
     const dayData = schedulesData.find((d) => d.scheduleDate === dateKey);
     if (!dayData) return [];
@@ -124,7 +127,12 @@ const StreamerSchedule = () => {
       ...dayData.scheduled.map((s) => ({ ...s, status: "scheduled" })),
     ];
 
-    return allSchedules;
+    // store의 값으로 좋아요 상태 업데이트
+    return allSchedules.map((schedule) => ({
+      ...schedule,
+      isLiked: likedMap[schedule.uuid] ?? schedule.isLiked,
+      likeCount: likeCountMap[schedule.uuid] ?? schedule.likeCount,
+    }));
   };
 
   // 상태별 스타일 정의
@@ -344,29 +352,32 @@ const StreamerSchedule = () => {
                         </HStack>
 
                         {/* 스트리머 */}
-                        <Box
-                          flex="1"
-                          cursor="pointer"
-                          borderRadius={2}
-                          _hover={{
-                            bg: "blue.100",
-                            textDecoration: "underline",
-                          }}
-                          display="flex"
-                          gap={1}
-                          alignItems="center"
-                        >
-                          <Icon size="xs">
-                            <GoPerson />
-                          </Icon>
-                          <Text
-                            fontSize="xs"
-                            color="neutral.800"
-                            fontWeight="inherit"
+
+                        <ScheduleDetailDialog scheduleUuid={schedule.uuid}>
+                          <Box
+                            flex="1"
+                            cursor="pointer"
+                            borderRadius={2}
+                            _hover={{
+                              bg: "blue.100",
+                              textDecoration: "underline",
+                            }}
+                            display="flex"
+                            gap={1}
+                            alignItems="center"
                           >
-                            {schedule.streamerName}
-                          </Text>
-                        </Box>
+                            <Icon size="xs">
+                              <GoPerson />
+                            </Icon>
+                            <Text
+                              fontSize="xs"
+                              color="neutral.800"
+                              fontWeight="inherit"
+                            >
+                              {schedule.streamerName}
+                            </Text>
+                          </Box>
+                        </ScheduleDetailDialog>
                       </VStack>
                     );
                   })}

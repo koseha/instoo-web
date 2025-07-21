@@ -100,14 +100,13 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
         </Stack>
       </>
 
-      <Stack alignItems="flex-end">
+      <Stack alignItems="start">
         <Badge colorPalette="blue" fontSize="10px">
           <GoPeople />
           {streamer.followCount ?? 0}
         </Badge>
         <SwitchRoot
           size="xs"
-          // alignSelf="flex-end"
           onClick={handleSwitchClick}
           checked={checked}
           onCheckedChange={(e) => handleCheckedChange(e.checked)}

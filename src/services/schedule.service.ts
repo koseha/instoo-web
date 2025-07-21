@@ -20,14 +20,14 @@ export interface ScheduleResponse {
   title: string;
   scheduleDate: string;
   startTime?: string;
-  status: "SCHEDULED" | "BREAK" | "TIME_TBD" | string;
-  isTimeUndecided: boolean;
-  isBreak: boolean;
+  status: "SCHEDULED" | "BREAK" | "TIME_TBD";
   description?: string;
   streamer: StreamerSummary;
   createdBy?: UserSummary;
   updatedBy?: UserSummary;
   version: number;
+  likeCount: number;
+  isLiked: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -131,6 +131,24 @@ export class ScheduleService {
     } catch (error) {
       console.error("스케줄(일정) 목록 요청 실패:", error);
       throw new Error("스케줄(일정) 목록에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 스케줄(일정) 상세 조회
+   */
+  static async getStreamerScheduleDetail(
+    scheduleUuid: string,
+  ): Promise<ScheduleResponse> {
+    try {
+      const response = await apiClient.get<ApiResponse<ScheduleResponse>>(
+        API_ENDPOINTS.SCHEDULES.DETAIL(scheduleUuid),
+      );
+
+      return response.data.content;
+    } catch (error) {
+      console.error("스케줄(일정) 상세 조회 요청 실패:", error);
+      throw new Error("스케줄(일정) 상세 조회 요청에 실패했습니다.");
     }
   }
 

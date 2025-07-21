@@ -16,23 +16,14 @@ import {
 import { MdVerified } from "react-icons/md";
 import { GoPeople } from "react-icons/go";
 import { TbCalendarPlus } from "react-icons/tb";
-import { format } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
 import { Streamer } from "@/types/interfaces/streamer.interface";
 import { PLATFORM_ICON_MAP, PLATFORM_NAME_MAP } from "@/constants/platform";
+import { formatUTCToKoreanDate } from "@/utils/time.utils";
 
 interface StreamerDetailDialogProps {
   isOpen: boolean;
   onClose: () => void;
   streamer: Streamer | null;
-}
-
-function formatUTCToKoreanDate(utc: string | null): string {
-  if (!utc) return "";
-  const timeZone = "Asia/Seoul";
-  const date = new Date(utc);
-  const zonedDate = toZonedTime(date, timeZone);
-  return format(zonedDate, "yyyy년 MM월 dd일");
 }
 
 const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
