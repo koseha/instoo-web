@@ -23,22 +23,28 @@ export default function RootLayout({
       <body>
         <Providers>
           {/* Header - 전체 너비 */}
-          <header>
-            <Header />
-            <Toaster />
-          </header>
+          <Header />
           {/* Sub-header - 전체 너비 */}
           <div></div>
           {/* Main Content - 너비 제한 */}
-          {/* <Flex className="main-content" minH="100vh"> */}
-          <Flex className="main-content" minH={1000}>
+          <Flex className="main-content" minH="100vh">
+            {/* <Flex className="main-content" minH={1000}> */}
+            {/* <Flex className="main-content"> */}
             <Sidebar />
-            <Box as="main" flex="1" p={10}>
+            <Box
+              as="main"
+              flex="1"
+              py={{ base: 3, lg: 10 }}
+              pl={{ base: 6, lg: 10 }}
+              pr={0}
+            >
               {children}
             </Box>
           </Flex>
           {/* Footer - 전체 너비 */}
           <footer></footer>
+
+          <Toaster />
           {/* 전역 모달들 */}
           <ModalProvider />
         </Providers>

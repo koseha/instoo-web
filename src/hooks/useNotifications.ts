@@ -21,7 +21,7 @@ export const useNotification = () => {
       title: options.title || "성공",
       description: options.message,
       type: "success",
-      duration: options.duration || 3000,
+      duration: options.duration || 2000,
       closable: options.closable ?? true,
     });
   };
@@ -31,7 +31,7 @@ export const useNotification = () => {
       title: options.title || "오류",
       description: options.message,
       type: "error",
-      duration: options.duration || 5000,
+      duration: options.duration || 4000,
       closable: options.closable ?? true,
     });
   };
@@ -41,7 +41,7 @@ export const useNotification = () => {
       title: options.title || "경고",
       description: options.message,
       type: "warning",
-      duration: options.duration || 4000,
+      duration: options.duration || 3000,
       closable: options.closable ?? true,
     });
   };
@@ -51,7 +51,7 @@ export const useNotification = () => {
       title: options.title || "정보",
       description: options.message,
       type: "info",
-      duration: options.duration || 3000,
+      duration: options.duration || 2000,
       closable: options.closable ?? true,
     });
   };
@@ -61,7 +61,7 @@ export const useNotification = () => {
       title: options.title || "로딩 중",
       description: options.message,
       type: "loading",
-      duration: options.duration || 4000,
+      duration: options.duration || 3000,
       closable: options.closable ?? false,
     });
   };

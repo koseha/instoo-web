@@ -14,7 +14,8 @@ const Sidebar: React.FC = () => {
       borderXWidth="1px"
       borderColor="neutral.200"
     >
-      <Box position="sticky" top={0}>
+      <Box position="sticky" top="64px">
+        {/* <Box> */}
         <Box py={4} borderBottomWidth="1px">
           <AddStreamer />
         </Box>

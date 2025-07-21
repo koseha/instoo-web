@@ -19,11 +19,13 @@ import { FiUser, FiShield, FiCalendar } from "react-icons/fi";
 import { useState } from "react";
 import { useModalStore, MODAL_IDS } from "@/stores/modal.store";
 import { FaRegEdit } from "react-icons/fa";
+import { useScrolled } from "@/hooks/useScrolled";
 
 const MyProfilePopover: React.FC = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { openModal } = useModalStore();
   const { user } = useAuthStore();
+  const scrolled = useScrolled();
 
   if (!user) return null;
 
@@ -57,11 +59,9 @@ const MyProfilePopover: React.FC = () => {
     >
       <PopoverTrigger asChild>
         <Button
-          variant="ghost"
+          variant={scrolled ? undefined : "ghost"}
           fontWeight="500"
           size="sm"
-          color="neutral.600"
-          _hover={{ color: "primary.black", bg: "neutral.100" }}
           fontFamily="body"
           gap={2}
         >

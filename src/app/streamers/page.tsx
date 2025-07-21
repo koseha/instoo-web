@@ -9,6 +9,7 @@ import StreamerDetailDialog from "@/components/streamer/StreamerDetailDialog";
 import RegisterStreamerDialog from "@/components/streamer/RegisterStreamerDialog";
 import { useStreamerList } from "@/hooks/useStreamerList";
 import StreamerFilters from "@/components/streamer/StreamerFilter";
+import { useScrolled } from "@/hooks/useScrolled";
 
 type Platform = "chzzk" | "soop" | "youtube";
 
@@ -19,6 +20,7 @@ export default function Streamers() {
   const [searchName, setSearchName] = useState("");
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
   const [searchTrigger, setSearchTrigger] = useState(0);
+  const isScrolled = useScrolled(60); // 60px 스크롤 후 버튼 표시
 
   // 스트리머 목록 데이터 관리
   const {
@@ -68,7 +70,7 @@ export default function Streamers() {
   }, []);
 
   return (
-    <>
+    <Box position="relative">
       {/* 헤더 */}
       <Box mb={4}>
         <Text
@@ -82,10 +84,13 @@ export default function Streamers() {
           gap={2}
         >
           스트리머 목록 보기
+          {/* 기본 헤더의 새로고침 버튼 - 스크롤 시 숨김 */}
           <IconButton
             size="xs"
             variant="ghost"
             onClick={handleRefresh}
+            opacity={isScrolled ? 0 : 1}
+            visibility={isScrolled ? "hidden" : "visible"}
             _hover={{
               bg: "neutral.100",
               transform: "rotate(180deg)",
@@ -252,6 +257,40 @@ export default function Streamers() {
         onClose={closeDetail}
         streamer={selectedStreamer}
       />
-    </>
+
+      {/* 플로팅 새로고침 버튼 - 스크롤 시 우하단에 고정 */}
+      <IconButton
+        size="lg"
+        position="fixed"
+        bottom="6"
+        right="6"
+        zIndex={1000}
+        bg="primary.white"
+        color="neutral.600"
+        border="1px solid"
+        borderColor="neutral.200"
+        boxShadow="0 4px 12px rgba(0, 0, 0, 0.15)"
+        borderRadius="full"
+        onClick={handleRefresh}
+        opacity={isScrolled ? 1 : 0}
+        visibility={isScrolled ? "visible" : "hidden"}
+        transform={isScrolled ? "scale(1)" : "scale(0.8)"}
+        transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
+        _hover={{
+          bg: "neutral.50",
+          transform: isScrolled ? "scale(1.05) rotate(180deg)" : "scale(0.8)",
+          borderColor: "neutral.300",
+          boxShadow: "0 6px 20px rgba(0, 0, 0, 0.2)",
+        }}
+        _active={{
+          transform: isScrolled ? "scale(0.95) rotate(180deg)" : "scale(0.8)",
+        }}
+        style={{
+          willChange: "transform, opacity, visibility",
+        }}
+      >
+        <FaRedo />
+      </IconButton>
+    </Box>
   );
 }

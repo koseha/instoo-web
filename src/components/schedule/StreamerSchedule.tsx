@@ -13,6 +13,7 @@ import {
   IconButton,
   Spinner,
   Icon,
+  Separator,
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { useMyStreamersStore } from "@/stores/my-streamers.store";
@@ -161,14 +162,16 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
           bg: "red.100",
           color: "red.600",
           showIcon: false,
+          borderColor: "red.200",
         };
       case "tbd":
         return {
           label: "시간미정",
           colorScheme: "gray",
-          bg: "gray.100",
+          bg: "gray.200",
           color: "gray.600",
           showIcon: false,
+          borderColor: "gray.300",
         };
       default:
         return {
@@ -292,13 +295,15 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                 minH="160px"
                 borderWidth="1px"
                 borderColor="gray.100"
-                p={3}
+                p={1}
               >
                 {/* 날짜 */}
                 <HStack
                   justify="space-between"
                   align="flex-start"
-                  mb={3}
+                  mb={1}
+                  px={2}
+                  mt={2}
                   bg={isTodayDate ? "blue.200" : "transparent"}
                   borderRadius={isTodayDate ? "5px" : "none"}
                 >
@@ -326,6 +331,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                     {date.getDate()}
                   </Text>
                 </HStack>
+                <Separator mb={1.5} mx={2} />
 
                 {/* 간소화된 일정 목록 */}
                 <VStack gap={1.5} align="stretch">
@@ -333,19 +339,25 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                     const statusConfig = getStatusConfig(schedule.status);
 
                     return (
-                      <VStack key={schedule.uuid} gap={0.5} align="start">
+                      <VStack
+                        key={schedule.uuid}
+                        gap={1}
+                        align="start"
+                        p={1.5}
+                        borderRadius={6}
+                        borderWidth={1}
+                        _hover={{
+                          bg: "neutral.100",
+                        }}
+                      >
                         {/* 상태/시간 배지 */}
-                        <HStack gap={1}>
+                        <HStack gap={0.5}>
                           <Badge
                             bg={statusConfig.bg}
                             color={statusConfig.color}
                             fontSize="10px"
-                            border={schedule.status === "tbd" ? "1px" : "none"}
-                            borderColor={
-                              schedule.status === "tbd"
-                                ? "gray.300"
-                                : "transparent"
-                            }
+                            borderWidth="1px"
+                            borderColor={statusConfig.borderColor || ""}
                           >
                             {schedule.status === "scheduled" &&
                             schedule.startTime
@@ -367,12 +379,13 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                             cursor="pointer"
                             borderRadius={2}
                             _hover={{
-                              bg: "blue.100",
+                              // bg: "neutral.100",
                               textDecoration: "underline",
                             }}
                             display="flex"
                             gap={1}
                             alignItems="center"
+                            w="full"
                           >
                             <Icon size="xs">
                               <GoPerson />

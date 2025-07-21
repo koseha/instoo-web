@@ -32,6 +32,7 @@ const system = createSystem(defaultConfig, {
         },
         neutral: {
           100: { value: "#F5F5F5" },
+          150: { value: "#EDEDED" },
           200: { value: "#E5E5E5" },
           300: { value: "#D4D4D4" },
           400: { value: "#A3A3A3" },
@@ -92,6 +93,7 @@ const system = createSystem(defaultConfig, {
 
   globalCss: {
     "html, body": {
+      height: "100%",
       fontSize: "16px",
       lineHeight: "1.6",
       minWidth: "1024px",

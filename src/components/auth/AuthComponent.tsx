@@ -20,10 +20,12 @@ import { AuthService } from "@/services/auth.service";
 import { openOAuthPopup, waitForOAuthMessage } from "@/utils/oauth.utils";
 import { OAuthProvider } from "@/types/enums/oauth-provider.enum";
 import MyProfilePopover from "../user/MyProfilePopover";
+import { useScrolled } from "@/hooks/useScrolled";
 
 const AuthComponent: React.FC = () => {
   const { login, logout, isAuthenticated } = useAuthStore();
   const { showSuccess, showError } = useNotification();
+  const scrolled = useScrolled();
 
   const handleGoogleLogin = async () => {
     try {
@@ -84,11 +86,9 @@ const AuthComponent: React.FC = () => {
       <Flex align="center" gap={1}>
         <MyProfilePopover />
         <Button
-          variant="ghost"
+          variant={scrolled ? undefined : "ghost"}
           fontWeight="500"
           size="sm"
-          color="neutral.600"
-          _hover={{ color: "primary.black", bg: "neutral.100" }}
           onClick={handleLogout}
           fontFamily="body"
         >
@@ -103,11 +103,9 @@ const AuthComponent: React.FC = () => {
     <PopoverRoot>
       <PopoverTrigger asChild>
         <Button
-          variant="ghost"
+          variant={scrolled ? undefined : "ghost"}
           fontWeight="500"
           size="sm"
-          color="neutral.600"
-          _hover={{ color: "primary.black", bg: "neutral.100" }}
           fontFamily="body"
         >
           로그인

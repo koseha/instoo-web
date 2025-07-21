@@ -16,7 +16,6 @@ import {
   Box,
   Icon,
   Badge,
-  VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { GoPerson, GoPeople } from "react-icons/go";

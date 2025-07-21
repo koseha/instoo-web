@@ -108,6 +108,7 @@ export default function LikeBadge({
       {showFloatHearts && floatHearts}
 
       <Badge
+        variant="surface"
         colorPalette={isAuthenticated ? "purple" : "gray"}
         fontSize="10px"
         cursor={isLoading ? "not-allowed" : "pointer"}

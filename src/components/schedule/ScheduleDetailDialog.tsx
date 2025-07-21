@@ -97,6 +97,10 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
   // 수정하기 버튼 클릭 핸들러
   const handleEditClick = useCallback(() => {
     if (!schedule) return;
+    if (!isAuthenticated) {
+      showWarning({ title: "로그인이 필요합니다" });
+      return;
+    }
 
     // ScheduleEditorDialog에서 필요한 형태로 데이터 변환
     const editData = {

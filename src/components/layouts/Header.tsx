@@ -1,18 +1,26 @@
+"use client";
+
 // components/layouts/Header
 import React from "react";
 import { Box, Flex, Link } from "@chakra-ui/react";
 import AuthComponent from "../auth/AuthComponent";
+import { useScrolled } from "@/hooks/useScrolled";
 
 export default function Header() {
+  const scrolled = useScrolled();
+
   return (
     <Box
       as="header"
-      bg="primary.white"
+      position="sticky"
+      top="0px"
+      zIndex="999"
+      h={{ base: "64px" }}
+      bg={scrolled ? "neutral.100" : "primary.white"}
       borderBottom="1px solid"
       borderColor="neutral.200"
-      // h={{ base: "56px", md: "64px" }}
-      h={{ base: "64px" }}
-      position="static"
+      backdropFilter={scrolled ? "blur(4px)" : "none"}
+      transition="background-color 0.2s ease, backdrop-filter 0.3s ease"
     >
       <Flex
         as="nav"
