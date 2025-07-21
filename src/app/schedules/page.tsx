@@ -12,9 +12,14 @@ export default function Schedules() {
   const [activeTab, setActiveTab] = useState<"verified" | "loading">(
     "verified",
   );
+  const [searchTrigger, setSearchTrigger] = useState(0);
 
   const handleTabChange = useCallback((details: { value: string }) => {
     setActiveTab(details.value as "verified" | "loading");
+  }, []);
+
+  const handleRefresh = useCallback(() => {
+    setSearchTrigger((prev) => prev + 1);
   }, []);
 
   return (
@@ -35,6 +40,7 @@ export default function Schedules() {
           <IconButton
             size="xs"
             variant="ghost"
+            onClick={handleRefresh}
             _hover={{
               bg: "neutral.100",
               transform: "rotate(180deg)",
@@ -124,7 +130,7 @@ export default function Schedules() {
 
         {/* 탭 컨텐츠 */}
         <Tabs.Content value="verified">
-          <StreamerSchedule />
+          <StreamerSchedule otherTrigger={searchTrigger} />
         </Tabs.Content>
 
         <Tabs.Content value="loading">앙앙</Tabs.Content>

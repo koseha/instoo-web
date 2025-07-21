@@ -1,4 +1,5 @@
 // src/store/schedule-editor.store.ts
+import { StreamerSummary } from "@/services/schedule.service";
 import { create } from "zustand";
 
 interface ScheduleData {
@@ -7,7 +8,7 @@ interface ScheduleData {
   startTime?: string; // create | edit
   status: "BREAK" | "TIME_TBD" | "SCHEDULED"; // create | edit
   description?: string; // create | edit
-  streamerUuid?: string; // create
+  streamer?: StreamerSummary; // create
   lastUpdatedAt?: string; // edit, 충돌 감지용
 }
 

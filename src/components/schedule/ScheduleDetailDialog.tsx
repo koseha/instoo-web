@@ -31,6 +31,7 @@ import { useAuthStore } from "@/stores/auth.store";
 import { useNotification } from "@/hooks/useNotifications";
 import { useLikeStore } from "@/stores/schedule-like.store";
 import { FaRegEdit } from "react-icons/fa";
+import { useScheduleDialogStore } from "@/stores/schedule-editor.store";
 
 const MotionBox = motion(Box);
 
@@ -51,9 +52,12 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
 }) => {
   const [schedule, setSchedule] = useState<ScheduleResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+
   const { isAuthenticated } = useAuthStore();
   const { showWarning } = useNotification();
   const controls = useAnimationControls();
+  const { openScheduleEdit } = useScheduleDialogStore();
 
   const { setLike } = useLikeStore();
 
@@ -89,6 +93,28 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
       setTimeout(() => setShowFloatHearts(false), 600);
     }
   }, [liked, isAuthenticated, controls, showWarning]);
+
+  // 수정하기 버튼 클릭 핸들러
+  const handleEditClick = useCallback(() => {
+    if (!schedule) return;
+
+    // ScheduleEditorDialog에서 필요한 형태로 데이터 변환
+    const editData = {
+      title: schedule.title,
+      scheduleDate: schedule.scheduleDate || "",
+      startTime: schedule.startTime || "",
+      status: schedule.status,
+      description: schedule.description || "",
+      streamer: schedule.streamer,
+      lastUpdatedAt: schedule.updatedAt, // 충돌 감지용
+    };
+
+    // Detail Dialog 닫기
+    setIsDetailDialogOpen(false);
+
+    // Edit Dialog 열기
+    openScheduleEdit(editData);
+  }, [schedule, openScheduleEdit]);
 
   // 모달 닫힐 때 서버 반영 및 전역 상태 업데이트
   const handleClose = async () => {
@@ -144,11 +170,13 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
 
   return (
     <Dialog.Root
-      // size={{ base: "full", md: "lg" }}
       size="sm"
       placement="center"
       motionPreset="slide-in-bottom"
+      open={isDetailDialogOpen}
       onOpenChange={(details) => {
+        setIsDetailDialogOpen(details.open);
+
         if (details.open && scheduleUuid) {
           setLoading(true);
           fetchScheduleDetail(scheduleUuid)
@@ -293,10 +321,15 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                         </Button>
                       </Box>
                       <Button
+                        onClick={handleEditClick}
                         variant="outline"
                         size="md"
                         borderColor="gray.300"
                         color="gray.700"
+                        _hover={{
+                          borderColor: "gray.400",
+                          bg: "gray.50",
+                        }}
                       >
                         <FaRegEdit /> 수정하기
                       </Button>

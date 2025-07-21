@@ -68,7 +68,7 @@ const ScheduleEditorDialog = () => {
           startTime: editingSchedule.startTime || "",
           status: editingSchedule.status,
           description: editingSchedule.description || "",
-          streamerUuid: editingSchedule.streamerUuid || "",
+          streamerUuid: editingSchedule.streamer?.uuid || "",
         });
       } else {
         resetForm();
