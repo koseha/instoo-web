@@ -69,9 +69,14 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     const endDate = new Date(lastDay);
     endDate.setDate(endDate.getDate() + (6 - lastDay.getDay()));
 
+    // const params: GetSchedulesDto = {
+    //   startDate: startDate.toISOString().split("T")[0],
+    //   endDate: endDate.toISOString().split("T")[0],
+    //   streamerUuids: fetchTargetUuids,
+    // };
     const params: GetSchedulesDto = {
-      startDate: startDate.toISOString().split("T")[0],
-      endDate: endDate.toISOString().split("T")[0],
+      startDate: formatDateKey(startDate), // 🔧 로컬 기준 포맷팅 사용
+      endDate: formatDateKey(endDate), // 🔧 로컬 기준 포맷팅 사용
       streamerUuids: fetchTargetUuids,
     };
 
