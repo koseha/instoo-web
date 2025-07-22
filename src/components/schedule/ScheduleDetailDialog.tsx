@@ -32,6 +32,8 @@ import { useNotification } from "@/hooks/useNotifications";
 import { useLikeStore } from "@/stores/schedule-like.store";
 import { FaRegEdit } from "react-icons/fa";
 import { useScheduleDialogStore } from "@/stores/schedule-editor.store";
+import { FiExternalLink } from "react-icons/fi";
+import { FaDragon } from "react-icons/fa6";
 
 const MotionBox = motion(Box);
 
@@ -246,7 +248,7 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                       fontSize="xl"
                       fontWeight="600"
                       color="black"
-                      lineHeight={1.2}
+                      lineHeight={1.3}
                     >
                       {schedule.title}
                     </Text>
@@ -280,10 +282,33 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                 <Separator />
 
                 {/* 다이얼로그 본문 */}
-                <Dialog.Body px={8} py={4} overflow="auto">
-                  <VStack align="flex-start" gap={10}>
+                <Dialog.Body
+                  px={8}
+                  py={4}
+                  overflow="auto"
+                  minHeight={{ base: "276px", md: "220px" }}
+                  maxH="320px"
+                  overflowY="auto"
+                  borderRadius="md"
+                  css={{
+                    "&::-webkit-scrollbar": {
+                      width: "6px",
+                    },
+                    "&::-webkit-scrollbar-track": {
+                      background: "transparent",
+                    },
+                    "&::-webkit-scrollbar-thumb": {
+                      background: "#D4D4D4",
+                      borderRadius: "3px",
+                    },
+                    "&::-webkit-scrollbar-thumb:hover": {
+                      background: "#A3A3A3",
+                    },
+                  }}
+                >
+                  <VStack align="flex-start" gap={4}>
                     {/* 설명 */}
-                    <Field.Root>
+                    <Field.Root mb={3}>
                       <Field.Label color="gray.800">상세 일정</Field.Label>
                       {schedule.description ? (
                         <Text fontSize="sm" color="gray.500" lineHeight="1.7">
@@ -292,6 +317,66 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                       ) : (
                         <Text fontSize="sm" color="gray.500">
                           입력된 상세 일정이 없습니다
+                        </Text>
+                      )}
+                    </Field.Root>
+
+                    <Field.Root mb={schedule.description ? 0 : 3}>
+                      <Field.Label color="gray.800">참고 링크</Field.Label>
+                      {schedule.description ? (
+                        <Button
+                          asChild
+                          variant="ghost"
+                          size="md"
+                          w="full"
+                          h="auto"
+                          px={3}
+                          py={1}
+                          bg="neutral.100"
+                          justifyContent="flex-start"
+                          _hover={{
+                            bg: "neutral.200",
+                            transform: "translateY(-1px)",
+                          }}
+                          transition="all 0.2s"
+                        >
+                          <a href="#" target="_blank" rel="noopener noreferrer">
+                            <HStack w="full" gap={3}>
+                              <Icon color="neutral.500">
+                                <FaDragon />
+                              </Icon>
+
+                              <VStack
+                                align="flex-start"
+                                flex={1}
+                                gap={0}
+                                maxW="200px"
+                              >
+                                <Text
+                                  fontSize="xs"
+                                  color="neutral.500"
+                                  fontWeight="500"
+                                >
+                                  원본 공지
+                                </Text>
+                                <Text
+                                  fontSize="sm"
+                                  color="neutral.700"
+                                  lineClamp="1"
+                                >
+                                  트위터 공지사항 링크
+                                </Text>
+                              </VStack>
+
+                              <Icon color="neutral.400" size="sm" ml="auto">
+                                <FiExternalLink />
+                              </Icon>
+                            </HStack>
+                          </a>
+                        </Button>
+                      ) : (
+                        <Text fontSize="sm" color="gray.500">
+                          입력된 참고 링크가 없습니다
                         </Text>
                       )}
                     </Field.Root>

@@ -1,8 +1,5 @@
 // stores/my-streamers.store.ts - 수정된 버전
-import {
-  StreamerBasicInfo,
-  StreamerSimpleResponse,
-} from "@/types/interfaces/streamer.interface";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -50,6 +47,7 @@ export const useMyStreamersStore = create<MyStreamersState>()(
           profileImageUrl: streamer.profileImageUrl,
           platforms: streamer.platforms,
           followCount: streamer.followCount,
+          isFollowed: streamer.isFollowed,
         };
 
         set({
@@ -180,6 +178,7 @@ export const useMyStreamersStore = create<MyStreamersState>()(
                 profileImageUrl: newStreamer.profileImageUrl,
                 platforms: newStreamer.platforms,
                 followCount: newStreamer.followCount,
+                isFollowed: newStreamer.isFollowed,
               }) as StreamerSimpleResponse,
           );
 

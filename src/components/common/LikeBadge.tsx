@@ -1,7 +1,7 @@
 import { Box, Badge } from "@chakra-ui/react";
 import { motion, useAnimationControls } from "framer-motion";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import { ScheduleService } from "@/services/schedule.service";
 import { useNotification } from "@/hooks/useNotifications";

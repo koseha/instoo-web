@@ -63,6 +63,7 @@ export interface StreamerSimpleResponse {
   profileImageUrl: string;
   platforms: PlatformSimpleInfo[];
   followCount: number;
+  isFollowed: boolean;
 }
 
 // 로컬 저장용 - followCount 제외

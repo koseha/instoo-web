@@ -11,7 +11,6 @@ import {
   Image,
   SwitchControl,
   SwitchHiddenInput,
-  SwitchLabel,
   SwitchRoot,
   Box,
   Badge,
@@ -102,18 +101,20 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
 
       <Stack alignItems="start">
         <HStack gap={1}>
-          <Tooltip
-            key={streamer.uuid + "FaUserCheck"}
-            content={"팔로잉"}
-            positioning={{ placement: "top" }}
-            openDelay={100}
-            closeDelay={100}
-            contentProps={{ bg: "blue.100", color: "blue.700" }}
-          >
-            <Badge colorPalette="blue" fontSize="10px">
-              <FaUserCheck />
-            </Badge>
-          </Tooltip>
+          {streamer.isFollowed && (
+            <Tooltip
+              key={streamer.uuid + "FaUserCheck"}
+              content={"팔로잉"}
+              positioning={{ placement: "top" }}
+              openDelay={100}
+              closeDelay={100}
+              contentProps={{ bg: "blue.100", color: "blue.700" }}
+            >
+              <Badge colorPalette="blue" fontSize="10px">
+                <FaUserCheck />
+              </Badge>
+            </Tooltip>
+          )}
           <Tooltip
             key={streamer.uuid + "GoPeople"}
             content={"팔로우 수"}
