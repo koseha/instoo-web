@@ -18,6 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { GoPeople } from "react-icons/go";
+import { Tooltip } from "../ui/tooltip";
+import { FaUserCheck } from "react-icons/fa6";
 
 interface MyStreamersCardProps {
   streamer: StreamerSimpleResponse;
@@ -99,20 +101,44 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
       </>
 
       <Stack alignItems="start">
-        <Badge colorPalette="blue" fontSize="10px">
-          <GoPeople />
-          {streamer.followCount ?? 0}
-        </Badge>
-        <SwitchRoot
-          size="xs"
-          onClick={handleSwitchClick}
-          checked={checked}
-          onCheckedChange={(e) => handleCheckedChange(e.checked)}
-        >
-          <SwitchHiddenInput />
-          <SwitchControl />
-          <SwitchLabel />
-        </SwitchRoot>
+        <HStack gap={1}>
+          <Tooltip
+            key={streamer.uuid + "FaUserCheck"}
+            content={"팔로잉"}
+            positioning={{ placement: "top" }}
+            openDelay={100}
+            closeDelay={100}
+            contentProps={{ bg: "blue.100", color: "blue.700" }}
+          >
+            <Badge colorPalette="blue" fontSize="10px">
+              <FaUserCheck />
+            </Badge>
+          </Tooltip>
+          <Tooltip
+            key={streamer.uuid + "GoPeople"}
+            content={"팔로우 수"}
+            positioning={{ placement: "top" }}
+            openDelay={100}
+            closeDelay={100}
+            contentProps={{ bg: "blue.100", color: "blue.700" }}
+          >
+            <Badge colorPalette="blue" fontSize="10px">
+              <GoPeople />
+              {streamer.followCount ?? 0}
+            </Badge>
+          </Tooltip>
+        </HStack>
+        <HStack justifyContent="flex-end" w="full">
+          <SwitchRoot
+            size="xs"
+            onClick={handleSwitchClick}
+            checked={checked}
+            onCheckedChange={(e) => handleCheckedChange(e.checked)}
+          >
+            <SwitchHiddenInput />
+            <SwitchControl />
+          </SwitchRoot>
+        </HStack>
       </Stack>
     </HStack>
   );

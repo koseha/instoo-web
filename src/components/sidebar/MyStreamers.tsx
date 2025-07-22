@@ -26,7 +26,6 @@ import {
 } from "@/types/interfaces/streamer.interface";
 import { InfoTip } from "../ui/toggle-tip";
 import { FaRedo } from "react-icons/fa";
-import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 
 const MyStreamers = () => {
   // 로컬 스토어는 제거 기능만 사용, 데이터는 훅에서 가져옴
