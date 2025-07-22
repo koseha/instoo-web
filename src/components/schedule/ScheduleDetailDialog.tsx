@@ -242,7 +242,12 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                     </HStack>
 
                     {/* 스케줄 제목 */}
-                    <Text fontSize="2xl" fontWeight="700" color="black">
+                    <Text
+                      fontSize="xl"
+                      fontWeight="600"
+                      color="black"
+                      lineHeight={1.2}
+                    >
                       {schedule.title}
                     </Text>
 

@@ -87,13 +87,14 @@ const ScheduleForm = ({
       {/* 일정 제목 */}
       <Field.Root>
         <Field.Label>
-          일정 제목 <Text color="red">*</Text>
+          일정 제목 (30자)<Text color="red">*</Text>
         </Field.Label>
         <Input
           value={formData.title}
           onChange={(e) => onInputChange("title", e.target.value)}
           placeholder="방송 제목을 입력해주세요"
           h={12}
+          max={30}
         />
       </Field.Root>
 
@@ -165,13 +166,14 @@ const ScheduleForm = ({
 
       {/* 설명 */}
       <Field.Root>
-        <Field.Label>설명 (선택)</Field.Label>
+        <Field.Label>설명 (선택, 10줄)</Field.Label>
         <Textarea
           value={formData.description}
           onChange={(e) => onInputChange("description", e.target.value)}
           placeholder="방송 내용이나 특별한 공지사항을 적어주세요"
           bg="primary.white"
           minH={20}
+          maxH="10h"
         />
       </Field.Root>
 

@@ -7,6 +7,7 @@ import "@/theme/globals.css";
 import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/components/providers/modal.provider";
+import Footer from "@/components/layouts/Footer";
 
 export const metadata = {
   title: "인스투",
@@ -24,13 +25,16 @@ export default function RootLayout({
         <Providers>
           {/* Header - 전체 너비 */}
           <Header />
+
           {/* Sub-header - 전체 너비 */}
           <div></div>
+
           {/* Main Content - 너비 제한 */}
           <Flex className="main-content" minH="100vh">
             {/* <Flex className="main-content" minH={1000}> */}
             {/* <Flex className="main-content"> */}
             <Sidebar />
+
             <Box
               as="main"
               flex="1"
@@ -41,12 +45,13 @@ export default function RootLayout({
               {children}
             </Box>
           </Flex>
-          {/* Footer - 전체 너비 */}
-          <footer></footer>
 
-          <Toaster />
+          {/* Footer - 전체 너비 */}
+          <Footer />
+
           {/* 전역 모달들 */}
           <ModalProvider />
+          <Toaster />
         </Providers>
       </body>
     </html>

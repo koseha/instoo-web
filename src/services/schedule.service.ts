@@ -168,7 +168,7 @@ export class ScheduleService {
    */
   static async removeLike(scheduleUuid: string): Promise<void> {
     try {
-      await apiClient.delete(API_ENDPOINTS.SCHEDULES.LIKE(scheduleUuid));
+      await apiClient.delete(API_ENDPOINTS.SCHEDULES.UNLIKE(scheduleUuid));
     } catch (error) {
       console.error("좋아요 취소 실패:", error);
       throw new Error("좋아요 취소에 실패했습니다.");

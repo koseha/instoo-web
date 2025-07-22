@@ -5,20 +5,8 @@ import {
   newStreamerDto,
   Streamer,
   StreamerData,
+  StreamerSimpleResponse,
 } from "@/types/interfaces/streamer.interface";
-
-export interface PlatformSimpleInfo {
-  platformName: string;
-  channelUrl: string;
-}
-
-export interface StreamerSimpleResponse {
-  uuid: string;
-  name: string;
-  profileImageUrl: string;
-  platforms: PlatformSimpleInfo[];
-  followCount: number;
-}
 
 export class StreamerService {
   /**
@@ -74,7 +62,7 @@ export class StreamerService {
       await apiClient.post("/v1/streamers", body);
     } catch (error) {
       console.error("신규 방송인 등록 요청 실패:", error);
-      throw new Error("신규 방송인 등록에에 실패했습니다.");
+      throw new Error("신규 방송인 등록에 실패했습니다.");
     }
   }
 
@@ -90,7 +78,49 @@ export class StreamerService {
       return response.data.content;
     } catch (error) {
       console.error("신규 방송인 등록 요청 실패:", error);
-      throw new Error("신규 방송인 등록에에 실패했습니다.");
+      throw new Error("신규 방송인 등록에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 방송인 팔로우하기
+   */
+  static async followStreamer(uuid: string): Promise<void> {
+    try {
+      await apiClient.post(API_ENDPOINTS.STREAMERS.FOLLOW(uuid));
+    } catch (error) {
+      console.error("방송인 팔로우 요청 실패:", error);
+      throw new Error("방송인 팔로우에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 방송인 언팔로우하기
+   */
+  static async unfollowStreamer(uuid: string): Promise<void> {
+    try {
+      await apiClient.delete(API_ENDPOINTS.STREAMERS.UNFOLLOW(uuid));
+    } catch (error) {
+      console.error("방송인 언팔로우 요청 실패:", error);
+      throw new Error("방송인 언팔로우에 실패했습니다.");
+    }
+  }
+
+  /**
+   * uuids로 방송인 간단 정보 조회
+   */
+  static async getSimpleStreamerByUuids(
+    uuids: string[],
+  ): Promise<StreamerSimpleResponse[]> {
+    try {
+      const response = await apiClient.post<
+        ApiResponse<StreamerSimpleResponse[]>
+      >(API_ENDPOINTS.STREAMERS.BATCH_SIMPLE, { uuids: uuids });
+
+      return response.data.content;
+    } catch (error) {
+      console.error("방송인 언팔로우 요청 실패:", error);
+      throw new Error("방송인 언팔로우에 실패했습니다.");
     }
   }
 }

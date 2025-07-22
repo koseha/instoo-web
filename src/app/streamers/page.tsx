@@ -31,7 +31,6 @@ export default function Streamers() {
     handlePageChange,
     selectedStreamer,
     isDetailOpen,
-    openDetail,
     closeDetail,
   } = useStreamerList({
     isVerified: activeTab === "verified",
@@ -215,7 +214,6 @@ export default function Streamers() {
             totalCount={data.totalCount}
             searchName={searchName}
             platforms={selectedPlatforms}
-            onDetailClick={openDetail}
             onPageChange={handlePageChange}
           />
         </Tabs.Content>
@@ -245,18 +243,17 @@ export default function Streamers() {
             totalCount={data.totalCount}
             searchName={searchName}
             platforms={selectedPlatforms}
-            onDetailClick={openDetail}
             onPageChange={handlePageChange}
           />
         </Tabs.Content>
       </Tabs.Root>
 
       {/* 상세 다이얼로그 */}
-      <StreamerDetailDialog
+      {/* <StreamerDetailDialog
         isOpen={isDetailOpen}
         onClose={closeDetail}
         streamer={selectedStreamer}
-      />
+      /> */}
 
       {/* 플로팅 새로고침 버튼 - 스크롤 시 우하단에 고정 */}
       <IconButton

@@ -27,6 +27,7 @@ export interface Streamer {
   profileImageUrl?: string | null;
   description?: string | null;
   followCount: number;
+  isFollowed: boolean;
   isVerified: boolean;
   isActive: boolean;
   platforms: StreamerPlatform[] | null;
@@ -49,4 +50,25 @@ export interface newStreamerDto {
   platforms: Pick<StreamerPlatform, "channelUrl" | "platformName">[];
   profileImageUrl?: string;
   description: string;
+}
+
+export interface PlatformSimpleInfo {
+  platformName: string;
+  channelUrl: string;
+}
+
+export interface StreamerSimpleResponse {
+  uuid: string;
+  name: string;
+  profileImageUrl: string;
+  platforms: PlatformSimpleInfo[];
+  followCount: number;
+}
+
+// 로컬 저장용 - followCount 제외
+export interface StreamerBasicInfo {
+  uuid: string;
+  name: string;
+  profileImageUrl: string;
+  platforms: PlatformSimpleInfo[];
 }

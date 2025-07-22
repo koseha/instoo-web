@@ -6,17 +6,18 @@ import { useCallback, useState } from "react";
 import { FaRedo } from "react-icons/fa";
 import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaCalendarDay } from "react-icons/fa";
+import { FaCalendarWeek } from "react-icons/fa";
 import { useScrolled } from "@/hooks/useScrolled";
 
 export default function Schedules() {
-  const [activeTab, setActiveTab] = useState<"verified" | "loading">(
-    "verified",
+  const [activeTab, setActiveTab] = useState<"monthly" | "weekly" | "daily">(
+    "monthly",
   );
   const [searchTrigger, setSearchTrigger] = useState(0);
   const isScrolled = useScrolled(60); // 100px 스크롤 후 버튼 표시
 
   const handleTabChange = useCallback((details: { value: string }) => {
-    setActiveTab(details.value as "verified" | "loading");
+    setActiveTab(details.value as "monthly" | "weekly" | "daily");
   }, []);
 
   const handleRefresh = useCallback(() => {
@@ -64,19 +65,19 @@ export default function Schedules() {
 
       {/* 탭과 등록 버튼 */}
       <Tabs.Root
-        defaultValue="verified"
+        defaultValue="monthly"
         variant="plain"
         onValueChange={handleTabChange}
       >
         <Flex justify="space-between" align="end">
           <Tabs.List bg="bg.muted" rounded="l3" p="1">
-            {/* 인증됨 탭 - 애니메이션 최적화 */}
+            {/* 월간(monthly) 탭 - 애니메이션 최적화 */}
             <Tabs.Trigger
-              value="verified"
+              value="monthly"
               transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               _selected={{
                 bg: "teal.100",
-                "& .selected_streamer-verified": {
+                "& .selected_schedule-monthly": {
                   color: "teal.600",
                   transform: "scale(1.1)",
                 },
@@ -87,7 +88,7 @@ export default function Schedules() {
             >
               <Box
                 as={FaRegCalendarAlt}
-                className="selected_streamer-verified"
+                className="selected_schedule-monthly"
                 transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
                 style={{
                   willChange: "transform, color",
@@ -97,13 +98,41 @@ export default function Schedules() {
               Monthly
             </Tabs.Trigger>
 
-            {/* 요청 중 탭 - 애니메이션 최적화 */}
+            {/* 주간(weekly) 탭 - 애니메이션 최적화 */}
             <Tabs.Trigger
-              value="loading"
+              value="weekly"
               transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
               _selected={{
                 bg: "red.100",
-                "& .selected_streamer-verified": {
+                "& .selected_schedule-weekly": {
+                  color: "red.600",
+                  transform: "scale(1.1)",
+                },
+              }}
+              style={{
+                willChange: "background-color",
+              }}
+              disabled={true}
+            >
+              <Box
+                as={FaCalendarWeek}
+                className="selected_schedule-weekly"
+                transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+                style={{
+                  willChange: "transform, color",
+                  backfaceVisibility: "hidden",
+                }}
+              />
+              Weekly
+            </Tabs.Trigger>
+
+            {/* 일간(daily) 탭 - 애니메이션 최적화 */}
+            <Tabs.Trigger
+              value="daily"
+              transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
+              _selected={{
+                bg: "red.100",
+                "& .selected_schedule-daily": {
                   color: "red.600",
                   transform: "scale(1.1)",
                 },
@@ -115,7 +144,7 @@ export default function Schedules() {
             >
               <Box
                 as={FaCalendarDay}
-                className="selected_streamer-verified"
+                className="selected_schedule-daily"
                 transition="all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
                 style={{
                   willChange: "transform, color",
@@ -133,11 +162,12 @@ export default function Schedules() {
         </Flex>
 
         {/* 탭 컨텐츠 */}
-        <Tabs.Content value="verified">
+        <Tabs.Content value="monthly">
           <StreamerSchedule otherTrigger={searchTrigger} />
         </Tabs.Content>
 
-        <Tabs.Content value="loading">앙앙</Tabs.Content>
+        <Tabs.Content value="weekly">앙앙</Tabs.Content>
+        <Tabs.Content value="daily">켕켕</Tabs.Content>
       </Tabs.Root>
 
       {/* 플로팅 새로고침 버튼 - 스크롤 시 우하단에 고정 */}

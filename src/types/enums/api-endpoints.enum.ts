@@ -21,6 +21,10 @@ export const API_ENDPOINTS = {
     DETAIL: (uuid: string) => `/v1/streamers/${uuid}`,
     UPDATE: (uuid: string) => `/v1/streamers/${uuid}`,
     VERIFY: (uuid: string) => `/v1/streamers/${uuid}/verify`,
+    FOLLOW: (uuid: string) => `/v1/streamers/${uuid}/follow`,
+    UNFOLLOW: (uuid: string) => `/v1/streamers/${uuid}/unfollow`,
+    GET_SIMPLE: (uuid: string) => `/v1/streamers/${uuid}/simple`,
+    BATCH_SIMPLE: `v1/streamers/batch-simple`,
   },
 
   // 일정
@@ -31,5 +35,6 @@ export const API_ENDPOINTS = {
     UPDATE: (uuid: string) => `/v1/schedules/${uuid}`,
     DELETE: (uuid: string) => `/v1/schedules/${uuid}`,
     LIKE: (uuid: string) => `/v1/schedules/${uuid}/like`,
+    UNLIKE: (uuid: string) => `/v1/schedules/${uuid}/unlike`,
   },
 };

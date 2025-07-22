@@ -37,7 +37,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     [],
   );
   const [loading, setLoading] = useState(false);
-  const { fetchTargetUuids } = useMyStreamersStore();
+  const { scheduleFetchUuids } = useMyStreamersStore();
   const { likedMap, likeCountMap } = useLikeStore();
 
   // API 호출 함수
@@ -57,7 +57,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
 
   // 월 변경 시 데이터 로드
   useEffect(() => {
-    if (fetchTargetUuids.length === 0) {
+    if (scheduleFetchUuids.length === 0) {
       setSchedulesData([]);
       return;
     }
@@ -75,16 +75,16 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     // const params: GetSchedulesDto = {
     //   startDate: startDate.toISOString().split("T")[0],
     //   endDate: endDate.toISOString().split("T")[0],
-    //   streamerUuids: fetchTargetUuids,
+    //   streamerUuids: scheduleFetchUuids,
     // };
     const params: GetSchedulesDto = {
       startDate: formatDateKey(startDate), // 🔧 로컬 기준 포맷팅 사용
       endDate: formatDateKey(endDate), // 🔧 로컬 기준 포맷팅 사용
-      streamerUuids: fetchTargetUuids,
+      streamerUuids: scheduleFetchUuids,
     };
 
     fetchSchedules(params);
-  }, [currentDate, JSON.stringify(fetchTargetUuids), otherTrigger]);
+  }, [currentDate, JSON.stringify(scheduleFetchUuids), otherTrigger]);
 
   // 유틸리티 함수들
   const getDaysInMonth = (date: Date) => {
@@ -392,6 +392,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                                 fontSize="xs"
                                 color="neutral.500"
                                 lineClamp="2"
+                                lineHeight={1.2}
                               >
                                 {schedule.title}
                               </Text>
@@ -414,6 +415,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                                 fontSize="xs"
                                 color="neutral.900"
                                 fontWeight="inherit"
+                                lineClamp="1"
                               >
                                 {schedule.streamerName}
                               </Text>

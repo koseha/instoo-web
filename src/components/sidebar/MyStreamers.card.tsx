@@ -1,6 +1,6 @@
 import { PLATFORM_ICON_MAP } from "@/constants/platform";
-import { StreamerSimpleResponse } from "@/services/streamer.service";
 import { useMyStreamersStore } from "@/stores/my-streamers.store";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 import {
   Text,
   HStack,
@@ -14,25 +14,24 @@ import {
   SwitchLabel,
   SwitchRoot,
   Box,
-  Icon,
   Badge,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { GoPerson, GoPeople } from "react-icons/go";
+import { GoPeople } from "react-icons/go";
 
 interface MyStreamersCardProps {
   streamer: StreamerSimpleResponse;
 }
 
 const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
-  const { fetchTargetUuids, addFetchTarget, removeFetchTarget } =
+  const { scheduleFetchUuids, addFetchTarget, removeFetchTarget } =
     useMyStreamersStore();
   const [checked, setChecked] = useState(false);
 
   // 상태 동기화
   useEffect(() => {
-    setChecked(fetchTargetUuids.includes(streamer.uuid));
-  }, [fetchTargetUuids, streamer.uuid]);
+    setChecked(scheduleFetchUuids.includes(streamer.uuid));
+  }, [scheduleFetchUuids, streamer.uuid]);
 
   const handlePlatformClick = (platformUrl: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -61,9 +60,9 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
 
         <Stack gap={1} flex={1}>
           <HStack gap={1}>
-            <Icon boxSize={4}>
+            {/* <Icon boxSize={4}>
               <GoPerson />
-            </Icon>
+            </Icon> */}
             <Text fontSize="sm" color="neutral.600" fontFamily="body">
               {streamer.name}
             </Text>

@@ -1,4 +1,3 @@
-// components/streamer/StreamerDetailDialog.tsx
 import {
   Box,
   Button,
@@ -19,6 +18,8 @@ import { TbCalendarPlus } from "react-icons/tb";
 import { Streamer } from "@/types/interfaces/streamer.interface";
 import { PLATFORM_ICON_MAP, PLATFORM_NAME_MAP } from "@/constants/platform";
 import { formatUTCToKoreanDate } from "@/utils/time.utils";
+import { FaUserPlus, FaUserCheck } from "react-icons/fa6";
+import { useStreamerFollow } from "@/hooks/useStreamerFollow";
 
 interface StreamerDetailDialogProps {
   isOpen: boolean;
@@ -31,12 +32,34 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
   onClose,
   streamer,
 }) => {
+  const { toggleFollow, getFollowState, syncToServer } = useStreamerFollow();
+
+  // 모달이 닫힐 때 API 동기화 (한 곳에서만 처리)
+  const handleClose = async () => {
+    if (streamer) {
+      await syncToServer(streamer.uuid, streamer.isFollowed);
+    }
+    onClose();
+  };
+
   if (!streamer) return null;
+
+  // 현재 팔로우 상태 계산
+  const { isFollowed, followCount } = getFollowState(
+    streamer.uuid,
+    streamer.isFollowed,
+    streamer.followCount,
+  );
+
+  // 원본 상태로 토글 (중요!)
+  const handleFollowClick = () => {
+    toggleFollow(streamer.uuid, streamer.isFollowed, streamer.followCount);
+  };
 
   return (
     <Dialog.Root
       open={isOpen}
-      onOpenChange={(details) => !details.open && onClose()}
+      onOpenChange={(details) => !details.open && handleClose()}
       placement="center"
       size="sm"
     >
@@ -73,7 +96,7 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                         <HStack gapX={1} color="neutral.500">
                           <Box as={GoPeople} boxSize={4} />
                           <Text fontSize="xs">
-                            {streamer.followCount?.toLocaleString() || 0}
+                            {followCount?.toLocaleString() || 0}
                           </Text>
                         </HStack>
                       </HStack>
@@ -85,6 +108,27 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                     )}
                   </Stack>
                 </HStack>
+
+                <Button
+                  w="full"
+                  size="md"
+                  variant="surface"
+                  marginBottom={4}
+                  colorPalette={isFollowed ? "blue" : "gray"}
+                  onClick={handleFollowClick}
+                >
+                  {isFollowed ? (
+                    <>
+                      <FaUserCheck />
+                      팔로잉
+                    </>
+                  ) : (
+                    <>
+                      <FaUserPlus />
+                      팔로우
+                    </>
+                  )}
+                </Button>
 
                 {/* 소개 */}
                 <Field.Root marginBottom={4}>
@@ -195,6 +239,7 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
               </Stack>
             </Dialog.Body>
 
+            {/* CloseButton에서 onClick 제거 */}
             <Dialog.CloseTrigger asChild>
               <CloseButton size="sm" />
             </Dialog.CloseTrigger>

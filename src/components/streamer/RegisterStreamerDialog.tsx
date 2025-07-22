@@ -200,6 +200,8 @@ const RegisterStreamerDialog = () => {
         disabled={isAuthenticated}
         content="스트리머 등록은 로그인 후 이용할 수 있어요"
         positioning={{ placement: "left-end" }}
+        openDelay={100}
+        closeDelay={100}
       >
         <Dialog.Trigger asChild>
           <Button size="xs" disabled={!isAuthenticated}>
@@ -229,7 +231,7 @@ const RegisterStreamerDialog = () => {
                     value={streamerName}
                     onChange={(e) => setStreamerName(e.target.value)}
                     required
-                    maxLength={20}
+                    maxLength={30}
                   />
                 </Field.Root>
 

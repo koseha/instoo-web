@@ -94,6 +94,8 @@ const SidebarMenu = () => {
               disabled={!(item.disabled || (item.needAuth && !isAuthenticated))}
               content={item.tooltipMessage}
               positioning={{ placement: "right" }}
+              openDelay={100}
+              closeDelay={100}
             >
               <Button
                 variant="ghost"
