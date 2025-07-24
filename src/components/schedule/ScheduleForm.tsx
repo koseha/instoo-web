@@ -13,6 +13,7 @@ import {
   HStack,
   Separator,
   Stack,
+  Select,
 } from "@chakra-ui/react";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { ScheduleFormData } from "./types";
@@ -23,7 +24,7 @@ import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 interface ScheduleFormProps {
   formData: ScheduleFormData;
-  selectedStreamer: StreamerSimpleResponse | null;
+  selectedStreamer: Partial<StreamerSimpleResponse> | null;
   modalMode: "create" | "edit";
   conflictError: string | null;
   onInputChange: (field: keyof ScheduleFormData, value: string) => void;
@@ -42,6 +43,8 @@ const ScheduleForm = ({
   onStreamerSelect,
   onChangeStreamer,
 }: ScheduleFormProps) => {
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <VStack align="stretch" gap={5}>
       {/* 충돌 알림 (편집 모드에서만 표시) */}
@@ -113,6 +116,7 @@ const ScheduleForm = ({
             <Input
               type="date"
               value={formData.scheduleDate}
+              min={today}
               onChange={(e) => onInputChange("scheduleDate", e.target.value)}
               disabled={modalMode === "edit"}
               _focus={{
@@ -129,6 +133,7 @@ const ScheduleForm = ({
             />
           </GridItem>
           <GridItem>
+            {/* 시간 선택 */}
             <Input
               type="time"
               value={formData.startTime}

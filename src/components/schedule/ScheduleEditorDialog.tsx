@@ -54,7 +54,7 @@ const ScheduleEditorDialog = () => {
   });
 
   const [selectedStreamer, setSelectedStreamer] =
-    useState<StreamerSimpleResponse | null>(null);
+    useState<Partial<StreamerSimpleResponse> | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [conflictError, setConflictError] = useState<string | null>(null);
   const [isCheckingConflict, setIsCheckingConflict] = useState(false);
@@ -173,7 +173,7 @@ const ScheduleEditorDialog = () => {
         showSuccess({ title: "일정이 성공적으로 등록되었습니다" });
       } else {
         const {
-          streamerUuid,
+          streamerUuid: _ui,
           scheduleDate: _sd,
           startAtUtc: _st,
           startTime: _none,
