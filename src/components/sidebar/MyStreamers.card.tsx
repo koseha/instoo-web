@@ -25,14 +25,14 @@ interface MyStreamersCardProps {
 }
 
 const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
-  const { scheduleFetchUuids, addFetchTarget, removeFetchTarget } =
-    useMyStreamersStore();
+  const { getScheduleFetchUuids, toggleIsActive } = useMyStreamersStore();
   const [checked, setChecked] = useState(false);
 
   // 상태 동기화
   useEffect(() => {
+    const scheduleFetchUuids = getScheduleFetchUuids();
     setChecked(scheduleFetchUuids.includes(streamer.uuid));
-  }, [scheduleFetchUuids, streamer.uuid]);
+  }, [JSON.stringify(getScheduleFetchUuids()), streamer.uuid]);
 
   const handlePlatformClick = (platformUrl: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -45,11 +45,7 @@ const MyStreamersCard: React.FC<MyStreamersCardProps> = ({ streamer }) => {
 
   const handleCheckedChange = (value: boolean) => {
     setChecked(value);
-    if (value) {
-      addFetchTarget(streamer.uuid);
-    } else {
-      removeFetchTarget(streamer.uuid);
-    }
+    toggleIsActive(streamer.uuid);
   };
 
   return (

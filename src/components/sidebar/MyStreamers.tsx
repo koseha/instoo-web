@@ -77,10 +77,15 @@ const MyStreamers = () => {
 
   // 제거 확인 핸들러
   const handleConfirmRemove = () => {
+    let isRemove = false;
     if (selectedStreamerForRemove) {
-      remove(selectedStreamerForRemove.uuid);
+      isRemove = remove(selectedStreamerForRemove.uuid);
       setIsRemoveDialogOpen(false);
       setSelectedStreamerForRemove(null);
+    }
+    // 팔로잉 스트리머이면 팔로우 해제
+    if (isRemove && selectedStreamerForRemove?.isFollowed) {
+      StreamerService.unfollowStreamer(selectedStreamerForRemove.uuid);
     }
   };
 

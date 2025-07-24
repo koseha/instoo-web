@@ -1,196 +1,175 @@
-// stores/my-streamers.store.ts - 수정된 버전
+// stores/my-streamers.store.ts
+import { StreamerService } from "@/services/streamer.service";
 import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface MyStreamersState {
-  // followCount가 없는 기본 정보만 저장
+export interface MyStreamersState {
   streamers: StreamerSimpleResponse[];
-  // streamers: StreamerBasicInfo[];
-  // fetchTargetUuids: string[];
-  scheduleFetchUuids: string[]; // 일정 조회용 uuids
 
+  // Sidebar - 간편 검색에서 사용
   add: (streamer: StreamerSimpleResponse) => boolean;
+  // MyStreamers 목록에서 제거
   remove: (uuid: string) => boolean;
-
-  addFetchTarget: (uuid: string) => boolean;
-  removeFetchTarget: (uuid: string) => boolean;
-
-  // 유틸리티 메서드
-  isSubscribed: (uuid: string) => boolean;
-  getBasicInfo: (uuid: string) => StreamerSimpleResponse | undefined;
-
+  // 일정 목록 조회 대상 찾기
+  getScheduleFetchUuids: () => string[];
+  // 전체 uuid
   getUuidsToDisplay: () => string[];
+  // MyStreamers Card 상태 on/off 토글
+  toggleIsActive: (uuid: string) => boolean;
+  // MyStreamers 초기화
+  syncOnLogin: (streamers: StreamerSimpleResponse[]) => void;
+  // 데이터 업데이트
   updateStreamers: (streamers: StreamerSimpleResponse[]) => void;
 }
+
+// 변경된 스트리머 상태를 추적하는 Map
+const pendingUpdates = new Map<string, boolean>();
+let debounceTimer: NodeJS.Timeout | null = null;
+
+// 서버에 배치로 isActive 상태 저장하는 함수
+const saveBatchActiveState = async () => {
+  if (pendingUpdates.size === 0) return;
+
+  const updates = Array.from(pendingUpdates.entries()).map(
+    ([uuid, isActive]) => ({
+      streamerUuid: uuid,
+      isActive,
+    }),
+  );
+
+  try {
+    await StreamerService.saveBatchActiveFollowing({ updates });
+
+    // 성공 시 대기 중인 업데이트 클리어
+    pendingUpdates.clear();
+  } catch (error) {
+    console.error("Failed to save batch active states:", error);
+    // 실패 시에도 클리어 (무한 재시도 방지)
+    pendingUpdates.clear();
+  }
+};
 
 export const useMyStreamersStore = create<MyStreamersState>()(
   persist(
     (set, get) => ({
       streamers: [],
-      scheduleFetchUuids: [],
 
       add: (streamer) => {
-        const state = get();
-        const alreadyExists = state.streamers.some(
-          (s) => s.uuid === streamer.uuid,
-        );
+        const { streamers } = get();
 
-        if (alreadyExists) {
-          return false;
-        }
-
-        // followCount를 포함한 전체 정보 저장
-        const streamerInfo: StreamerSimpleResponse = {
-          uuid: streamer.uuid,
-          name: streamer.name,
-          profileImageUrl: streamer.profileImageUrl,
-          platforms: streamer.platforms,
-          followCount: streamer.followCount,
-          isFollowed: streamer.isFollowed,
-        };
+        if (streamers.some((s) => s.uuid === streamer.uuid)) return false;
 
         set({
-          streamers: [streamerInfo, ...state.streamers],
-          scheduleFetchUuids: [streamer.uuid, ...state.scheduleFetchUuids],
+          streamers: [{ ...streamer, isActive: true }, ...streamers],
         });
 
         return true;
       },
 
-      remove: (uuid: string) => {
-        const state = get();
-        const streamerExists = state.streamers.some((s) => s.uuid === uuid);
+      remove: (uuid) => {
+        const { streamers } = get();
 
-        if (!streamerExists) {
-          return false;
-        }
+        const streamerExists = streamers.some((s) => s.uuid === uuid);
+        if (!streamerExists) return false;
 
         set({
-          streamers: state.streamers.filter((s) => s.uuid !== uuid),
-          scheduleFetchUuids: state.scheduleFetchUuids.filter(
-            (id) => id !== uuid,
-          ),
+          streamers: streamers.filter((s) => s.uuid !== uuid),
         });
 
         return true;
       },
 
-      addFetchTarget: (uuid) => {
-        const state = get();
+      getScheduleFetchUuids: () => {
+        const { streamers } = get();
 
-        // 이미 scheduleFetchUuids에 포함되어 있으면 false 반환
-        if (state.scheduleFetchUuids.includes(uuid)) return false;
-
-        // 해당 streamer가 streamers에 있는지 확인
-        const targetStreamer = state.streamers.find((s) => s.uuid === uuid);
-        if (!targetStreamer) return false;
-
-        // scheduleFetchUuids에 uuid 추가 (맨 앞에)
-        const newScheduleFetchUuids = [uuid, ...state.scheduleFetchUuids];
-
-        // streamers에서 해당 streamer를 제거한 후 맨 앞에 추가
-        const otherStreamers = state.streamers.filter((s) => s.uuid !== uuid);
-        const newStreamers = [targetStreamer, ...otherStreamers];
-
-        set({
-          scheduleFetchUuids: newScheduleFetchUuids,
-          streamers: newStreamers,
-        });
-
-        return true;
-      },
-
-      removeFetchTarget: (uuid) => {
-        const state = get();
-
-        // scheduleFetchUuids에 포함되어 있지 않으면 false 반환
-        if (!state.scheduleFetchUuids.includes(uuid)) return false;
-
-        // scheduleFetchUuids에서 해당 uuid 제거
-        const newScheduleFetchUuids = state.scheduleFetchUuids.filter(
-          (id) => id !== uuid,
-        );
-
-        // 해당 streamer 찾기
-        const targetStreamer = state.streamers.find((s) => s.uuid === uuid);
-        if (!targetStreamer) {
-          // streamer가 없으면 scheduleFetchUuids만 업데이트
-          set({ scheduleFetchUuids: newScheduleFetchUuids });
-          return true;
-        }
-
-        // scheduleFetchUuids에 포함된 streamers와 포함되지 않은 streamers 분리
-        const fetchTargetStreamers = state.streamers.filter(
-          (s) => s.uuid !== uuid && newScheduleFetchUuids.includes(s.uuid),
-        );
-        const nonFetchTargetStreamers = state.streamers.filter(
-          (s) => s.uuid !== uuid && !newScheduleFetchUuids.includes(s.uuid),
-        );
-
-        // 새로운 순서: fetchTarget streamers + 제거된 streamer + nonFetchTarget streamers
-        const newStreamers = [
-          ...fetchTargetStreamers,
-          targetStreamer,
-          ...nonFetchTargetStreamers,
-        ];
-
-        set({
-          scheduleFetchUuids: newScheduleFetchUuids,
-          streamers: newStreamers,
-        });
-
-        return true;
-      },
-
-      isSubscribed: (uuid) => {
-        const state = get();
-        return state.streamers.some((s) => s.uuid === uuid);
-      },
-
-      getBasicInfo: (uuid) => {
-        const state = get();
-        return state.streamers.find((s) => s.uuid === uuid);
+        return streamers.filter((s) => s.isActive).map((s) => s.uuid);
       },
 
       getUuidsToDisplay: () => {
-        const state = get();
-        return state.streamers.map((s) => s.uuid);
+        return get().streamers.map((s) => s.uuid);
       },
 
-      // 여러 스트리머 정보를 한번에 갱신
-      updateStreamers: (newStreamers) => {
-        const state = get();
+      toggleIsActive: (uuid) => {
+        const { streamers } = get();
 
-        // 기존 스트리머들을 Map으로 변환하여 빠른 조회
-        const existingStreamersMap = new Map(
-          state.streamers.map((s) => [s.uuid, s]),
+        const streamer = streamers.find((s) => s.uuid === uuid);
+        if (!streamer) return false;
+
+        const newIsActive = !streamer.isActive;
+
+        const updatedStreamers = streamers.map((s) =>
+          s.uuid === uuid ? { ...s, isActive: newIsActive } : s,
         );
 
-        // 새로운 정보로 갱신된 스트리머 배열 생성
-        const updatedStreamers = newStreamers
-          .filter((newStreamer) => existingStreamersMap.has(newStreamer.uuid))
-          .map(
-            (newStreamer) =>
-              ({
-                uuid: newStreamer.uuid,
-                name: newStreamer.name,
-                profileImageUrl: newStreamer.profileImageUrl,
-                platforms: newStreamer.platforms,
-                followCount: newStreamer.followCount,
-                isFollowed: newStreamer.isFollowed,
-              }) as StreamerSimpleResponse,
-          );
+        set({ streamers: updatedStreamers });
 
-        // 기존 순서를 유지하면서 정보만 갱신
-        const finalStreamers = state.streamers.map((existing) => {
-          const updated = updatedStreamers.find(
-            (u) => u.uuid === existing.uuid,
+        // isFollowed가 true인 경우에만 배치 업데이트에 추가
+        if (streamer.isFollowed) {
+          pendingUpdates.set(uuid, newIsActive);
+
+          // 기존 타이머가 있으면 취소
+          if (debounceTimer) {
+            clearTimeout(debounceTimer);
+          }
+
+          // 새로운 타이머 설정 (2초 후 배치 실행)
+          debounceTimer = setTimeout(() => {
+            saveBatchActiveState();
+            debounceTimer = null;
+          }, 2000);
+        }
+
+        return true;
+      },
+
+      syncOnLogin: (streamers) => {
+        const { streamers: currentStreamers } = get();
+
+        const mergedStreamers = streamers.map((newStreamer) => {
+          const existing = currentStreamers.find(
+            (s) => s.uuid === newStreamer.uuid,
           );
-          return updated || existing;
+          return existing
+            ? { ...newStreamer, isActive: existing.isActive }
+            : { ...newStreamer, isActive: newStreamer.isActive };
         });
 
-        set({ streamers: finalStreamers });
+        set({ streamers: mergedStreamers });
+      },
+
+      updateStreamers: (newStreamers) => {
+        const { streamers: currentStreamers } = get();
+
+        // 빈 배열이면 조기 반환
+        if (newStreamers.length === 0) return;
+
+        // 새로운 스트리머 데이터를 Map으로 변환 (O(1) 조회)
+        const newStreamersMap = new Map(
+          newStreamers.map((streamer) => [streamer.uuid, streamer]),
+        );
+
+        // 기존 스트리머들을 순회하며 업데이트 (O(n))
+        const updatedStreamers = currentStreamers.map((currentStreamer) => {
+          const newData = newStreamersMap.get(currentStreamer.uuid);
+
+          // 새로운 데이터가 없으면 기존 데이터 유지
+          if (!newData) return currentStreamer;
+
+          // 새로운 데이터가 있으면 isActive만 보존하고 나머지 업데이트
+          return {
+            ...newData,
+            isActive: currentStreamer.isActive,
+          };
+        });
+
+        // isActive: true가 위로, false가 아래로 정렬
+        const sortedStreamers = updatedStreamers.sort((a, b) => {
+          if (a.isActive === b.isActive) return 0;
+          return a.isActive ? -1 : 1;
+        });
+
+        set({ streamers: sortedStreamers });
       },
     }),
     {

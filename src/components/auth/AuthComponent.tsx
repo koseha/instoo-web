@@ -21,9 +21,12 @@ import { openOAuthPopup, waitForOAuthMessage } from "@/utils/oauth.utils";
 import { OAuthProvider } from "@/types/enums/oauth-provider.enum";
 import MyProfilePopover from "../user/MyProfilePopover";
 import { useScrolled } from "@/hooks/useScrolled";
+import { useMyStreamersStore } from "@/stores/my-streamers.store";
+import { StreamerService } from "@/services/streamer.service";
 
 const AuthComponent: React.FC = () => {
   const { login, logout, isAuthenticated } = useAuthStore();
+  const { syncOnLogin } = useMyStreamersStore();
   const { showSuccess, showError } = useNotification();
   const scrolled = useScrolled();
 
@@ -58,6 +61,16 @@ const AuthComponent: React.FC = () => {
           localStorage.setItem("refreshToken", refreshToken);
         }
 
+        // 5. 내 스트리머 목록 동기화
+        try {
+          const myStreamers = await StreamerService.getMyStreamerByFollowing();
+
+          syncOnLogin(myStreamers);
+        } catch (error) {
+          console.error("스트리머 목록 동기화 실패:", error);
+          // 에러가 나도 로그인은 성공으로 처리
+        }
+
         showSuccess({ title: `${userData.nickname}님 환영합니다!` });
       } else if (result.type === "GOOGLE_AUTH_ERROR") {
         // 5. 로그인 실패 처리
@@ -77,6 +90,8 @@ const AuthComponent: React.FC = () => {
 
   const handleLogout = () => {
     logout();
+    localStorage.removeItem("instoo-my_streamers");
+    window.location.href = "/streamers";
     showSuccess({ title: `로그아웃을 완료했습니다!` });
   };
 

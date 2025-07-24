@@ -64,12 +64,5 @@ export interface StreamerSimpleResponse {
   platforms: PlatformSimpleInfo[];
   followCount: number;
   isFollowed: boolean;
-}
-
-// 로컬 저장용 - followCount 제외
-export interface StreamerBasicInfo {
-  uuid: string;
-  name: string;
-  profileImageUrl: string;
-  platforms: PlatformSimpleInfo[];
+  isActive: boolean;
 }

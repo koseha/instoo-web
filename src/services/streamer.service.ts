@@ -123,4 +123,39 @@ export class StreamerService {
       throw new Error("방송인 언팔로우에 실패했습니다.");
     }
   }
+
+  /**
+   * 팔로우 중인 스트리머의 간단 정보 조회
+   */
+  static async getMyStreamerByFollowing(): Promise<StreamerSimpleResponse[]> {
+    try {
+      const response = await apiClient.get<
+        ApiResponse<StreamerSimpleResponse[]>
+      >(API_ENDPOINTS.STREAMERS.GET_SIMPLE_BY_FOLLOW);
+
+      return response.data.content;
+    } catch (error) {
+      console.error("팔로우 중인 스트리머의 간단 정보 조회 요청 실패:", error);
+      throw new Error("팔로우 중인 스트리머의 간단 정보 조회에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 팔로잉 스트리머의 isActive 저장
+   */
+  static async saveBatchActiveFollowing(body: {
+    updates: { streamerUuid: string; isActive: boolean }[];
+  }) {
+    try {
+      const response = await apiClient.patch<ApiResponse<string>>(
+        API_ENDPOINTS.STREAMERS.IS_ACTIVE,
+        body,
+      );
+
+      return response.data.content;
+    } catch (error) {
+      console.error("팔로잉 스트리머의 isActive 저장 요청 실패:", error);
+      throw new Error("팔로잉 스트리머의 isActive 저장에 실패했습니다.");
+    }
+  }
 }

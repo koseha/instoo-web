@@ -25,6 +25,8 @@ export const API_ENDPOINTS = {
     UNFOLLOW: (uuid: string) => `/v1/streamers/${uuid}/unfollow`,
     GET_SIMPLE: (uuid: string) => `/v1/streamers/${uuid}/simple`,
     BATCH_SIMPLE: `v1/streamers/batch-simple`,
+    GET_SIMPLE_BY_FOLLOW: `/v1/streamers/follows/my-streamers`,
+    IS_ACTIVE: `v1/streamers/follows/batch`,
   },
 
   // 일정

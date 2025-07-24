@@ -16,10 +16,10 @@ import {
 } from "@chakra-ui/react";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { ScheduleFormData } from "./types";
-import { StreamerSimpleResponse } from "@/services/streamer.service";
 import SearchStreamer from "../sidebar/SearchStreamer";
 import SelectedStreamerCard from "./SelectedStreamerCard";
 import StatusSelector from "./StatusSelector";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 interface ScheduleFormProps {
   formData: ScheduleFormData;
@@ -161,6 +161,18 @@ const ScheduleForm = ({
         <StatusSelector
           selectedStatus={formData.status}
           onStatusChange={onStatusChange}
+        />
+      </Field.Root>
+
+      {/* 외부 공지 URL */}
+      <Field.Root>
+        <Field.Label>외부 공지 URL (선택)</Field.Label>
+        <Input
+          value={formData.externalNoticeUrl}
+          onChange={(e) => onInputChange("externalNoticeUrl", e.target.value)}
+          placeholder="외부 공지 URL을 입력해주세요 (예: https://example.com)"
+          type="url"
+          h={12}
         />
       </Field.Root>
 

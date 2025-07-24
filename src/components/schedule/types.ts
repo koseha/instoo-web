@@ -5,5 +5,6 @@ export interface ScheduleFormData {
   startTime: string;
   status: "BREAK" | "TIME_TBD" | "SCHEDULED";
   description?: string;
+  externalNoticeUrl?: string;
   streamerUuid: string;
 }

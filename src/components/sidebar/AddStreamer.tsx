@@ -3,7 +3,7 @@
 import SearchStreamer from "./SearchStreamer";
 import { useMyStreamersStore } from "@/stores/my-streamers.store";
 import { useNotification } from "@/hooks/useNotifications";
-import { StreamerSimpleResponse } from "@/services/streamer.service";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 export default function AddStreamer() {
   const { add } = useMyStreamersStore();

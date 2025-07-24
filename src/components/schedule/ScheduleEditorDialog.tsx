@@ -15,10 +15,10 @@ import {
 import { useScheduleDialogStore } from "@/stores/schedule-editor.store";
 import { useState, useEffect } from "react";
 import { useNotification } from "@/hooks/useNotifications";
-import { StreamerSimpleResponse } from "@/services/streamer.service";
 import { ScheduleService } from "@/services/schedule.service";
 import { ScheduleFormData } from "./types";
 import ScheduleForm from "./ScheduleForm";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 function prepareSchedulePayload(dateStr: string, timeStr: string) {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -50,6 +50,7 @@ const ScheduleEditorDialog = () => {
     status: "SCHEDULED",
     description: "",
     streamerUuid: "",
+    externalNoticeUrl: "",
   });
 
   const [selectedStreamer, setSelectedStreamer] =
@@ -69,6 +70,7 @@ const ScheduleEditorDialog = () => {
           status: editingSchedule.status,
           description: editingSchedule.description || "",
           streamerUuid: editingSchedule.streamer?.uuid || "",
+          externalNoticeUrl: editingSchedule.externalNoticeUrl || "",
         });
 
         setSelectedStreamer({
@@ -78,6 +80,7 @@ const ScheduleEditorDialog = () => {
             editingSchedule.streamer?.profileImageUrl || "/default-image.png",
           platforms: editingSchedule.streamer?.platforms,
           followCount: 0, // 이후 필요하면 값 넣기
+          isFollowed: false, // 이후 필요하면 값 넣기
         });
       } else {
         resetForm();
@@ -206,6 +209,7 @@ const ScheduleEditorDialog = () => {
       status: "SCHEDULED",
       description: "",
       streamerUuid: "",
+      externalNoticeUrl: "",
     });
     setSelectedStreamer(null);
   };

@@ -9,6 +9,7 @@ interface ScheduleData {
   startTime?: string; // create | edit
   status: "BREAK" | "TIME_TBD" | "SCHEDULED"; // create | edit
   description?: string; // create | edit
+  externalNoticeUrl?: string; // create | edit
   streamer?: StreamerSummary; // create
   lastUpdatedAt: string; // edit, 충돌 감지용
 }

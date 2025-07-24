@@ -26,6 +26,7 @@ export interface ScheduleResponse {
   startTime?: string;
   status: "SCHEDULED" | "BREAK" | "TIME_TBD";
   description?: string;
+  externalNoticeUrl?: string;
   streamer: StreamerSummary;
   createdBy?: UserSummary;
   updatedBy?: UserSummary;

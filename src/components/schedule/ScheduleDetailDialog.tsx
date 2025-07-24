@@ -112,6 +112,7 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
       startTime: schedule.startTime || "",
       status: schedule.status,
       description: schedule.description || "",
+      externalNoticeUrl: schedule.externalNoticeUrl || "",
       streamer: schedule.streamer,
       lastUpdatedAt: schedule.updatedAt, // 충돌 감지용
     };
@@ -321,9 +322,9 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                       )}
                     </Field.Root>
 
-                    <Field.Root mb={schedule.description ? 0 : 3}>
+                    <Field.Root mb={schedule.externalNoticeUrl ? 0 : 3}>
                       <Field.Label color="gray.800">참고 링크</Field.Label>
-                      {schedule.description ? (
+                      {schedule.externalNoticeUrl ? (
                         <Button
                           asChild
                           variant="ghost"
@@ -340,18 +341,17 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                           }}
                           transition="all 0.2s"
                         >
-                          <a href="#" target="_blank" rel="noopener noreferrer">
+                          <a
+                            href={schedule.externalNoticeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <HStack w="full" gap={3}>
-                              <Icon color="neutral.500">
+                              <Icon color="neutral.500" mx={1}>
                                 <FaDragon />
                               </Icon>
 
-                              <VStack
-                                align="flex-start"
-                                flex={1}
-                                gap={0}
-                                maxW="200px"
-                              >
+                              <VStack align="flex-start" flex={1} gap={0}>
                                 <Text
                                   fontSize="xs"
                                   color="neutral.500"
@@ -362,9 +362,11 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                                 <Text
                                   fontSize="sm"
                                   color="neutral.700"
+                                  maxW="240px"
+                                  overflow="hidden"
                                   lineClamp="1"
                                 >
-                                  트위터 공지사항 링크
+                                  {schedule.externalNoticeUrl}
                                 </Text>
                               </VStack>
 

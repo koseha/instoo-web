@@ -27,9 +27,6 @@ import LikeBadge from "../common/LikeBadge";
 import ScheduleDetailDialog from "./ScheduleDetailDialog";
 import { useLikeStore } from "@/stores/schedule-like.store";
 import { MdOutlineTitle } from "react-icons/md";
-import { PiSubtitles } from "react-icons/pi";
-
-// API 타입 정의
 
 const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -37,7 +34,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     [],
   );
   const [loading, setLoading] = useState(false);
-  const { scheduleFetchUuids } = useMyStreamersStore();
+  const { getScheduleFetchUuids } = useMyStreamersStore();
   const { likedMap, likeCountMap } = useLikeStore();
 
   // API 호출 함수
@@ -57,6 +54,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
 
   // 월 변경 시 데이터 로드
   useEffect(() => {
+    const scheduleFetchUuids = getScheduleFetchUuids();
     if (scheduleFetchUuids.length === 0) {
       setSchedulesData([]);
       return;
@@ -72,11 +70,6 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     const endDate = new Date(lastDay);
     endDate.setDate(endDate.getDate() + (6 - lastDay.getDay()));
 
-    // const params: GetSchedulesDto = {
-    //   startDate: startDate.toISOString().split("T")[0],
-    //   endDate: endDate.toISOString().split("T")[0],
-    //   streamerUuids: scheduleFetchUuids,
-    // };
     const params: GetSchedulesDto = {
       startDate: formatDateKey(startDate), // 🔧 로컬 기준 포맷팅 사용
       endDate: formatDateKey(endDate), // 🔧 로컬 기준 포맷팅 사용
@@ -84,7 +77,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     };
 
     fetchSchedules(params);
-  }, [currentDate, JSON.stringify(scheduleFetchUuids), otherTrigger]);
+  }, [currentDate, JSON.stringify(getScheduleFetchUuids()), otherTrigger]);
 
   // 유틸리티 함수들
   const getDaysInMonth = (date: Date) => {
@@ -336,7 +329,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
                 <Separator mb={1.5} mx={2} />
 
                 {/* 간소화된 일정 목록 */}
-                <VStack gap={1.5} align="stretch">
+                <VStack gap={1} align="stretch">
                   {daySchedules.map((schedule) => {
                     const statusConfig = getStatusConfig(schedule.status);
 
