@@ -8,7 +8,6 @@ import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/components/providers/modal.provider";
 import Footer from "@/components/layouts/Footer";
-import InitLocalStorage from "./init/InitLocalStorage";
 
 export const metadata = {
   title: "인스투",
@@ -23,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body>
-        <InitLocalStorage />
         <Providers>
           {/* Header - 전체 너비 */}
           <Header />
