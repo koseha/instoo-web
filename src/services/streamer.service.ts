@@ -1,3 +1,4 @@
+import { StreamerRegisterData } from "@/components/streamer/RegisterStreamerDialog";
 import apiClient from "@/lib/axios-api";
 import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 import { ApiResponse } from "@/types/interfaces/api-response.interface";
@@ -7,6 +8,7 @@ import {
   StreamerData,
   StreamerSimpleResponse,
 } from "@/types/interfaces/streamer.interface";
+import { AxiosError } from "axios";
 
 export class StreamerService {
   /**
@@ -63,6 +65,22 @@ export class StreamerService {
     } catch (error) {
       console.error("신규 방송인 등록 요청 실패:", error);
       throw new Error("신규 방송인 등록에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 방송인 정보 수정하기
+   */
+  static async modifyStreamer(body: StreamerRegisterData): Promise<void> {
+    try {
+      const { uuid, ...rest } = body;
+      await apiClient.patch(API_ENDPOINTS.STREAMERS.UPDATE(uuid!), rest);
+    } catch (error: unknown) {
+      console.error("신규 방송인 수정 요청 실패:", error);
+      if (error instanceof AxiosError && error.status === 409) {
+        throw new Error("방송인 수정 중 충돌이 발생했습니다.");
+      }
+      throw new Error("신규 방송인 수정에 실패했습니다.");
     }
   }
 

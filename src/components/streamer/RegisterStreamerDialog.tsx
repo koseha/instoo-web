@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useAuthStore } from "@/stores/auth.store";
 import {
   Button,
@@ -14,12 +14,18 @@ import {
   Text,
   Select,
   createListCollection,
+  IconButton,
+  Separator,
+  HStack,
 } from "@chakra-ui/react";
 import { FaRegEdit } from "react-icons/fa";
+import { BiEdit } from "react-icons/bi";
 import { Tooltip } from "../ui/tooltip";
 import { LuTrash2 } from "react-icons/lu";
 import { useNotification } from "@/hooks/useNotifications";
 import { StreamerService } from "@/services/streamer.service";
+import { PiWarningCircleBold } from "react-icons/pi";
+import { AxiosError } from "axios";
 
 const PLATFORM_OPTIONS = [
   { label: "치지직", value: "chzzk" },
@@ -60,7 +66,30 @@ const getPlatformUrlExample = (platform: string): string => {
   }
 };
 
-const RegisterStreamerDialog = () => {
+export interface StreamerRegisterData {
+  uuid?: string;
+  name: string;
+  description: string;
+  platforms: Array<{
+    platformName: string;
+    channelUrl: string;
+  }>;
+  lastUpdatedAt?: string;
+}
+
+interface StreamerDialogProps {
+  mode: "create" | "edit";
+  streamerData?: StreamerRegisterData;
+  trigger?: React.ReactNode;
+  onSuccess?: () => void;
+}
+
+const StreamerDialog = ({
+  mode,
+  streamerData,
+  trigger,
+  onSuccess,
+}: StreamerDialogProps) => {
   const { isAuthenticated } = useAuthStore();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -72,11 +101,35 @@ const RegisterStreamerDialog = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { showSuccess, showError, showWarning } = useNotification();
 
+  // 수정 모드일 때 기존 데이터로 초기화
+  useEffect(() => {
+    if (mode === "edit" && streamerData) {
+      setStreamerName(streamerData.name);
+      setDescription(streamerData.description);
+      setPlatforms(
+        streamerData.platforms.length > 0
+          ? streamerData.platforms
+          : [{ platformName: "", channelUrl: "" }],
+      );
+    }
+  }, [mode, streamerData]);
+
   // 다이얼로그 상태 초기화 함수
   const resetForm = () => {
-    setStreamerName("");
-    setDescription("");
-    setPlatforms([{ platformName: "", channelUrl: "" }]);
+    if (mode === "create") {
+      setStreamerName("");
+      setDescription("");
+      setPlatforms([{ platformName: "", channelUrl: "" }]);
+    } else if (mode === "edit" && streamerData) {
+      // 수정 모드에서는 원본 데이터로 되돌리기
+      setStreamerName(streamerData.name);
+      setDescription(streamerData.description);
+      setPlatforms(
+        streamerData.platforms.length > 0
+          ? streamerData.platforms
+          : [{ platformName: "", channelUrl: "" }],
+      );
+    }
   };
 
   // 다이얼로그 열림/닫힘 상태 변경 처리
@@ -87,7 +140,7 @@ const RegisterStreamerDialog = () => {
     }
   };
 
-  // 스트리머 등록 API 호출
+  // 스트리머 등록/수정 API 호출
   const handleSubmit = async () => {
     // 유효성 검사
     if (!streamerName.trim()) {
@@ -121,21 +174,72 @@ const RegisterStreamerDialog = () => {
       return;
     }
 
+    // 수정 모드에서 변경사항 확인
+    if (mode === "edit" && streamerData) {
+      const isNameChanged = streamerName !== streamerData.name;
+      const isDescriptionChanged = description !== streamerData.description;
+
+      // 플랫폼 배열 비교 (순서와 내용 모두 확인)
+      const isPlatformsChanged =
+        validPlatforms.length !== streamerData.platforms.length ||
+        validPlatforms.some((platform, index) => {
+          const originalPlatform = streamerData.platforms[index];
+          return (
+            !originalPlatform ||
+            platform.platformName !== originalPlatform.platformName ||
+            platform.channelUrl !== originalPlatform.channelUrl
+          );
+        });
+
+      // 변경사항이 없으면 경고 메시지 표시
+      if (!isNameChanged && !isDescriptionChanged && !isPlatformsChanged) {
+        showWarning({ title: "변경 내용이 없습니다." });
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
-      await StreamerService.registerNewStreamer({
-        name: streamerName,
-        description,
-        platforms: validPlatforms,
-      });
+      if (mode === "create") {
+        await StreamerService.registerNewStreamer({
+          name: streamerName,
+          description,
+          platforms: validPlatforms,
+        });
+        showSuccess({ title: "스트리머가 성공적으로 등록되었습니다!" });
+      } else {
+        await StreamerService.modifyStreamer({
+          uuid: streamerData?.uuid,
+          name: streamerName,
+          description,
+          platforms: validPlatforms,
+          lastUpdatedAt: streamerData?.lastUpdatedAt,
+        });
+        showSuccess({ title: "스트리머 정보가 성공적으로 수정되었습니다!" });
+      }
 
       // 성공 시 다이얼로그 닫기
       setIsOpen(false);
-      showSuccess({ title: "스트리머가 성공적으로 등록되었습니다!" });
-    } catch (error) {
-      console.error("스트리머 등록 실패:", error);
-      showError({ title: "스트리머 등록에 실패하였습니다." });
+      onSuccess?.();
+    } catch (error: unknown) {
+      console.error(
+        `스트리머 ${mode === "create" ? "등록" : "수정"} 실패:`,
+        error,
+      );
+      if (
+        error instanceof Error &&
+        error.message === "방송인 수정 중 충돌이 발생했습니다."
+      ) {
+        showError({
+          title: "앗! 누군가 먼저 수정했네요",
+          message: "최신 내용을 확인하고 다시 수정해주세요",
+        });
+      } else {
+        showError({
+          title: `스트리머 ${mode === "create" ? "등록" : "수정"}에 실패하였습니다.`,
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -188,7 +292,6 @@ const RegisterStreamerDialog = () => {
     if (!platform || !url.trim()) return true; // 빈 값은 유효한 것으로 처리
     return validatePlatformUrl(platform, url);
   };
-
   return (
     <Dialog.Root
       open={isOpen}
@@ -198,16 +301,28 @@ const RegisterStreamerDialog = () => {
     >
       <Tooltip
         disabled={isAuthenticated}
-        content="스트리머 등록은 로그인 후 이용할 수 있어요"
+        content={`스트리머 ${mode === "create" ? "등록" : "수정"}은 로그인 후 이용할 수 있어요`}
         positioning={{ placement: "left-end" }}
         openDelay={100}
         closeDelay={100}
       >
         <Dialog.Trigger asChild>
-          <Button size="xs" disabled={!isAuthenticated}>
-            <Icon as={FaRegEdit} boxSize={3} color="gray.100" />
-            스트리머 등록
-          </Button>
+          {mode === "create" ? (
+            <Button size="xs" disabled={!isAuthenticated}>
+              <Icon as={FaRegEdit} boxSize={3} color="gray.100" />
+              스트리머 등록
+            </Button>
+          ) : (
+            <IconButton
+              variant="ghost"
+              size="xs"
+              p={0}
+              aria-label="스트리머 정보 수정"
+              disabled={!isAuthenticated}
+            >
+              <BiEdit />
+            </IconButton>
+          )}
         </Dialog.Trigger>
       </Tooltip>
 
@@ -216,7 +331,11 @@ const RegisterStreamerDialog = () => {
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>신규 스트리머 등록하기</Dialog.Title>
+              <Dialog.Title>
+                {mode === "create"
+                  ? "신규 스트리머 등록하기"
+                  : "스트리머 정보 수정하기"}
+              </Dialog.Title>
             </Dialog.Header>
 
             <Dialog.Body>
@@ -373,6 +492,17 @@ const RegisterStreamerDialog = () => {
                   </Stack>
                 </Field.Root>
               </Stack>
+              {mode === "edit" && (
+                <>
+                  <Separator mt={3} mb={1} />
+                  <Stack gap={0}>
+                    <HStack fontSize="xs" color="neutral.500" gap={1}>
+                      <PiWarningCircleBold color="red" />
+                      수정 시 관리자에게 인증 요청이 다시 보내집니다.
+                    </HStack>
+                  </Stack>
+                </>
+              )}
             </Dialog.Body>
 
             <Dialog.Footer>
@@ -385,9 +515,9 @@ const RegisterStreamerDialog = () => {
                 size="sm"
                 onClick={handleSubmit}
                 loading={isLoading}
-                loadingText="등록 중..."
+                loadingText={`${mode === "create" ? "등록" : "수정"} 중...`}
               >
-                등록
+                {mode === "create" ? "등록" : "수정"}
               </Button>
             </Dialog.Footer>
 
@@ -401,4 +531,4 @@ const RegisterStreamerDialog = () => {
   );
 };
 
-export default RegisterStreamerDialog;
+export default StreamerDialog;
