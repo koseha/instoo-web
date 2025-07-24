@@ -20,6 +20,7 @@ import { PLATFORM_ICON_MAP, PLATFORM_NAME_MAP } from "@/constants/platform";
 import { formatUTCToKoreanDate } from "@/utils/time.utils";
 import { FaUserPlus, FaUserCheck } from "react-icons/fa6";
 import { useStreamerFollow } from "@/hooks/useStreamerFollow";
+import { Tooltip } from "../ui/tooltip";
 
 interface StreamerDetailDialogProps {
   isOpen: boolean;
@@ -51,7 +52,6 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
     streamer.followCount,
   );
 
-  // 원본 상태로 토글 (중요!)
   const handleFollowClick = () => {
     toggleFollow(streamer.uuid, streamer.isFollowed, streamer.followCount);
   };
@@ -109,26 +109,36 @@ const StreamerDetailDialog: React.FC<StreamerDetailDialogProps> = ({
                   </Stack>
                 </HStack>
 
-                <Button
-                  w="full"
-                  size="md"
-                  variant="surface"
-                  marginBottom={4}
-                  colorPalette={isFollowed ? "blue" : "gray"}
-                  onClick={handleFollowClick}
+                <Tooltip
+                  key={streamer.uuid + "FaUserCheck"}
+                  content={"인증 완료 후 가능합니다"}
+                  positioning={{ placement: "top" }}
+                  openDelay={100}
+                  closeDelay={100}
+                  disabled={streamer.isVerified}
                 >
-                  {isFollowed ? (
-                    <>
-                      <FaUserCheck />
-                      팔로잉
-                    </>
-                  ) : (
-                    <>
-                      <FaUserPlus />
-                      팔로우
-                    </>
-                  )}
-                </Button>
+                  <Button
+                    w="full"
+                    size="md"
+                    variant="surface"
+                    marginBottom={4}
+                    colorPalette={isFollowed ? "blue" : "gray"}
+                    onClick={handleFollowClick}
+                    disabled={!streamer.isVerified}
+                  >
+                    {isFollowed ? (
+                      <>
+                        <FaUserCheck />
+                        팔로잉
+                      </>
+                    ) : (
+                      <>
+                        <FaUserPlus />
+                        팔로우
+                      </>
+                    )}
+                  </Button>
+                </Tooltip>
 
                 {/* 소개 */}
                 <Field.Root marginBottom={4}>

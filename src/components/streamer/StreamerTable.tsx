@@ -2,16 +2,22 @@
 
 import React, { useCallback, useState } from "react";
 import {
+  Button,
   ButtonGroup,
   Flex,
+  Group,
   IconButton,
   Image,
   Pagination,
+  Popover,
+  Portal,
   Stack,
   Table,
+  VStack,
 } from "@chakra-ui/react";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import { BiDetail } from "react-icons/bi";
+import { MdVerified } from "react-icons/md";
 import { FcSearch } from "react-icons/fc";
 import Link from "next/link";
 import EmptyState from "../common/EmptyState";
@@ -19,7 +25,7 @@ import StreamerDetailDialog from "./StreamerDetailDialog";
 import { Streamer } from "@/types/interfaces/streamer.interface";
 import { PLATFORM_ICON_MAP } from "@/constants/platform";
 import { StreamerService } from "@/services/streamer.service";
-import { useMyStreamers } from "@/hooks/useMyStreamers";
+import { useAuthStore } from "@/stores/auth.store";
 
 interface StreamerTableProps {
   streamers: Streamer[];
@@ -49,6 +55,8 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
       null,
     );
     const [isDetailDialogOpen, setIsDetailDialogOpen] = useState(false);
+    const [actionLoading, setActionLoading] = useState<string | null>(null);
+    const { user } = useAuthStore();
 
     const columnCount = isVerified ? 7 : 5;
 
@@ -91,6 +99,32 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
       setSelectedStreamer(null);
     }, []);
 
+    // 스트리머 인증 처리
+    const handleVerifyStreamer = useCallback(async (streamerUuid: string) => {
+      setActionLoading(streamerUuid);
+      try {
+        await StreamerService.verifyStreamer(streamerUuid);
+      } catch (error) {
+        console.error("스트리머 인증 실패:", error);
+        // 에러 처리 (토스트 메시지 등)
+      } finally {
+        setActionLoading(null);
+      }
+    }, []);
+
+    // 스트리머 인증 해제 처리
+    const handleUnverifyStreamer = useCallback(async (streamerUuid: string) => {
+      setActionLoading(streamerUuid);
+      try {
+        await StreamerService.unverifyStreamer(streamerUuid);
+      } catch (error) {
+        console.error("스트리머 인증 해제 실패:", error);
+        // 에러 처리 (토스트 메시지 등)
+      } finally {
+        setActionLoading(null);
+      }
+    }, []);
+
     return (
       <>
         <Stack width="full" alignItems="center">
@@ -103,6 +137,7 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
               <Table.Column htmlWidth="84px" />
               {isVerified && <Table.Column htmlWidth="84px" />}
               <Table.Column htmlWidth="40px" />
+              {user?.role === "ADMIN" && <Table.Column htmlWidth="40px" />}
             </Table.ColumnGroup>
 
             <Table.Header>
@@ -131,12 +166,22 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
                 )}
                 <Table.ColumnHeader
                   paddingLeft={0}
-                  paddingRight={2}
+                  paddingRight={user?.role === "ADMIN" ? 0 : 2}
                   py={1}
                   textAlign="center"
                 >
                   상세
                 </Table.ColumnHeader>
+                {user?.role === "ADMIN" && (
+                  <Table.ColumnHeader
+                    paddingLeft={0}
+                    paddingRight={2}
+                    py={1}
+                    textAlign="center"
+                  >
+                    관리
+                  </Table.ColumnHeader>
+                )}
               </Table.Row>
             </Table.Header>
 
@@ -151,6 +196,7 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
               ) : (
                 streamers.map((streamer, index) => {
                   const rowNumber = (currentPage - 1) * pageSize + index + 1;
+                  const isProcessing = actionLoading === streamer.uuid;
 
                   return (
                     <Table.Row key={streamer.uuid} fontSize="sm">
@@ -208,7 +254,11 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
                             : "-"}
                         </Table.Cell>
                       )}
-                      <Table.Cell paddingLeft={0} paddingRight={2} py={1}>
+                      <Table.Cell
+                        paddingLeft={0}
+                        paddingRight={user?.role === "ADMIN" ? 0 : 2}
+                        py={1}
+                      >
                         <Flex justify="center" align="center">
                           <IconButton
                             variant="ghost"
@@ -221,6 +271,63 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
                           </IconButton>
                         </Flex>
                       </Table.Cell>
+                      {user?.role === "ADMIN" && (
+                        <Table.Cell paddingLeft={0} paddingRight={2} py={1}>
+                          <Popover.Root size="xs">
+                            <Popover.Trigger asChild>
+                              <Flex justify="center" align="center">
+                                <IconButton
+                                  variant="ghost"
+                                  size="xs"
+                                  p={0}
+                                  aria-label="스트리머 관리"
+                                  color={streamer.isVerified ? "blue.600" : ""}
+                                  disabled={isProcessing}
+                                >
+                                  <MdVerified />
+                                </IconButton>
+                              </Flex>
+                            </Popover.Trigger>
+                            <Portal>
+                              <Popover.Positioner>
+                                <Popover.Content width="auto">
+                                  <Popover.Body>
+                                    <Popover.Arrow />
+                                    <VStack gap={0}>
+                                      {/* 인증됨 탭에서는 해제만, 요청 중 탭에서는 인증만 표시 */}
+                                      {isVerified ? (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          loading={isProcessing}
+                                          onClick={() =>
+                                            handleUnverifyStreamer(
+                                              streamer.uuid,
+                                            )
+                                          }
+                                        >
+                                          인증 해제
+                                        </Button>
+                                      ) : (
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          loading={isProcessing}
+                                          onClick={() =>
+                                            handleVerifyStreamer(streamer.uuid)
+                                          }
+                                        >
+                                          인증하기
+                                        </Button>
+                                      )}
+                                    </VStack>
+                                  </Popover.Body>
+                                </Popover.Content>
+                              </Popover.Positioner>
+                            </Portal>
+                          </Popover.Root>
+                        </Table.Cell>
+                      )}
                     </Table.Row>
                   );
                 })

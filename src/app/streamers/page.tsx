@@ -5,7 +5,6 @@ import { MdVerified, MdOutlineHourglassBottom } from "react-icons/md";
 import { FaRedo } from "react-icons/fa";
 import { useState, useCallback } from "react";
 import StreamerTable from "@/components/streamer/StreamerTable";
-import StreamerDetailDialog from "@/components/streamer/StreamerDetailDialog";
 import RegisterStreamerDialog from "@/components/streamer/RegisterStreamerDialog";
 import { useStreamerList } from "@/hooks/useStreamerList";
 import StreamerFilters from "@/components/streamer/StreamerFilter";
@@ -23,21 +22,13 @@ export default function Streamers() {
   const isScrolled = useScrolled(60); // 60px 스크롤 후 버튼 표시
 
   // 스트리머 목록 데이터 관리
-  const {
-    data,
-    isLoading,
-    error,
-    currentPage,
-    handlePageChange,
-    selectedStreamer,
-    isDetailOpen,
-    closeDetail,
-  } = useStreamerList({
-    isVerified: activeTab === "verified",
-    platforms: selectedPlatforms,
-    searchName,
-    searchTrigger,
-  });
+  const { data, isLoading, error, currentPage, handlePageChange } =
+    useStreamerList({
+      isVerified: activeTab === "verified",
+      platforms: selectedPlatforms,
+      searchName,
+      searchTrigger,
+    });
 
   // 모든 핸들러를 useCallback으로 메모이제이션
   const handleSearch = useCallback(() => {
@@ -247,13 +238,6 @@ export default function Streamers() {
           />
         </Tabs.Content>
       </Tabs.Root>
-
-      {/* 상세 다이얼로그 */}
-      {/* <StreamerDetailDialog
-        isOpen={isDetailOpen}
-        onClose={closeDetail}
-        streamer={selectedStreamer}
-      /> */}
 
       {/* 플로팅 새로고침 버튼 - 스크롤 시 우하단에 고정 */}
       <IconButton

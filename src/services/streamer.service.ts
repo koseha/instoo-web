@@ -158,4 +158,38 @@ export class StreamerService {
       throw new Error("팔로잉 스트리머의 isActive 저장에 실패했습니다.");
     }
   }
+
+  /**
+   * [관리자] 스트리머 인증 허용
+   */
+  static async verifyStreamer(uuid: string) {
+    try {
+      const response = await apiClient.patch<ApiResponse<Streamer>>(
+        API_ENDPOINTS.STREAMERS.VERIFY(uuid),
+        { isVerified: true },
+      );
+
+      return response.data.content;
+    } catch (error) {
+      console.error("팔로잉 스트리머의 isActive 저장 요청 실패:", error);
+      throw new Error("팔로잉 스트리머의 isActive 저장에 실패했습니다.");
+    }
+  }
+
+  /**
+   * [관리자] 스트리머 인증 해제
+   */
+  static async unverifyStreamer(uuid: string) {
+    try {
+      const response = await apiClient.patch<ApiResponse<Streamer>>(
+        API_ENDPOINTS.STREAMERS.VERIFY(uuid),
+        { isVerified: false },
+      );
+
+      return response.data.content;
+    } catch (error) {
+      console.error("팔로잉 스트리머의 isActive 저장 요청 실패:", error);
+      throw new Error("팔로잉 스트리머의 isActive 저장에 실패했습니다.");
+    }
+  }
 }

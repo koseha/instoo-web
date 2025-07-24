@@ -13,7 +13,6 @@ import {
   HStack,
   Separator,
   Stack,
-  Select,
 } from "@chakra-ui/react";
 import { PiWarningCircleBold } from "react-icons/pi";
 import { ScheduleFormData } from "./types";
