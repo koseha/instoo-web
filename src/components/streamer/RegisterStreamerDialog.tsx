@@ -503,6 +503,15 @@ const StreamerDialog = ({
                   </Stack>
                 </>
               )}
+              <>
+                <Separator mt={4} mb={2} />
+                <Stack gap={0}>
+                  <HStack fontSize="xs" color="neutral.500" gap={1}>
+                    <PiWarningCircleBold color="red" />
+                    스트리머 수정은 현재 불가능합니다!! 참고해주세요
+                  </HStack>
+                </Stack>
+              </>
             </Dialog.Body>
 
             <Dialog.Footer>
