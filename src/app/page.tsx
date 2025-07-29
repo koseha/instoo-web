@@ -2,9 +2,17 @@
 "use client";
 
 import { Box, IconButton, Text } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { FaRedo } from "react-icons/fa";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/schedules");
+  }, [router]);
+
   return (
     <Box>
       <Box mb={4}>

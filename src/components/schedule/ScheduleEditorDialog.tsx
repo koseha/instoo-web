@@ -54,7 +54,7 @@ const ScheduleEditorDialog = () => {
   });
 
   const [selectedStreamer, setSelectedStreamer] =
-    useState<Partial<StreamerSimpleResponse> | null>(null);
+    useState<StreamerSimpleResponse | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [conflictError, setConflictError] = useState<string | null>(null);
   const [isCheckingConflict, setIsCheckingConflict] = useState(false);
@@ -81,6 +81,7 @@ const ScheduleEditorDialog = () => {
           platforms: editingSchedule.streamer?.platforms,
           followCount: 0, // 이후 필요하면 값 넣기
           isFollowed: false, // 이후 필요하면 값 넣기
+          isActive: true,
         });
       } else {
         resetForm();

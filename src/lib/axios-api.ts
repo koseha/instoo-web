@@ -45,22 +45,22 @@ apiClient.interceptors.response.use(
       if (typeof window !== "undefined") {
         useAuthStore.getState().logout();
         useNotification().showError({
-          message: "로그인이 만료되었습니다. 다시 로그인해주세요.",
+          title: "로그인이 만료되었습니다. 다시 로그인해주세요.",
         });
         window.location.href = "/auth/signin";
       }
     } else if (response?.status === 403) {
-      useNotification().showError({ message: "접근 권한이 없습니다." });
+      useNotification().showError({ title: "접근 권한이 없습니다." });
     } else if (response?.status === 404) {
       useNotification().showError({
-        message: "요청하신 정보를 찾을 수 없습니다.",
+        title: "요청하신 정보를 찾을 수 없습니다.",
       });
     } else if (response?.status >= 500) {
       useNotification().showError({
-        message: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        title: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
       });
     } else if (response?.data?.message) {
-      useNotification().showError({ message: response.data.message });
+      useNotification().showError({ title: response.data.message });
     }
 
     return Promise.reject(error);

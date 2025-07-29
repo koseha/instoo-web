@@ -10,8 +10,8 @@ import {
   AvatarImage,
   Image,
 } from "@chakra-ui/react";
-import { StreamerSimpleResponse } from "@/services/streamer.service";
 import { PLATFORM_ICON_MAP } from "@/constants/platform";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 interface SelectedStreamerCardProps {
   streamer: StreamerSimpleResponse;

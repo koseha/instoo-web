@@ -23,7 +23,7 @@ import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 interface ScheduleFormProps {
   formData: ScheduleFormData;
-  selectedStreamer: Partial<StreamerSimpleResponse> | null;
+  selectedStreamer: StreamerSimpleResponse | null;
   modalMode: "create" | "edit";
   conflictError: string | null;
   onInputChange: (field: keyof ScheduleFormData, value: string) => void;

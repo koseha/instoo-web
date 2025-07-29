@@ -23,11 +23,9 @@ import {
 } from "@chakra-ui/react";
 import { IoSearchOutline } from "react-icons/io5";
 import { useRef, useState } from "react";
-import {
-  StreamerService,
-  StreamerSimpleResponse,
-} from "@/services/streamer.service";
+import { StreamerService } from "@/services/streamer.service";
 import { PLATFORM_ICON_MAP } from "@/constants/platform";
+import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 
 interface SearchStreamerProps {
   placeholder?: string;
