@@ -25,7 +25,7 @@ const MyProfilePopover: React.FC = () => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { openModal } = useModalStore();
   const { user } = useAuthStore();
-  const scrolled = useScrolled();
+  // const scrolled = useScrolled();
 
   if (!user) return null;
 
@@ -59,7 +59,8 @@ const MyProfilePopover: React.FC = () => {
     >
       <PopoverTrigger asChild>
         <Button
-          variant={scrolled ? undefined : "ghost"}
+          // variant={scrolled ? undefined : "ghost"}
+          variant="ghost"
           fontWeight="500"
           size="sm"
           fontFamily="body"

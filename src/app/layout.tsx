@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Providers } from "./providers";
 import Header from "@/components/layouts/Header";
 import "@/theme/globals.css";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Separator, VStack } from "@chakra-ui/react";
 import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/components/providers/modal.provider";
 import Footer from "@/components/layouts/Footer";
@@ -36,24 +36,23 @@ export default function RootLayout({
           <div></div>
 
           {/* Main Content - 너비 제한 */}
-          <Flex className="main-content" minH="100vh">
+          <Flex minH="100vh" className="main-content">
             {/* <Flex className="main-content" minH={1000}> */}
             {/* <Flex className="main-content"> */}
             <Sidebar />
 
-            <Box
-              as="main"
-              flex="1"
+            <VStack
               py={{ base: 3, lg: 10 }}
-              pl={{ base: 6, lg: 10 }}
               pr={0}
+              pl={{ base: 6, lg: 10 }}
+              flex={1}
             >
-              {children}
-            </Box>
+              <Box as="main" w="full">
+                {children}
+              </Box>
+              <Footer />
+            </VStack>
           </Flex>
-
-          {/* Footer - 전체 너비 */}
-          <Footer />
 
           {/* 전역 모달들 */}
           <ModalProvider />

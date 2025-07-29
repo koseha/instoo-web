@@ -212,7 +212,18 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
   return (
     <Container maxW="6xl" p={0}>
       {/* 헤더 */}
-      <Flex justify="space-between" align="center" mb={4}>
+      <Flex
+        justify="space-between"
+        align="center"
+        mb={4}
+        // position="sticky"
+        // top={16}
+        // zIndex={999}
+        bg="white"
+        borderBottom="1px"
+        borderColor="gray.200"
+        py={2}
+      >
         <HStack gap={4}>
           <Heading size="lg" color="black">
             {currentDate.getFullYear()}년 {monthNames[currentDate.getMonth()]}
@@ -239,6 +250,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
           </HStack>
           {loading && <Spinner size="sm" />}
         </HStack>
+        <Box flex={1}></Box>
       </Flex>
 
       {/* 캘린더 그리드 */}
@@ -249,6 +261,7 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
         overflow="hidden"
         bg="white"
         shadow="sm"
+        top={31}
       >
         {/* 요일 헤더 */}
         <Grid

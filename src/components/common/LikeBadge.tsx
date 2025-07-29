@@ -84,7 +84,7 @@ export default function LikeBadge({
         top="0"
         left="0"
         color="red.400"
-        zIndex={0}
+        // zIndex={0}
         initial={{ y: 0, opacity: 0, scale: 0.6, x: offsetX }}
         animate={{
           y: -40,
@@ -116,7 +116,7 @@ export default function LikeBadge({
         alignItems="center"
         gap="1"
         onClick={handleClick}
-        zIndex={1}
+        // zIndex={1}
         position="relative"
         opacity={isLoading ? 0.6 : 1}
         title={!isAuthenticated ? "로그인이 필요합니다" : undefined}

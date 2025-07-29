@@ -184,6 +184,8 @@ const system = createSystem(defaultConfig, {
       },
     },
 
+    "": {},
+
     ".main-content": {
       minWidth: {
         base: "1024px",
@@ -196,9 +198,8 @@ const system = createSystem(defaultConfig, {
         xl: "1400px",
       },
       margin: "0 auto",
-      paddingY: "1rem", // 세로 패딩 고정
       paddingX: {
-        base: "1rem",
+        base: "2rem",
         // base: "0.4rem",
         // md: "0.8rem",
         // lg: "1rem",

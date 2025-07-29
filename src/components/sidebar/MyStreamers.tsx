@@ -135,9 +135,9 @@ const MyStreamers = () => {
               <>
                 스트리머 일정을 확인할 수 있어요.
                 <br />
-                팔로우는 별도의 페이지에서 관리돼요.
-                <br />
                 일반 회원은 자신의 팔로우 목록도 함께 보여집니다.
+                <br />
+                스트리머 카드를 누르면 상세보기/제거하기 버튼이 나타납니다.
               </>
             }
             positioning={{ placement: "right" }}
@@ -164,7 +164,8 @@ const MyStreamers = () => {
       {/* 스크롤 가능한 컨테이너 */}
       <Box
         minHeight="200px" // 최소 높이 고정
-        maxHeight="calc(100vh - 62px)" // My Streamers를 제외한 모든 영역의 height을 빼기(헤더 + 푸터 + 메뉴 등)
+        // maxHeight="calc(100vh - 62px)" // My Streamers를 제외한 모든 영역의 height을 빼기(헤더 + 푸터 + 메뉴 등)
+        maxHeight="calc(60vh)" // My Streamers를 제외한 모든 영역의 height을 빼기(헤더 + 푸터 + 메뉴 등)
         overflowY="auto"
         borderRadius="md"
         css={{

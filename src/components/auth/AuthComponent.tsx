@@ -101,7 +101,8 @@ const AuthComponent: React.FC = () => {
       <Flex align="center" gap={1}>
         <MyProfilePopover />
         <Button
-          variant={scrolled ? undefined : "ghost"}
+          // variant={scrolled ? undefined : "ghost"}
+          variant="ghost"
           fontWeight="500"
           size="sm"
           onClick={handleLogout}
@@ -118,7 +119,8 @@ const AuthComponent: React.FC = () => {
     <PopoverRoot>
       <PopoverTrigger asChild>
         <Button
-          variant={scrolled ? undefined : "ghost"}
+          // variant={scrolled ? undefined : "ghost"}
+          variant="ghost"
           fontWeight="500"
           size="sm"
           fontFamily="body"

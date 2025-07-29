@@ -61,7 +61,10 @@ export default function SearchStreamer({
     const query = details.inputValue.trim();
     filter(details.inputValue);
 
-    if (query.length < 2) return;
+    if (query.length < 2) {
+      setItems([]);
+      return;
+    }
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(async () => {

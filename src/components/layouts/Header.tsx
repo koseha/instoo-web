@@ -2,13 +2,11 @@
 
 // components/layouts/Header
 import React from "react";
-import { Box, Flex, Link } from "@chakra-ui/react";
+import { Box, Flex, HStack, IconButton, Link } from "@chakra-ui/react";
 import AuthComponent from "../auth/AuthComponent";
-import { useScrolled } from "@/hooks/useScrolled";
+// import { SlMenu } from "react-icons/sl";
 
 export default function Header() {
-  const scrolled = useScrolled();
-
   return (
     <Box
       as="header"
@@ -16,10 +14,7 @@ export default function Header() {
       top="0px"
       zIndex="999"
       h={{ base: "64px" }}
-      bg={scrolled ? "neutral.150" : "primary.white"}
-      borderBottom="1px solid"
-      borderColor="neutral.300"
-      backdropFilter={scrolled ? "blur(4px)" : "none"}
+      bg="primary.white"
       transition="background-color 0.2s ease, backdrop-filter 0.3s ease"
     >
       <Flex
@@ -30,17 +25,22 @@ export default function Header() {
         className="main-header"
       >
         {/* 로고 */}
-        <Link
-          href="/"
-          fontSize="xl"
-          fontWeight="600"
-          fontFamily="heading"
-          color="primary.black"
-          textDecoration="none"
-          _hover={{ textDecoration: "none", color: "neutral.800" }}
-        >
-          인스투
-        </Link>
+        <HStack>
+          {/* <IconButton variant="ghost">
+            <SlMenu color="black" />
+          </IconButton> */}
+          <Link
+            href="/"
+            fontSize="xl"
+            fontWeight="600"
+            fontFamily="heading"
+            color="primary.black"
+            textDecoration="none"
+            _hover={{ textDecoration: "none", color: "neutral.800" }}
+          >
+            인스투
+          </Link>
+        </HStack>
 
         {/* 로그인/로그아웃 */}
         <AuthComponent />
