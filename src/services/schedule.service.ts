@@ -1,6 +1,7 @@
 import apiClient from "@/lib/axios-api";
 import { API_ENDPOINTS } from "@/types/enums/api-endpoints.enum";
 import { ApiResponse } from "@/types/interfaces/api-response.interface";
+import { AxiosError } from "axios";
 
 export interface StreamerSummary {
   uuid: string;
@@ -92,6 +93,9 @@ export class ScheduleService {
       return response.data.content;
     } catch (error) {
       console.error("스케줄(일정) 등록 요청 실패:", error);
+      if (error instanceof AxiosError && error.status === 409) {
+        throw new Error("해당 날짜에 이미 일정이 존재합니다.");
+      }
       throw new Error("스케줄(일정) 등록에 실패했습니다.");
     }
   }
@@ -112,6 +116,9 @@ export class ScheduleService {
       return response.data.content;
     } catch (error) {
       console.error("스케줄(일정) 수정 요청 실패:", error);
+      if (error instanceof AxiosError && error.status === 409) {
+        throw new Error("다른 사용자가 이미 수정한 일정입니다.");
+      }
       throw new Error("스케줄(일정) 수정에 실패했습니다.");
     }
   }

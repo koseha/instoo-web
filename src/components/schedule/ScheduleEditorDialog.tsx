@@ -196,7 +196,25 @@ const ScheduleEditorDialog = () => {
       closeScheduleModal();
     } catch (error) {
       console.log(error);
-      showError({ title: `일정 등록/수정에 실패했습니다` });
+      if (
+        error instanceof Error &&
+        error.message === "해당 날짜에 이미 일정이 존재합니다."
+      ) {
+        showError({
+          title: "앗! 누군가 먼저 등록했네요",
+          message: "해당 날짜에 이미 일정이 존재합니다.",
+        });
+      } else if (
+        error instanceof Error &&
+        error.message === "다른 사용자가 이미 수정한 일정입니다."
+      ) {
+        showError({
+          title: "앗! 누군가 먼저 수정했네요",
+          message: "최신 내용을 확인하고 다시 수정해주세요",
+        });
+      } else {
+        showError({ title: `일정 등록/수정에 실패했습니다` });
+      }
     } finally {
       setIsSubmitting(false);
     }
