@@ -14,13 +14,28 @@ export default function Footer() {
       py={5}
     >
       <VStack gap={0}>
-        <Text fontFamily="heading" fontSize="xl" color="neutral.300">
+        <Text
+          fontFamily="heading"
+          fontWeight={600}
+          fontSize="xl"
+          color="neutral.300"
+        >
           인스투
         </Text>
-        <Text fontFamily="body" fontSize="md" color="neutral.300">
+        <Text
+          fontFamily="body"
+          fontWeight={300}
+          fontSize="sm"
+          color="neutral.300"
+        >
           인방 스케줄러 투게더
         </Text>
-        <Text fontFamily="body" fontSize="sm" color="neutral.300">
+        <Text
+          fontFamily="body"
+          fontWeight={300}
+          fontSize="sm"
+          color="neutral.300"
+        >
           © 2025 인스투. All rights reserved.
         </Text>
       </VStack>

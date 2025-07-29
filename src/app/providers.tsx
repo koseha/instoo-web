@@ -5,14 +5,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import system from "@/theme";
 import { QueryProvider } from "@/components/providers/query.provider";
-import InitLocalStorage from "./(init)/InitLocalStorage";
+import { AuthProvider } from "@/components/providers/auth.provider";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryProvider>
       <ChakraProvider value={system}>
-        <InitLocalStorage />
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </ChakraProvider>
     </QueryProvider>
   );

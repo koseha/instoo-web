@@ -8,6 +8,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/components/providers/modal.provider";
 import Footer from "@/components/layouts/Footer";
+import GoogleAnalytics from "./GoogleAnalytics";
 
 export const metadata = {
   title: "인스투",
@@ -22,6 +23,9 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <body>
+        {process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
+        )}
         <Providers>
           {/* Header - 전체 너비 */}
           <Header />
