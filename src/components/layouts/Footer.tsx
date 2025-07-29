@@ -1,6 +1,6 @@
 // components/layouts/Footer
 import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Box, Text, VStack } from "@chakra-ui/react";
 
 export default function Footer() {
   return (
@@ -10,8 +10,20 @@ export default function Footer() {
       borderTop="1px solid"
       borderColor="neutral.200"
       bg="neutral.900"
+      mx="auto"
+      py={5}
     >
-      푸터
+      <VStack gap={0}>
+        <Text fontFamily="heading" fontSize="xl" color="neutral.300">
+          인스투
+        </Text>
+        <Text fontFamily="body" fontSize="md" color="neutral.300">
+          인방 스케줄러 투게더
+        </Text>
+        <Text fontFamily="body" fontSize="sm" color="neutral.300">
+          © 2025 인스투. All rights reserved.
+        </Text>
+      </VStack>
     </Box>
   );
 }
