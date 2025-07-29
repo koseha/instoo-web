@@ -36,7 +36,7 @@ export default function RootLayout({
           <div></div>
 
           {/* Main Content - 너비 제한 */}
-          <Flex minH="100vh" className="main-content">
+          <Flex className="main-content">
             {/* <Flex className="main-content" minH={1000}> */}
             {/* <Flex className="main-content"> */}
             <Sidebar />
@@ -47,7 +47,7 @@ export default function RootLayout({
               pl={{ base: 6, lg: 10 }}
               flex={1}
             >
-              <Box as="main" w="full">
+              <Box as="main" w="full" minH="100vh">
                 {children}
               </Box>
               <Footer />
