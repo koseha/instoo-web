@@ -220,6 +220,7 @@ const StreamerDialog = ({
       }
 
       // 성공 시 다이얼로그 닫기
+      resetForm();
       setIsOpen(false);
       onSuccess?.();
     } catch (error: unknown) {
