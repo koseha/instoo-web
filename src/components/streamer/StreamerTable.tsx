@@ -154,7 +154,7 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
               <Table.Column htmlWidth="84px" />
               {isVerified && <Table.Column htmlWidth="84px" />}
               <Table.Column htmlWidth="38px" />
-              {/* <Table.Column htmlWidth="38px" /> */}
+              {user?.role === "ADMIN" && <Table.Column htmlWidth="38px" />}
               {user?.role === "ADMIN" && <Table.Column htmlWidth="40px" />}
             </Table.ColumnGroup>
 
@@ -190,14 +190,16 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
                 >
                   상세
                 </Table.ColumnHeader>
-                {/* <Table.ColumnHeader
-                  paddingLeft={0}
-                  paddingRight={user?.role === "ADMIN" ? 0 : 2}
-                  py={1}
-                  textAlign="center"
-                >
-                  수정
-                </Table.ColumnHeader> */}
+                {user?.role === "ADMIN" && (
+                  <Table.ColumnHeader
+                    paddingLeft={0}
+                    paddingRight={user?.role === "ADMIN" ? 0 : 2}
+                    py={1}
+                    textAlign="center"
+                  >
+                    수정
+                  </Table.ColumnHeader>
+                )}
                 {user?.role === "ADMIN" && (
                   <Table.ColumnHeader
                     paddingLeft={0}
@@ -293,20 +295,22 @@ const StreamerTable: React.FC<StreamerTableProps> = React.memo(
                           </IconButton>
                         </Flex>
                       </Table.Cell>
-                      {/* <Table.Cell
-                        paddingLeft={0}
-                        paddingRight={user?.role === "ADMIN" ? 0 : 2}
-                        py={1}
-                      >
-                        <Flex justify="center" align="center">
-                          <StreamerDialog
-                            mode="edit"
-                            streamerData={convertStreamerToStreamerData(
-                              streamer
-                            )}
-                          />
-                        </Flex>
-                      </Table.Cell> */}
+                      {user?.role === "ADMIN" && (
+                        <Table.Cell
+                          paddingLeft={0}
+                          paddingRight={user?.role === "ADMIN" ? 0 : 2}
+                          py={1}
+                        >
+                          <Flex justify="center" align="center">
+                            <StreamerDialog
+                              mode="edit"
+                              streamerData={convertStreamerToStreamerData(
+                                streamer,
+                              )}
+                            />
+                          </Flex>
+                        </Table.Cell>
+                      )}
                       {user?.role === "ADMIN" && (
                         <Table.Cell paddingLeft={0} paddingRight={2} py={1}>
                           <Popover.Root size="xs">

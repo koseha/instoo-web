@@ -58,11 +58,6 @@ export default function Tour() {
 
   // 컴포넌트 unmount 시 cleanup
   useEffect(() => {
-    const seenTour = localStorage.getItem("hasSeenTour");
-    if (!seenTour) {
-      localStorage.setItem("hasSeenTour", "true");
-    }
-
     return () => {
       if (previousTargetRef.current) {
         previousTargetRef.current.classList.remove("tour-highlight");
