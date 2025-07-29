@@ -20,6 +20,7 @@ import SearchStreamer from "../sidebar/SearchStreamer";
 import SelectedStreamerCard from "./SelectedStreamerCard";
 import StatusSelector from "./StatusSelector";
 import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
+import { format } from "date-fns";
 
 interface ScheduleFormProps {
   formData: ScheduleFormData;
@@ -42,7 +43,7 @@ const ScheduleForm = ({
   onStreamerSelect,
   onChangeStreamer,
 }: ScheduleFormProps) => {
-  const today = new Date().toISOString().split("T")[0];
+  const today = format(new Date(), "yyyy-MM-dd");
 
   return (
     <VStack align="stretch" gap={5}>
