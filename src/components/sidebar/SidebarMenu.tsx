@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Flex, Icon, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import { Tooltip } from "../ui/tooltip";
 import { AiOutlineHome } from "react-icons/ai";
 import { GoPeople } from "react-icons/go";
@@ -43,6 +43,7 @@ const SidebarMenu = () => {
       modal: false,
       disabled: false,
       action: () => router.push("/streamers"),
+      classNames: "the-first-lesson",
     },
     {
       icon: FaRegListAlt,
@@ -62,6 +63,7 @@ const SidebarMenu = () => {
       action: openScheduleCreate,
       needAuth: true,
       tooltipMessage: "로그인 후 이용할 수 있어요",
+      classNames: "the-fourth-lesson",
     },
   ];
 
@@ -97,34 +99,38 @@ const SidebarMenu = () => {
               openDelay={100}
               closeDelay={100}
             >
-              <Button
-                variant="ghost"
-                w="full"
-                fontWeight="500"
-                fontSize="md"
-                size="lg"
-                color={active ? "primary.black" : "neutral.700"}
-                bg={active ? "neutral.100" : "transparent"}
-                _hover={{
-                  color: "primary.black",
-                  bg: "neutral.100",
-                }}
-                fontFamily="body"
-                justifyContent="space-between"
-                px={3}
-                onClick={item.action}
-                disabled={item.disabled || (item.needAuth && !isAuthenticated)}
-              >
-                <Flex justifyContent="flex-start" alignItems="center" gap={3}>
-                  <Icon size="md">
-                    <IconComponent />
-                  </Icon>
-                  {item.label}
-                </Flex>
-                {item.modal && (
-                  <Icon as={FaRegEdit} boxSize={3} color="gray.500" />
-                )}
-              </Button>
+              <Box className={item.classNames}>
+                <Button
+                  variant="ghost"
+                  w="full"
+                  fontWeight="500"
+                  fontSize="md"
+                  size="lg"
+                  color={active ? "primary.black" : "neutral.700"}
+                  bg={active ? "neutral.100" : "transparent"}
+                  _hover={{
+                    color: "primary.black",
+                    bg: "neutral.100",
+                  }}
+                  fontFamily="body"
+                  justifyContent="space-between"
+                  px={3}
+                  onClick={item.action}
+                  disabled={
+                    item.disabled || (item.needAuth && !isAuthenticated)
+                  }
+                >
+                  <Flex justifyContent="flex-start" alignItems="center" gap={3}>
+                    <Icon size="md">
+                      <IconComponent />
+                    </Icon>
+                    {item.label}
+                  </Flex>
+                  {item.modal && (
+                    <Icon as={FaRegEdit} boxSize={3} color="gray.500" />
+                  )}
+                </Button>
+              </Box>
             </Tooltip>
           );
         })}

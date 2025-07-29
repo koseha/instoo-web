@@ -9,6 +9,7 @@ import Sidebar from "@/components/sidebar/Sidebar";
 import ModalProvider from "@/components/providers/modal.provider";
 import Footer from "@/components/layouts/Footer";
 import GoogleAnalytics from "./GoogleAnalytics";
+import Tour from "@/components/common/Tour";
 
 export const metadata = {
   title: "인스투",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS} />
         )}
         <Providers>
+          <Tour />
           {/* Header - 전체 너비 */}
           <Header />
 

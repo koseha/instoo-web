@@ -88,6 +88,18 @@ const system = createSystem(defaultConfig, {
           transform: "scale(1)",
         },
       },
+
+      pulseBorder: {
+        "0%": {
+          outlineColor: "#3182ce",
+        },
+        "50%": {
+          outlineColor: "#63b3ed",
+        },
+        "100%": {
+          outlineColor: "#3182ce",
+        },
+      },
     },
   },
 
@@ -191,6 +203,17 @@ const system = createSystem(defaultConfig, {
         // md: "0.8rem",
         // lg: "1rem",
       },
+    },
+
+    ".tour-highlight": {
+      outline: "3px solid",
+      outlineColor: "blue.500", // Chakra 색상 토큰
+      outlineOffset: "4px",
+      borderRadius: "md", // Chakra의 기본 둥근 모서리
+      position: "relative",
+      zIndex: 9999,
+      transition: "outline-color 0.3s ease",
+      animation: "pulseBorder 1.2s infinite",
     },
   },
 });

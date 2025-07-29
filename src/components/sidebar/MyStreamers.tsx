@@ -126,7 +126,7 @@ const MyStreamers = () => {
   return (
     <>
       <HStack justify="space-between">
-        <HStack justify="start" mb={1}>
+        <HStack justify="start" mb={1} className="the-third-lesson">
           <Text fontSize="sm" color="neutral.500" fontFamily="heading">
             My Streamers
           </Text>

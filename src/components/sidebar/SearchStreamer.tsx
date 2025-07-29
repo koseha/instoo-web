@@ -93,6 +93,7 @@ export default function SearchStreamer({
           onSelectResult?.(true, selected);
         }
       }}
+      className="the-second-lesson"
     >
       <ComboboxControl>
         <InputGroup startElement={<IoSearchOutline />}>
