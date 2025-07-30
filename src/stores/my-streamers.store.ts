@@ -126,14 +126,22 @@ export const useMyStreamersStore = create<MyStreamersState>()(
       syncOnLogin: (streamers) => {
         const { streamers: currentStreamers } = get();
 
-        const mergedStreamers = streamers.map((newStreamer) => {
+        // 1. streamers 기준으로 merge (중복된 uuid만 업데이트)
+        const merged = streamers.map((newStreamer) => {
           const existing = currentStreamers.find(
             (s) => s.uuid === newStreamer.uuid,
           );
           return existing
-            ? { ...newStreamer, isActive: existing.isActive }
-            : { ...newStreamer, isActive: newStreamer.isActive };
+            ? { ...newStreamer, isActive: existing.isActive } // 상태 유지
+            : { ...newStreamer }; // 새로 들어온 것
         });
+
+        // 2. currentStreamers 중에서 streamers에 없는 것만 추가
+        const onlyInCurrent = currentStreamers.filter(
+          (s) => !streamers.find((ns) => ns.uuid === s.uuid),
+        );
+
+        const mergedStreamers = [...merged, ...onlyInCurrent];
 
         set({ streamers: mergedStreamers });
       },
