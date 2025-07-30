@@ -19,7 +19,7 @@ export default function Footer() {
         fontSize="xl"
         color="neutral.600"
       >
-        인스투
+        인스투: 인방 스케줄러 투게더
       </Text>
       <Text
         fontFamily="body"
@@ -27,7 +27,8 @@ export default function Footer() {
         fontSize="sm"
         color="neutral.600"
       >
-        인방 스케줄러 투게더
+        인터넷 방송인의 방송 일정을 팬과 유저가 협업하여 관리하고 팔로잉할 수
+        있는 위키 기반 스케줄 공유 플랫폼
       </Text>
       <Text
         fontFamily="body"
@@ -35,7 +36,7 @@ export default function Footer() {
         fontSize="sm"
         color="neutral.600"
       >
-        © 2025 인스투. All rights reserved.
+        문의: koseha.instoo@gmail.com
       </Text>
     </VStack>
   );
