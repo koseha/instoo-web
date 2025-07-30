@@ -12,7 +12,7 @@ import { AxiosError } from "axios";
 
 export class StreamerService {
   /**
-   * 방송인 간편 검색 데이터 가져오기 - 5개
+   * 스트리머 간편 검색 데이터 가져오기 - 5개
    */
   static async searchSimpleStreamerByName(
     qName: string,
@@ -28,13 +28,13 @@ export class StreamerService {
 
       return response.data.content;
     } catch (error) {
-      console.error("방송인 간편 검색 요청 실패:", error);
-      throw new Error("방송인 간편 검색 목록을 가져오는데 실패했습니다.");
+      console.error("스트리머 간편 검색 요청 실패:", error);
+      throw new Error("스트리머 간편 검색 목록을 가져오는데 실패했습니다.");
     }
   }
 
   /**
-   * 방송인 목록 조회
+   * 스트리머 목록 조회
    */
   static async getStreamerList(body: {
     isVerified: boolean;
@@ -51,41 +51,41 @@ export class StreamerService {
 
       return response.data.content;
     } catch (error) {
-      console.error("방송인 목록 조회 요청 실패:", error);
-      throw new Error("방송인 목록을 가져오는데 실패했습니다.");
+      console.error("스트리머 목록 조회 요청 실패:", error);
+      throw new Error("스트리머 목록을 가져오는데 실패했습니다.");
     }
   }
 
   /**
-   * 신규 방송인 등록하기
+   * 신규 스트리머 등록하기
    */
   static async registerNewStreamer(body: newStreamerDto): Promise<void> {
     try {
       await apiClient.post("/v1/streamers", body);
     } catch (error) {
-      console.error("신규 방송인 등록 요청 실패:", error);
-      throw new Error("신규 방송인 등록에 실패했습니다.");
+      console.error("신규 스트리머 등록 요청 실패:", error);
+      throw new Error("신규 스트리머 등록에 실패했습니다.");
     }
   }
 
   /**
-   * 방송인 정보 수정하기
+   * 스트리머 정보 수정하기
    */
   static async modifyStreamer(body: StreamerRegisterData): Promise<void> {
     try {
       const { uuid, ...rest } = body;
       await apiClient.patch(API_ENDPOINTS.STREAMERS.UPDATE(uuid!), rest);
     } catch (error: unknown) {
-      console.error("신규 방송인 수정 요청 실패:", error);
+      console.error("신규 스트리머 수정 요청 실패:", error);
       if (error instanceof AxiosError && error.status === 409) {
-        throw new Error("방송인 수정 중 충돌이 발생했습니다.");
+        throw new Error("스트리머 수정 중 충돌이 발생했습니다.");
       }
-      throw new Error("신규 방송인 수정에 실패했습니다.");
+      throw new Error("신규 스트리머 수정에 실패했습니다.");
     }
   }
 
   /**
-   * 방송인 상세 조회
+   * 스트리머 상세 조회
    */
   static async getStreamerDetail(uuid: string): Promise<Streamer> {
     try {
@@ -95,37 +95,37 @@ export class StreamerService {
 
       return response.data.content;
     } catch (error) {
-      console.error("신규 방송인 등록 요청 실패:", error);
-      throw new Error("신규 방송인 등록에 실패했습니다.");
+      console.error("신규 스트리머 등록 요청 실패:", error);
+      throw new Error("신규 스트리머 등록에 실패했습니다.");
     }
   }
 
   /**
-   * 방송인 팔로우하기
+   * 스트리머 팔로우하기
    */
   static async followStreamer(uuid: string): Promise<void> {
     try {
       await apiClient.post(API_ENDPOINTS.STREAMERS.FOLLOW(uuid));
     } catch (error) {
-      console.error("방송인 팔로우 요청 실패:", error);
-      throw new Error("방송인 팔로우에 실패했습니다.");
+      console.error("스트리머 팔로우 요청 실패:", error);
+      throw new Error("스트리머 팔로우에 실패했습니다.");
     }
   }
 
   /**
-   * 방송인 언팔로우하기
+   * 스트리머 언팔로우하기
    */
   static async unfollowStreamer(uuid: string): Promise<void> {
     try {
       await apiClient.delete(API_ENDPOINTS.STREAMERS.UNFOLLOW(uuid));
     } catch (error) {
-      console.error("방송인 언팔로우 요청 실패:", error);
-      throw new Error("방송인 언팔로우에 실패했습니다.");
+      console.error("스트리머 언팔로우 요청 실패:", error);
+      throw new Error("스트리머 언팔로우에 실패했습니다.");
     }
   }
 
   /**
-   * uuids로 방송인 간단 정보 조회
+   * uuids로 스트리머 간단 정보 조회
    */
   static async getSimpleStreamerByUuids(
     uuids: string[],
@@ -137,8 +137,8 @@ export class StreamerService {
 
       return response.data.content;
     } catch (error) {
-      console.error("방송인 언팔로우 요청 실패:", error);
-      throw new Error("방송인 언팔로우에 실패했습니다.");
+      console.error("스트리머 언팔로우 요청 실패:", error);
+      throw new Error("스트리머 언팔로우에 실패했습니다.");
     }
   }
 

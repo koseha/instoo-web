@@ -62,7 +62,7 @@ const ScheduleForm = ({
         </Alert.Root>
       )}
 
-      {/* 방송인 선택 */}
+      {/* 스트리머 선택 */}
       <Field.Root>
         <Field.Label>
           스트리머 <Text color="red">*</Text>

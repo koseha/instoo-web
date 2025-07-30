@@ -4,9 +4,12 @@
 import React from "react";
 import { Box, Flex, HStack, IconButton, Link } from "@chakra-ui/react";
 import AuthComponent from "../auth/AuthComponent";
-// import { SlMenu } from "react-icons/sl";
+import { SlMenu } from "react-icons/sl";
+import { useInteractiveSidebar } from "@/stores/interactive-sidebar.store";
 
 export default function Header() {
+  const { toggleSidebar } = useInteractiveSidebar();
+
   return (
     <Box
       as="header"
@@ -26,9 +29,9 @@ export default function Header() {
       >
         {/* 로고 */}
         <HStack>
-          {/* <IconButton variant="ghost">
+          <IconButton variant="ghost" w={12} onClick={toggleSidebar}>
             <SlMenu color="black" />
-          </IconButton> */}
+          </IconButton>
           <Link
             href="/"
             fontSize="xl"

@@ -140,7 +140,7 @@ const ScheduleEditorDialog = () => {
     }
 
     if (!formData.streamerUuid) {
-      showWarning({ title: "방송인을 선택해주세요" });
+      showWarning({ title: "스트리머를 선택해주세요" });
       return;
     }
 

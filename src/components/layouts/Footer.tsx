@@ -27,8 +27,8 @@ export default function Footer() {
         fontSize="sm"
         color="neutral.600"
       >
-        인터넷 방송인의 방송 일정을 팬과 유저가 협업하여 관리하고 팔로잉할 수
-        있는 위키 기반 스케줄 공유 플랫폼
+        스트리머의 방송 일정을 팬과 유저가 협업하여 관리하는 위키 기반 스케줄
+        공유 플랫폼
       </Text>
       <Text
         fontFamily="body"

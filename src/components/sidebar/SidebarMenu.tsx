@@ -38,7 +38,7 @@ const SidebarMenu = () => {
     },
     {
       icon: GoPeople,
-      label: "방송인",
+      label: "스트리머 목록",
       path: "/streamers",
       modal: false,
       disabled: false,
@@ -82,7 +82,7 @@ const SidebarMenu = () => {
         fontFamily="heading"
         paddingBottom={2}
       >
-        Menu
+        메뉴
       </Text>
       <VStack align="stretch" gap="4px">
         {menuItems.map((item) => {

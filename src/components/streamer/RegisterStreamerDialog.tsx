@@ -230,7 +230,7 @@ const StreamerDialog = ({
       );
       if (
         error instanceof Error &&
-        error.message === "방송인 수정 중 충돌이 발생했습니다."
+        error.message === "스트리머 수정 중 충돌이 발생했습니다."
       ) {
         showError({
           title: "앗! 누군가 먼저 수정했네요",

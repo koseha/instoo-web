@@ -38,7 +38,7 @@ interface SearchStreamerProps {
 }
 
 export default function SearchStreamer({
-  placeholder = "방송인을 검색하세요",
+  placeholder = "스트리머를 검색하세요",
   onSelect,
   onSelectResult,
 }: SearchStreamerProps) {

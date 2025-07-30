@@ -59,7 +59,7 @@ export default function Schedules() {
           </IconButton>
         </Text>
         <Text color="neutral.500" fontFamily="body" fontSize="md">
-          팬들이 함께 관리하는 방송인 일정 정보
+          팬들이 함께 관리하는 스트리머 일정 정보
         </Text>
       </Box>
 

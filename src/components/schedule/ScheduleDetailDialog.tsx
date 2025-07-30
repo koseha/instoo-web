@@ -223,7 +223,7 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                 {/* 다이얼로그 헤더 */}
                 <Dialog.Header p={8} pb={6}>
                   <VStack align="flex-start" gap={6}>
-                    {/* 방송인 정보 */}
+                    {/* 스트리머 정보 */}
                     <HStack gap={4}>
                       <AvatarRoot size="lg">
                         <AvatarImage src="https://bit.ly/naruto-sage" />

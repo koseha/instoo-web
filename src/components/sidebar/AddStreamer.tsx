@@ -22,7 +22,7 @@ export default function AddStreamer() {
 
   return (
     <SearchStreamer
-      placeholder="추가할 방송인을 검색하세요"
+      placeholder="추가할 스트리머를 검색하세요"
       onSelect={handleStreamerSelect}
     />
   );

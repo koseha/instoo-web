@@ -128,7 +128,7 @@ const MyStreamers = () => {
       <HStack justify="space-between">
         <HStack justify="start" mb={1} className="the-third-lesson">
           <Text fontSize="sm" color="neutral.500" fontFamily="heading">
-            My Streamers
+            관심 스트리머
           </Text>
           <InfoTip
             content={

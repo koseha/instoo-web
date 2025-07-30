@@ -9,23 +9,23 @@ const tourSteps = [
   {
     selector: ".the-first-lesson",
     title: "간단히 안내해드릴게요 (1/4)",
-    content: '"방송인"에서 방송인 현황을 알 수 있어요!',
+    content: '"스트리머 목록"에서 스트리머 현황을 알 수 있어요!',
   },
   {
     selector: ".the-second-lesson",
     title: "간단히 안내해드릴게요 (2/4)",
-    content: "인증된 방송인을 검색한 후 My Streamers에 추가해보세요!",
+    content: "인증된 스트리머를 검색한 후 관심 스트리머에 추가해보세요!",
   },
   {
     selector: ".the-third-lesson",
     title: "간단히 안내해드릴게요 (3/4)",
     content:
-      'My Streamers에 추가된 방송인은 "스트리머 일정"에서 일정을 조회할 수 있습니다!!',
+      '관심 스트리머에 추가된 스트리머는 "스트리머 일정"에서 일정을 조회할 수 있습니다!!',
   },
   {
     selector: ".the-fourth-lesson",
     title: "간단히 안내해드릴게요 (4/4)",
-    content: "인증된 방송인의 대략적인 일정을 등록해주세요!",
+    content: "인증된 스트리머의 대략적인 일정을 등록해주세요!",
   },
 ];
 

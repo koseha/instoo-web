@@ -13,7 +13,7 @@ export const API_ENDPOINTS = {
     DETAIL: (uuid: string) => `/v1/users/${uuid}`,
   },
 
-  // 방송인
+  // 스트리머
   STREAMERS: {
     CREATE: "/v1/streamers",
     LIST: "/v1/streamers/list",
