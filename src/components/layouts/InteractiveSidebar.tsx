@@ -7,8 +7,6 @@ import { useInteractiveSidebar } from "@/stores/interactive-sidebar.store";
 const InteractiveSidebar = () => {
   const { isOpen } = useInteractiveSidebar();
 
-  console.log(isOpen);
-
   return isOpen ? <Sidebar /> : <MiniSidebar />;
 };
 

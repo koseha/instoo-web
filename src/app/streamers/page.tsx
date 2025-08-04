@@ -17,7 +17,11 @@ export default function Streamers() {
     "verified",
   );
   const [searchName, setSearchName] = useState("");
-  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([
+    "chzzk",
+    "soop",
+    "youtube",
+  ]);
   const [searchTrigger, setSearchTrigger] = useState(0);
   const isScrolled = useScrolled(60); // 60px 스크롤 후 버튼 표시
 

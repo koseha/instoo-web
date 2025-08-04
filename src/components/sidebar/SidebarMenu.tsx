@@ -4,6 +4,7 @@ import { Box, Button, Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import { Tooltip } from "../ui/tooltip";
 import { AiOutlineHome } from "react-icons/ai";
 import { GoPeople } from "react-icons/go";
+import { FiHome } from "react-icons/fi";
 import { MdAlarmAdd } from "react-icons/md";
 import { useRouter, usePathname } from "next/navigation";
 import { FaRegListAlt } from "react-icons/fa";
@@ -20,8 +21,16 @@ const SidebarMenu = () => {
 
   const menuItems = [
     {
+      icon: FiHome,
+      label: "홈",
+      path: "/",
+      modal: false,
+      disabled: false,
+      action: () => router.push("/"),
+    },
+    {
       icon: LuCalendarDays,
-      label: "스트리머 일정",
+      label: "관심 스트리머 일정",
       path: "/schedules",
       modal: false,
       disabled: false,

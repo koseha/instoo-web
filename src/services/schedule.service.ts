@@ -71,10 +71,13 @@ export interface SchedulesResponseDto {
   scheduled: ScheduleBaseInfoDto[];
 }
 
+type Platform = "chzzk" | "soop" | "youtube";
+
 export interface GetSchedulesDto {
   streamerUuids?: string[];
   startDate?: string;
   endDate?: string;
+  platforms?: Platform[];
 }
 
 export class ScheduleService {

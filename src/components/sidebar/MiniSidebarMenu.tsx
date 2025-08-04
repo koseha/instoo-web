@@ -1,6 +1,7 @@
 "use client";
 
 import { Button, Icon, Text, VStack } from "@chakra-ui/react";
+import { FiHome } from "react-icons/fi";
 import { LuCalendarDays } from "react-icons/lu";
 import { GoPeople } from "react-icons/go";
 import { MdAlarmAdd } from "react-icons/md";
@@ -16,8 +17,16 @@ const MiniSidebarMenu = () => {
 
   const menuItems = [
     {
+      icon: FiHome,
+      label: "홈",
+      path: "/",
+      modal: false,
+      disabled: false,
+      action: () => router.push("/"),
+    },
+    {
       icon: LuCalendarDays,
-      label: "일정",
+      label: "관심 일정",
       path: "/schedules",
       modal: false,
       disabled: false,

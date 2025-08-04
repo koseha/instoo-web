@@ -1,6 +1,5 @@
 "use client";
 
-import StreamerSchedule from "@/components/schedule/StreamerSchedule";
 import { Box, Flex, IconButton, Tabs, Text } from "@chakra-ui/react";
 import { useCallback, useState } from "react";
 import { FaRedo } from "react-icons/fa";
@@ -8,6 +7,7 @@ import { FaRegCalendarAlt } from "react-icons/fa";
 import { FaCalendarDay } from "react-icons/fa";
 import { FaCalendarWeek } from "react-icons/fa";
 import { useScrolled } from "@/hooks/useScrolled";
+import StreamerSchedule from "@/components/schedule/StreamerSchedule";
 
 export default function Schedules() {
   const [activeTab, setActiveTab] = useState<"monthly" | "weekly" | "daily">(
@@ -38,7 +38,7 @@ export default function Schedules() {
           alignItems="center"
           gap={2}
         >
-          스트리머 일정 모아보기
+          관심 스트리머 일정 모아보기
           {/* 기본 헤더의 새로고침 버튼 - 스크롤 시 숨김 */}
           <IconButton
             size="xs"
@@ -59,7 +59,7 @@ export default function Schedules() {
           </IconButton>
         </Text>
         <Text color="neutral.500" fontFamily="body" fontSize="md">
-          팬들이 함께 관리하는 스트리머 일정 정보
+          관심 설정한 스트리머들의 일정 정보
         </Text>
       </Box>
 

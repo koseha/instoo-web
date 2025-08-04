@@ -1,25 +1,58 @@
-import React, { useState, useEffect } from "react";
-import Calendar, { CalendarItem } from "./Calendar";
-import ScheduleCard, { ScheduleItem } from "./ScheduleCard";
-import { useMyStreamersStore } from "@/stores/my-streamers.store";
+"use client";
+
+import { useScrolled } from "@/hooks/useScrolled";
+import { useCallback, useState, useEffect } from "react";
+import StreamerFilters from "../streamer/StreamerFilter";
 import {
   GetSchedulesDto,
   ScheduleService,
   SchedulesResponseDto,
 } from "@/services/schedule.service";
 import { useLikeStore } from "@/stores/schedule-like.store";
+import { ScheduleItem } from "../schedule/ScheduleCard";
+import Calendar, { CalendarItem } from "../schedule/Calendar";
+import SimpleScheduleCard from "./SImpleScheduleCard";
+
+type Platform = "chzzk" | "soop" | "youtube";
 
 // ScheduleItem을 CalendarItem으로 확장
 interface CalendarScheduleItem extends ScheduleItem, CalendarItem {}
 
-const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
+const HomeSchedule = () => {
+  const [searchName, setSearchName] = useState("");
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([
+    "chzzk",
+    "soop",
+    "youtube",
+  ]);
+  const [searchTrigger, setSearchTrigger] = useState(0);
+  const isScrolled = useScrolled(60); // 60px 스크롤 후 버튼 표시
+
+  // Calendar 관련 상태
   const [currentDate, setCurrentDate] = useState(new Date());
   const [schedulesData, setSchedulesData] = useState<SchedulesResponseDto[]>(
     [],
   );
   const [loading, setLoading] = useState(false);
-  const { getScheduleFetchUuids } = useMyStreamersStore();
   const { likedMap, likeCountMap } = useLikeStore();
+
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchName(value);
+  }, []);
+
+  const handleSearch = useCallback(() => {
+    setSearchTrigger((prev) => prev + 1);
+  }, []);
+
+  const handlePlatformChange = useCallback((platform: Platform) => {
+    setSelectedPlatforms((prev) => {
+      const newPlatforms = prev.includes(platform)
+        ? prev.filter((p) => p !== platform)
+        : [...prev, platform];
+      return newPlatforms;
+    });
+    setSearchTrigger((prev) => prev + 1);
+  }, []);
 
   // API 호출 함수
   const fetchSchedules = async (params: GetSchedulesDto) => {
@@ -36,12 +69,6 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
 
   // 월 변경 시 데이터 로드
   useEffect(() => {
-    const scheduleFetchUuids = getScheduleFetchUuids();
-    if (scheduleFetchUuids.length === 0) {
-      setSchedulesData([]);
-      return;
-    }
-
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
@@ -62,11 +89,11 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
     const params: GetSchedulesDto = {
       startDate: formatDateKey(startDate),
       endDate: formatDateKey(endDate),
-      streamerUuids: scheduleFetchUuids,
+      platforms: selectedPlatforms,
     };
 
     fetchSchedules(params);
-  }, [currentDate, JSON.stringify(getScheduleFetchUuids()), otherTrigger]);
+  }, [currentDate, searchTrigger, selectedPlatforms]);
 
   // API 데이터에서 특정 날짜의 일정 가져오기
   const getSchedulesForDate = (dateKey: string): CalendarScheduleItem[] => {
@@ -90,18 +117,29 @@ const StreamerSchedule = ({ otherTrigger }: { otherTrigger: number }) => {
 
   // 스케줄 카드 렌더링 함수
   const renderScheduleItem = (item: CalendarScheduleItem) => {
-    return <ScheduleCard schedule={item} />;
+    return <SimpleScheduleCard schedule={item} searchName={searchName} />;
   };
 
   return (
-    <Calendar
-      currentDate={currentDate}
-      onDateChange={setCurrentDate}
-      loading={loading}
-      getItemsForDate={getSchedulesForDate}
-      renderItem={renderScheduleItem}
-    />
+    <>
+      <StreamerFilters
+        searchName={searchName}
+        selectedPlatforms={selectedPlatforms}
+        onSearchChange={handleSearchChange}
+        onSearchSubmit={handleSearch}
+        onPlatformChange={handlePlatformChange}
+        activeTab="verified"
+      />
+
+      <Calendar
+        currentDate={currentDate}
+        onDateChange={setCurrentDate}
+        loading={loading}
+        getItemsForDate={getSchedulesForDate}
+        renderItem={renderScheduleItem}
+      />
+    </>
   );
 };
 
-export default StreamerSchedule;
+export default HomeSchedule;

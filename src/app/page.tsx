@@ -1,20 +1,12 @@
 // app/page.tsx
-"use client";
 
 import { Box, IconButton, Text } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import { FaRedo } from "react-icons/fa";
+import HomeSchedule from "@/components/home/HomeSchedule";
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace("/schedules");
-  }, [router]);
-
   return (
-    <Box>
+    <>
       <Box mb={4}>
         <Text
           color="neutral.900"
@@ -46,6 +38,7 @@ export default function Home() {
           팬들이 함께 관리하는 스트리머 일정 정보
         </Text>
       </Box>
-    </Box>
+      <HomeSchedule />
+    </>
   );
 }
