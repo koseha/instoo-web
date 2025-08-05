@@ -21,6 +21,7 @@ import SelectedStreamerCard from "./SelectedStreamerCard";
 import StatusSelector from "./StatusSelector";
 import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
 import { format } from "date-fns";
+import DropdownTimePicker from "../ui/DropdownTimePicker";
 
 interface ScheduleFormProps {
   formData: ScheduleFormData;
@@ -133,11 +134,10 @@ const ScheduleForm = ({
             />
           </GridItem>
           <GridItem>
-            {/* 시간 선택 */}
-            <Input
-              type="time"
+            {/* 시간 선택 - DropdownTimePicker 사용 */}
+            <DropdownTimePicker
               value={formData.startTime}
-              onChange={(e) => onInputChange("startTime", e.target.value)}
+              onChange={(time: string) => onInputChange("startTime", time)}
               disabled={
                 formData.status === "BREAK" || formData.status === "TIME_TBD"
               }
@@ -153,6 +153,7 @@ const ScheduleForm = ({
                 color: "neutral.400",
               }}
               h={12}
+              w="full"
             />
           </GridItem>
         </Grid>
