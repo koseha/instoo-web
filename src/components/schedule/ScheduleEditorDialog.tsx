@@ -19,6 +19,7 @@ import { ScheduleService } from "@/services/schedule.service";
 import { ScheduleFormData } from "./types";
 import ScheduleForm from "./ScheduleForm";
 import { StreamerSimpleResponse } from "@/types/interfaces/streamer.interface";
+import { isDateBeforeToday } from "@/utils/time.utils";
 
 function prepareSchedulePayload(dateStr: string, timeStr: string) {
   const [year, month, day] = dateStr.split("-").map(Number);
@@ -249,6 +250,10 @@ const ScheduleEditorDialog = () => {
     return modalMode === "create" ? "등록하기" : "수정하기";
   };
 
+  // 버튼 비활성화 조건
+  const isSubmitDisabled =
+    !!conflictError || isDateBeforeToday(formData.scheduleDate);
+
   return (
     <Dialog.Root
       lazyMount
@@ -314,7 +319,7 @@ const ScheduleEditorDialog = () => {
                   onClick={handleSubmit}
                   loading={isSubmitting || isCheckingConflict}
                   loadingText={getSubmitButtonText()}
-                  disabled={!!conflictError}
+                  disabled={isSubmitDisabled}
                   fontWeight="500"
                   size="sm"
                 >

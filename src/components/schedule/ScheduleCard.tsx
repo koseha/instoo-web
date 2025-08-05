@@ -87,7 +87,7 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({ schedule }) => {
       }}
     >
       {/* 상태/시간 배지 */}
-      <HStack gap={0.5}>
+      <HStack gap={1}>
         <Badge
           bg={statusConfig.bg}
           color={statusConfig.color}

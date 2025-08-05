@@ -24,6 +24,7 @@ import { FaRegClock } from "react-icons/fa6";
 import {
   formatDateToKoreanDate,
   formatUTCToKoreanDateTime,
+  isDateBeforeToday,
 } from "@/utils/time.utils";
 import { motion, useAnimationControls } from "framer-motion";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
@@ -145,6 +146,10 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
       setInitialLiked(false);
     }
   };
+
+  // 수정 버튼 비활성화 조건
+  const isEditDisabled =
+    !schedule?.scheduleDate || isDateBeforeToday(schedule.scheduleDate);
 
   const floatHearts = [0, 1, 2].map((i) => {
     const offsetX = [-10, 0, 10][i];
@@ -423,9 +428,14 @@ const ScheduleDetailDialog: React.FC<ScheduleDetailDialogProps> = ({
                         size="md"
                         borderColor="gray.300"
                         color="gray.700"
+                        disabled={isEditDisabled}
                         _hover={{
-                          borderColor: "gray.400",
-                          bg: "gray.50",
+                          borderColor: isEditDisabled ? "gray.300" : "gray.400",
+                          bg: isEditDisabled ? "transparent" : "gray.50",
+                        }}
+                        _disabled={{
+                          opacity: 0.5,
+                          cursor: "not-allowed",
                         }}
                       >
                         <FaRegEdit /> 수정하기
