@@ -11,12 +11,22 @@ import {
   useDisclosure,
   Grid,
   PopoverPositioner,
+  ButtonProps,
 } from "@chakra-ui/react";
 import { MdAccessTime } from "react-icons/md";
 
-const DropdownTimePicker = ({ value, onChange, ...props }) => {
+interface DropdownTimePickerProps extends Omit<ButtonProps, "onChange"> {
+  value?: string; // HH:MM 형식 (24시간)
+  onChange?: (time: string) => void; // HH:MM 형식 (24시간)으로 반환
+}
+
+const DropdownTimePicker: React.FC<DropdownTimePickerProps> = ({
+  value,
+  onChange,
+  ...props
+}) => {
   // 24시간 형식 값을 12시간 형식으로 변환하여 상태 초기화
-  const initializeTime = (timeValue) => {
+  const initializeTime = (timeValue: string | undefined) => {
     if (!timeValue) return { hour: 12, minute: 0, period: "AM" };
 
     const [hourStr, minuteStr] = timeValue.split(":");
@@ -51,7 +61,11 @@ const DropdownTimePicker = ({ value, onChange, ...props }) => {
   const hours = Array.from({ length: 12 }, (_, i) => i + 1);
   const minutes = Array.from({ length: 60 }, (_, i) => i);
 
-  const handleTimeChange = (newHour, newMinute, newPeriod) => {
+  const handleTimeChange = (
+    newHour: number,
+    newMinute: number,
+    newPeriod: string,
+  ) => {
     // 12시간 형식을 24시간 형식으로 변환
     const hour24 =
       newPeriod === "PM" && newHour !== 12
